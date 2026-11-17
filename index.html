@@ -43,35 +43,12 @@
   <p class="lead">Choose an app.</p>
   <div class="apps">
     <a class="app maths" href="maths/"><div class="ic">➗</div><b>Maths</b><span>Lessons, practice, exam ladders and mock exams from KS1 to GCSE</span></a>
-    <a class="app deen" href="deen/"><div class="ic">🕌</div><b>Deen</b><span>Qur'an reading, tajweed, recitation, duas, stories and fiqh</span></a>
+    <a class="app deen" href="deen/"><div class="ic">🕌</div><b>Islamic Studies</b><span>Qur'an reading, tajweed, recitation, duas, stories and fiqh</span></a>
     <a class="app flags" href="flags/"><div class="ic">🌍</div><b>Flags</b><span>Flags, maps, capitals, oceans and cultures of every country</span></a>
   </div>
-  <section class="card">
-    <h2>Qur'an recitation offline</h2>
-    <p>Recitations are saved on this device as they are played. To have them all ready without internet, save them now (about 145 MB, best on Wi-Fi).</p>
-    <button id="save">Save all recitations</button>
-    <div class="bar" hidden id="barw"><i id="bar"></i></div>
-    <small id="msg"></small>
-  </section>
 </main>
 <script>
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
-  var btn = document.getElementById('save'), msg = document.getElementById('msg'), bar = document.getElementById('bar'), barw = document.getElementById('barw');
-  btn.onclick = async function () {
-    if (!('caches' in window)) { msg.textContent = 'This browser cannot save files for offline use.'; return; }
-    btn.disabled = true; barw.hidden = false;
-    try {
-      var list = await (await fetch('deen/audio-files.json')).json(), cache = await caches.open('fl-audio-1'), done = 0, failed = 0;
-      for (var i = 0; i < list.length; i += 4) {
-        await Promise.all(list.slice(i, i + 4).map(async function (u) {
-          try { if (!(await cache.match(u))) { var r = await fetch(u); if (r.ok) await cache.put(u, r); else failed++; } } catch (e) { failed++; }
-          done++; bar.style.width = Math.round(100 * done / list.length) + '%'; msg.textContent = done + ' of ' + list.length + ' files';
-        }));
-      }
-      msg.textContent = failed ? ('Saved, but ' + failed + ' files failed: try again on Wi-Fi.') : 'All recitations are saved on this device.';
-    } catch (e) { msg.textContent = 'Could not save right now: check the internet connection and try again.'; }
-    btn.disabled = false;
-  };
 </script>
 </body>
 </html>
