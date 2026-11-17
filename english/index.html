@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../icon-180.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Family English</title>
+  <style>
+:root{--bg:#fbf7f0;--surface:#fff;--surface-2:#f2ede4;--ink:#1d1a2e;--muted:#635f78;--line:#e6dfd2;--primary:#e0602a;--primary-2:#c24e1d;--primary-soft:#fde9df;--good:#0c8f6b;--good-bg:#e2f6ee;--bad:#c23a3a;--bad-bg:#fbe6e6;--shadow:0 2px 10px rgba(40,30,10,.08);--radius:18px;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#16141f;--surface:#211e2d;--surface-2:#2b2839;--ink:#f3f1fa;--muted:#aaa6c0;--line:#363247;--primary:#ff8a4c;--primary-2:#ff9f6b;--primary-soft:#3a2a22;--good:#46d49e;--good-bg:#173329;--bad:#ff7b7b;--bad-bg:#3a1f22;--shadow:0 2px 12px rgba(0,0,0,.35);color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+a{color:var(--primary-2)}
+.top{display:flex;align-items:center;gap:.5rem;padding:calc(.6rem + env(safe-area-inset-top,0px)) 1rem .6rem;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top .sp{flex:1}.brand{display:flex;align-items:center;gap:.5rem;font-weight:800;color:var(--ink);text-decoration:none}
+.logo{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--primary);color:#fff;font-weight:800;font-size:.95rem}
+.tbtn{display:flex;align-items:center;gap:.3rem;padding:.4rem .7rem;border-radius:12px;color:var(--ink);text-decoration:none;font-weight:650;font-size:.92rem}.tbtn:hover{background:var(--surface-2)}
+.who{display:flex;align-items:center;gap:.4rem;text-decoration:none;color:var(--ink);font-weight:650;font-size:.92rem}
+.av{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;color:#fff;font-weight:800}.av.big{width:64px;height:64px;font-size:1.6rem}
+@media (max-width:520px){.tbtn span,.wn{display:none}}
+.page{max-width:900px;margin:0 auto;padding:1rem 1rem calc(5rem + env(safe-area-inset-bottom,0px))}.page.focus{max-width:720px}
+h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1.4rem 0 .4rem}
+.muted{color:var(--muted)}.small{font-size:.88rem}.center{text-align:center}
+.eyebrow{display:block;font-size:.78rem;font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--primary-2)}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:.6rem 0}.row.center{justify-content:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.35rem;font:inherit;font-weight:700;padding:.65rem 1.1rem;border-radius:14px;border:2px solid transparent;cursor:pointer;text-decoration:none;min-height:46px}
+.btn.primary{background:var(--primary);color:#fff}.btn.primary:hover{background:var(--primary-2)}
+.btn.ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}.btn.sm{min-height:38px;padding:.35rem .75rem;font-size:.9rem}.btn.big{font-size:1.1rem;padding:.8rem 1.4rem}
+.btn[disabled]{opacity:.45;cursor:default}
+.hero{margin:.4rem 0 1rem}
+.nextcard{display:flex;flex-direction:column;gap:.15rem;background:var(--primary);color:#fff;text-decoration:none;border-radius:var(--radius);padding:1rem 1.2rem;box-shadow:var(--shadow);margin-top:.6rem}
+.nextcard .eyebrow{color:#ffe7da}.nextcard b{font-size:1.5rem}.nextcard .go{align-self:flex-end;font-weight:800}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.8rem;margin:1rem 0}
+.tile{display:flex;flex-direction:column;gap:.15rem;background:var(--surface);border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow);color:var(--ink);text-decoration:none;border:2px solid transparent}
+.tile:hover{border-color:var(--primary)}.tile span{font-size:2rem}.tile b{font-size:1.1rem}.tile small{color:var(--muted)}
+.whos{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1.2rem 0}
+.whob{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1.2rem;border-radius:var(--radius);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}.whob:hover{border-color:var(--primary)}.whob b{font-size:1.2rem}.whob small{color:var(--muted)}
+.stage{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem 1.1rem;margin:1rem 0}.stage h2{margin:0;font-size:1.2rem}.stage h2 small{font-weight:500;color:var(--muted);font-size:.85rem}
+.units{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.6rem;margin:.7rem 0}
+.unit{position:relative;display:flex;flex-direction:column;gap:.4rem;padding:.75rem .85rem;border-radius:14px;background:var(--surface-2);text-decoration:none;color:var(--ink)}.unit b{font-size:1.05rem}.unit.star{outline:2px solid #f2b600}.unit .st{position:absolute;right:.6rem;top:.5rem}
+.bar{display:block;height:7px;border-radius:99px;background:var(--line);overflow:hidden}.bar span{display:block;height:100%;background:var(--good)}
+.gchips{display:flex;flex-wrap:wrap;gap:.6rem}
+.gchip{display:flex;flex-direction:column;align-items:center;min-width:92px;padding:.6rem .8rem;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:2rem;font-weight:800;cursor:pointer}.gchip small{font-size:.8rem;font-weight:500;color:var(--muted)}.gchip:active{transform:scale(.96)}
+.actions{margin:1.1rem 0}
+.words{display:flex;flex-wrap:wrap;gap:.6rem}
+.sbw{display:inline-flex;gap:.12rem;align-items:flex-end;padding:.45rem .7rem .3rem;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:1.5rem;font-weight:700;cursor:pointer}
+.sbw.tricky{background:#fff6d6;border-color:#f2d36b;color:#5b4500}
+@media (prefers-color-scheme:dark){.sbw.tricky{background:#3b3214;border-color:#7d6a22;color:#ffe9a3}}
+.sb{display:inline-flex;flex-direction:column;align-items:center;padding-bottom:.35rem;position:relative}
+.sb.dot::after{content:"";position:absolute;bottom:0;width:7px;height:7px;border-radius:50%;background:var(--primary)}
+.sb.dash::after{content:"";position:absolute;bottom:2px;left:2px;right:2px;height:4px;border-radius:3px;background:var(--primary)}
+.qtop{display:flex;align-items:center;gap:.8rem;margin:.2rem 0 .6rem}.qmode{font-weight:750;color:var(--primary-2);white-space:nowrap}
+.qprog{display:flex;flex:1;gap:4px}.qprog span{flex:1;height:7px;border-radius:99px;background:var(--line)}.qprog .done{background:#e9b9a2}.qprog .good{background:var(--good)}.qprog .cur{background:var(--primary)}
+.qcard{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem}
+.qpic{font-size:4.5rem;text-align:center;line-height:1.1}
+.qbig{font-size:3rem;font-weight:800;text-align:center;letter-spacing:.06em;margin:.2rem 0}
+.sentence{font-size:1.6rem;font-weight:650;text-align:center;line-height:1.5;margin:.3rem 0 .6rem}
+.prompt{font-size:1.25rem;font-weight:650;text-align:center;margin:.4rem 0 .8rem}
+.qtools{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:.8rem}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:12px;overflow:hidden}.seg button{font:inherit;font-weight:700;font-size:.88rem;padding:.35rem .7rem;border:0;background:var(--surface);color:var(--ink);cursor:pointer}.seg button[aria-checked="true"]{background:var(--primary);color:#fff}
+.abcd{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.opt{display:flex;align-items:center;gap:.7rem;padding:.8rem .9rem;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:1.45rem;font-weight:700;cursor:pointer;text-align:left;min-height:66px}
+.opt .l{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--surface-2);font-size:1rem;flex:none}
+.abcd.pics .opt{justify-content:center;font-size:3rem}.abcd.pics .opt .v{line-height:1}
+.opt:hover:not([disabled]){border-color:var(--primary)}.opt.right{border-color:var(--good);background:var(--good-bg)}.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}.opt[disabled]{cursor:default}
+.type-row{display:flex;gap:.6rem;justify-content:center}.type-in{font:inherit;font-size:1.5rem;padding:.5rem .8rem;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);width:min(320px,60vw)}
+.fb{margin-top:.9rem;padding:.8rem 1rem;border-radius:14px;background:var(--bad-bg)}.fb.good{background:var(--good-bg)}.fb p{margin:.3rem 0 0;font-size:.95rem}
+.qnav{display:flex;justify-content:space-between;gap:.6rem;margin-top:1rem}
+.end-e{font-size:4rem}.review li{margin:.5rem 0}
+.rungs{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .4rem}.rung{display:flex;flex-direction:column;align-items:center;font:inherit;font-weight:700;padding:.35rem .8rem;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.rung small{font-weight:500;font-size:.72rem;color:var(--muted)}.rung.cur{background:var(--primary);border-color:var(--primary);color:#fff}.rung.cur small{color:#ffe7da}
+.level{margin:.3rem 0 .7rem}.badge{display:inline-block;background:var(--primary);color:#fff;font-weight:800;font-size:.85rem;padding:.15rem .6rem;border-radius:99px}
+.moved{background:var(--good-bg);padding:.5rem .8rem;border-radius:12px;font-weight:650}
+.chk-word{font-size:4rem;font-weight:800;margin:1rem 0 .3rem;letter-spacing:.04em}.alien{font-size:2.2rem;margin-right:.6rem;vertical-align:middle}
+.btn.mark{font-size:1.2rem;min-width:160px;min-height:60px}.btn.mark.yes{background:var(--good);color:#fff}.btn.mark.no{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.letters{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}.letter{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:14px;background:var(--surface-2);font-size:2rem;font-weight:700;color:var(--ink);text-decoration:none;font-family:"Comic Neue","Century Gothic",-apple-system,sans-serif}
+.tr-pad{max-width:360px;margin:.6rem auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.tr-svg{width:100%;height:auto;display:block;background:var(--surface-2);border-radius:18px;touch-action:none}
+.tr-line{stroke:#c9bfae;stroke-width:.5}.tr-line.faint{stroke-dasharray:1.5 2}.tr-line.dash{stroke-dasharray:3 2}.tr-line.base{stroke:#9d927f;stroke-width:.8}
+.tr-guide{fill:none;stroke:#d8d0c2;stroke-width:9;stroke-linecap:round;stroke-linejoin:round}.tr-guide.now{stroke:#cbbfa9}
+@media (prefers-color-scheme:dark){.tr-guide{stroke:#4a4560}.tr-guide.now{stroke:#625b7c}.tr-line{stroke:#4a4560}}
+.tr-good{fill:none;stroke:var(--primary);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}.tr-ink{fill:none;stroke:#2a6fdb;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.tr-start{fill:#16a34a}.tr-arrow{fill:#16a34a}
+.flash{margin:1rem auto;max-width:520px;aspect-ratio:4/3.4;background:var(--surface);border-radius:28px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none}
+.flash .fpic{font-size:min(38vw,11rem);line-height:1.1}.flash .fword{font-size:min(12vw,3.4rem);font-weight:800;letter-spacing:.03em}
+.flash.pop{animation:pop .35s}@keyframes pop{50%{transform:scale(1.05)}}
+.flnav .btn{min-width:90px;font-size:1.8rem}
+.findq{font-size:2rem}.findgrid{display:grid;gap:1rem;margin:1.2rem auto;max-width:620px}.findgrid.n2{grid-template-columns:1fr 1fr}.findgrid.n4{grid-template-columns:1fr 1fr}
+.findc{font-size:min(26vw,7rem);aspect-ratio:1;border-radius:26px;border:3px solid var(--line);background:var(--surface);cursor:pointer;box-shadow:var(--shadow)}.findc.right{border-color:var(--good);background:var(--good-bg)}.findc.nope{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.prow{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:.5rem 0}.prow input[type=text],.prow input:not([type]),.prow select{font:inherit;padding:.4rem .6rem;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
+.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.5rem;margin-top:.6rem}.rec{display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;border-radius:12px;background:var(--surface-2)}.rec b{font-size:1.3rem;min-width:2.4rem}.rec small{flex:1;color:var(--muted)}.rec span{display:flex;gap:.3rem}.rec-b{background:var(--bad);color:#fff}
+.savebar{display:none;background:var(--bad-bg);color:var(--bad);padding:.5rem 1rem;text-align:center}.savebar.show{display:block}
+@media (max-width:520px){.qbig{font-size:2.4rem}.opt{font-size:1.25rem}.abcd.pics .opt{font-size:2.5rem}.chk-word{font-size:3rem}}
+[hidden]{display:none!important}
+
+</style>
+</head>
+<body>
+  <div id="app"></div>
+  <noscript>Family English needs JavaScript turned on.</noscript>
+  <script>
+/* Family Maths Game — core utilities (namespace, seeded RNG, exact rationals, dates, ids).
+   Classic script (no modules) so the app opens straight from a folder with no server. */
+(function (root) {
+  'use strict';
+  const FMG = (root.FMG = root.FMG || {});
+
+  /* ---------- Seeded random (mulberry32) ---------- */
+  function rng(seed) {
+    let a = seed >>> 0;
+    const next = function () {
+      a |= 0; a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    next.int = (lo, hi) => lo + Math.floor(next() * (hi - lo + 1));
+    next.pick = (arr) => arr[Math.floor(next() * arr.length)];
+    next.shuffle = (arr) => {
+      const a2 = arr.slice();
+      for (let i = a2.length - 1; i > 0; i--) { const j = Math.floor(next() * (i + 1)); [a2[i], a2[j]] = [a2[j], a2[i]]; }
+      return a2;
+    };
+    return next;
+  }
+  function newSeed() { return (Math.random() * 2 ** 31) >>> 0; }
+
+  /* ---------- Exact rational arithmetic ---------- */
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a || 1; }
+  function lcm(a, b) { return Math.abs(a * b) / gcd(a, b); }
+
+  class Q {
+    constructor(n, d = 1) {
+      if (!Number.isInteger(n) || !Number.isInteger(d)) throw new Error('Q needs integers');
+      if (d === 0) throw new Error('Zero denominator');
+      if (d < 0) { n = -n; d = -d; }
+      const g = gcd(n, d);
+      this.n = n / g; this.d = d / g;
+      this.rawN = n; this.rawD = d; // as written (sign-normalised), for form checks
+    }
+    static of(x) { return x instanceof Q ? x : new Q(x, 1); }
+    add(o) { o = Q.of(o); return new Q(this.n * o.d + o.n * this.d, this.d * o.d); }
+    sub(o) { o = Q.of(o); return new Q(this.n * o.d - o.n * this.d, this.d * o.d); }
+    mul(o) { o = Q.of(o); return new Q(this.n * o.n, this.d * o.d); }
+    div(o) { o = Q.of(o); return new Q(this.n * o.d, this.d * o.n); }
+    eq(o) { o = Q.of(o); return this.n === o.n && this.d === o.d; }
+    cmp(o) { o = Q.of(o); return this.n * o.d - o.n * this.d; }
+    isInt() { return this.d === 1; }
+    valueOf() { return this.n / this.d; }
+    toString() { return this.d === 1 ? String(this.n) : `${this.n}/${this.d}`; }
+    toMixed() {
+      if (this.d === 1 || Math.abs(this.n) < this.d) return this.toString();
+      const w = Math.trunc(this.n / this.d), r = Math.abs(this.n % this.d);
+      return `${w} ${r}/${this.d}`;
+    }
+  }
+
+  /* ---------- Dates (Europe/London calendar days) ---------- */
+  const clock = { offsetMs: 0, now() { return Date.now() + this.offsetMs; } };
+  const londonFmt = (typeof Intl !== 'undefined')
+    ? new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London', year: 'numeric', month: '2-digit', day: '2-digit' })
+    : null;
+  function londonDate(ms) { return londonFmt ? londonFmt.format(new Date(ms)) : new Date(ms).toISOString().slice(0, 10); }
+  function dayNumber(isoDate) { const [y, m, d] = isoDate.split('-').map(Number); return Math.round(Date.UTC(y, m - 1, d) / 864e5); }
+  function addDays(isoDate, n) { return new Date((dayNumber(isoDate) + n) * 864e5).toISOString().slice(0, 10); }
+  function daysBetween(a, b) { return dayNumber(b) - dayNumber(a); }
+  function prettyDate(iso) {
+    try { return new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); } catch (e) { return iso; }
+  }
+
+  /* ---------- IDs ---------- */
+  function uid(prefix) {
+    const r = (root.crypto && root.crypto.randomUUID) ? root.crypto.randomUUID().replace(/-/g, '').slice(0, 16)
+      : Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    return `${prefix}_${r}`;
+  }
+
+  /* ---------- Small helpers ---------- */
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  function fracHTML(q) {
+    q = Q.of(q);
+    if (q.d === 1) return `<span class="num">${q.n < 0 ? '−' + Math.abs(q.n) : q.n}</span>`;
+    const sign = q.n < 0 ? '−' : '';
+    return `<span class="frac" aria-label="${sign}${Math.abs(q.n)} over ${q.d}">${sign}<span class="fr"><span>${Math.abs(q.n)}</span><span>${q.d}</span></span></span>`;
+  }
+  function fracTxt(n, d) { return `<span class="frac" aria-label="${n} over ${d}"><span class="fr"><span>${n}</span><span>${d}</span></span></span>`; }
+
+  Object.assign(FMG, { rng, newSeed, gcd, lcm, Q, clock, londonDate, dayNumber, addDays, daysBetween, prettyDate, uid, esc, fracHTML, fracTxt });
+  FMG.today = () => londonDate(clock.now());
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Family English — phonics content in the order of Little Wandle Letters and Sounds Revised (Reception Phases 2–4, Year 1 Phase 5).
+   Check the order against your school's own progression chart; units can be reordered here without touching the rest of the app.
+   Words are written plainly; english.js splits them into graphemes using only what has been taught so far. */
+(function (root) {
+  'use strict';
+  const FMG = (root.FMG = root.FMG || {});
+
+  /* Each grapheme: an example word (with a picture) that contains it, and a phrase a grown-up can say for the pure sound. */
+  const G = {
+    s: ['sun', '☀️', 'sss'], a: ['apple', '🍎', 'a (as in ant)'], t: ['tent', '⛺', 't'], p: ['pig', '🐷', 'p'],
+    i: ['insect', '🐞', 'i (as in in)'], n: ['nut', '🥜', 'nnn'], m: ['moon', '🌙', 'mmm'], d: ['dog', '🐶', 'd'],
+    g: ['goat', '🐐', 'g'], o: ['orange', '🍊', 'o (as in on)'], c: ['cat', '🐱', 'c'], k: ['kite', '🪁', 'k'],
+    ck: ['duck', '🦆', 'ck'], e: ['egg', '🥚', 'e (as in egg)'], u: ['umbrella', '☂️', 'u (as in up)'], r: ['rabbit', '🐰', 'rrr'],
+    h: ['hat', '🎩', 'h'], b: ['bus', '🚌', 'b'], f: ['fish', '🐟', 'fff'], l: ['leg', '🦵', 'lll'],
+    ff: ['puff', '💨', 'fff'], ll: ['bell', '🔔', 'lll'], ss: ['kiss', '💋', 'sss'], j: ['jet', '✈️', 'j'],
+    v: ['van', '🚐', 'vvv'], w: ['web', '🕸️', 'w'], x: ['box', '📦', 'ks'], y: ['yo-yo', '🪀', 'y'],
+    z: ['zip', '🤐', 'zzz'], zz: ['buzz', '🐝', 'zzz'], qu: ['queen', '👸', 'kw'], ch: ['chick', '🐥', 'ch'],
+    sh: ['ship', '🚢', 'shh'], th: ['thumb', '👍', 'th'], ng: ['ring', '💍', 'ng'], nk: ['pink', '🩷', 'nk'],
+    ai: ['rain', '🌧️', 'ai'], ee: ['bee', '🐝', 'ee'], igh: ['night', '🌙', 'igh'], oa: ['goat', '🐐', 'oa'],
+    oo: ['moon', '🌙', 'oo (as in zoo)'], 'oo*': ['book', '📖', 'oo (as in book)'], ar: ['car', '🚗', 'ar'], or: ['fork', '🍴', 'or'],
+    ur: ['church', '⛪', 'ur'], ow: ['cow', '🐄', 'ow'], oi: ['coin', '🪙', 'oi'], ear: ['ear', '👂', 'ear'],
+    air: ['chair', '🪑', 'air'], er: ['hammer', '🔨', 'er'],
+    ay: ['day', '🌞', 'ay'], ou: ['cloud', '☁️', 'ou'], ie: ['pie', '🥧', 'ie'], ea: ['sea', '🌊', 'ea'],
+    oy: ['boy', '👦', 'oy'], ir: ['bird', '🐦', 'ir'], ue: ['glue', '🧴', 'ue'], aw: ['paw', '🐾', 'aw'],
+    wh: ['wheel', '🛞', 'w'], ph: ['dolphin', '🐬', 'f'], ew: ['stew', '🍲', 'ew'], oe: ['toe', '🦶', 'oe'],
+    au: ['launch', '🚀', 'or'], ey: ['key', '🔑', 'ee'],
+    'a-e': ['cake', '🎂', 'ay'], 'e-e': ['these', '👇', 'ee'], 'i-e': ['bike', '🚲', 'igh'], 'o-e': ['bone', '🦴', 'oa'], 'u-e': ['cube', '🧊', 'yoo'],
+  };
+
+  /* Pictures for words children read. Only words with a clear picture are used for picture questions. */
+  const PIC = {
+    tap: '🚰', pin: '📌', tin: '🥫', man: '👨', map: '🗺️', pan: '🍳', sad: '😢', dog: '🐶', pig: '🐷', cat: '🐱',
+    cap: '🧢', pot: '🍯', mop: '🧹', sock: '🧦', duck: '🦆', neck: '🦒', net: '🥅', pen: '🖊️', ten: '🔟', rat: '🐀', run: '🏃',
+    sun: '☀️', cup: '☕', nut: '🥜', rug: '🧶', hat: '🎩', hen: '🐔', bag: '👜', bed: '🛏️', bat: '🦇', bin: '🗑️', bus: '🚌', fan: '🪭', leg: '🦵', log: '🪵',
+    bell: '🔔', doll: '🪆', hill: '⛰️', kiss: '💋', jet: '✈️', jug: '🫗', van: '🚐', web: '🕸️', box: '📦', fox: '🦊', six: '6️⃣', zip: '🤐',
+    buzz: '🐝', quiz: '❓', chip: '🍟', ship: '🚢', shop: '🏪', fish: '🐟', dish: '🍽️', moth: '🦋', ring: '💍', king: '🤴', sing: '🎤',
+    pink: '🩷', bank: '🏦', think: '🤔', cats: '🐱', dogs: '🐶', pigs: '🐷', hats: '🎩',
+    rain: '🌧️', mail: '✉️', seed: '🌱', bee: '🐝', sheep: '🐑', light: '💡', goat: '🐐', boat: '⛵', coat: '🧥',
+    road: '🛣️', soap: '🧼', toad: '🐸', moon: '🌙', zoo: '🦁', book: '📖', cook: '🧑‍🍳', foot: '🦶', wood: '🪵', car: '🚗', jar: '🫙',
+    farm: '🚜', fork: '🍴', horn: '📯', corn: '🌽', church: '⛪', cow: '🐄', owl: '🦉', town: '🏘️', coin: '🪙', oil: '🛢️', ear: '👂', hair: '💇',
+    chair: '🪑', hammer: '🔨', ladder: '🪜', tent: '⛺', hand: '✋', milk: '🥛', gift: '🎁',
+    frog: '🐸', crab: '🦀', drum: '🥁', flag: '🚩', swim: '🏊', clap: '👏', train: '🚆', sweets: '🍬', spoon: '🥄', star: '⭐', storm: '⛈️', shark: '🦈',
+    crown: '👑', toast: '🍞', day: '🌞', tray: '🍱', cloud: '☁️', mouth: '👄', shout: '📢', pie: '🥧', tie: '👔', sea: '🌊', leaf: '🍃', tea: '🍵',
+    boy: '👦', toy: '🧸', bird: '🐦', girl: '👧', shirt: '👕', blue: '🔵', glue: '🧴', saw: '🪚', paw: '🐾', draw: '🖍️', straw: '🥤', wheel: '🛞',
+    phone: '📱', dolphin: '🐬', chew: '🦷', key: '🔑', monkey: '🐒', donkey: '🫏', cake: '🎂', snake: '🐍', gate: '🚪', bike: '🚲', kite: '🪁',
+    bone: '🦴', home: '🏠', rope: '🪢', nose: '👃', rose: '🌹', cube: '🧊', flute: '🪈', tube: '🧪', smile: '😊', five: '5️⃣', slide: '🛝',
+  };
+
+  /* Units. stage: p2 (Reception autumn), p3 (Reception spring), p4 (Reception summer), p5 (Year 1). */
+  const UNITS = [
+    { id: 'u01', stage: 'p2', title: 's a t p', gr: ['s', 'a', 't', 'p'], words: 'sat pat tap at sap pats taps' },
+    { id: 'u02', stage: 'p2', title: 'i n m d', gr: ['i', 'n', 'm', 'd'], words: 'it in pin tin pit sit nip tip man mat map pan pad dad dim mad sad' },
+    { id: 'u03', stage: 'p2', title: 'g o c k', gr: ['g', 'o', 'c', 'k'], words: 'got dog dig pig cot cat cap can cod kit kid pod nod on not top pot mop dot', tricky: 'is I the' },
+    { id: 'u04', stage: 'p2', title: 'ck e u r', gr: ['ck', 'e', 'u', 'r'], words: 'sock duck kick pick neck peck get net pen ten red rat run sun cup mud nut tug rug up' },
+    { id: 'u05', stage: 'p2', title: 'h b f l', gr: ['h', 'b', 'f', 'l'], words: 'hat hot hen hug hum bag bed bat bin bus big bun fan fig fit fun fog lip leg log lid lot' },
+    { id: 'u06', stage: 'p2', title: 'ff ll ss j', gr: ['ff', 'll', 'ss', 'j'], words: 'off huff puff cuff bell doll hill fill well tell kiss miss boss mess less jam jet jog jug', tricky: 'put pull full as and has his her' },
+    { id: 'u07', stage: 'p2', title: 'v w x y', gr: ['v', 'w', 'x', 'y'], words: 'van vet wet web win wig box fox six mix yes yet yap yell', tricky: 'go no to into she push' },
+    { id: 'u08', stage: 'p2', title: 'z zz qu ch', gr: ['z', 'zz', 'qu', 'ch'], words: 'zip zap buzz fizz quiz quack quick quit chip chop chin much rich chat', tricky: 'he of we me be' },
+    { id: 'u09', stage: 'p2', title: 'sh th ng nk', gr: ['sh', 'th', 'ng', 'nk'], words: 'ship shop shed fish dish cash rush this that them then thin moth ring sing king long song bang pink sink wink bank tank think junk' },
+    { id: 'u10', stage: 'p2', title: 'Words ending in s', gr: [], words: 'cats dogs pigs hats beds hens bugs pots', focus: 'plural' },
+    { id: 'u11', stage: 'p3', title: 'ai ee igh oa', gr: ['ai', 'ee', 'igh', 'oa'], words: 'rain tail mail pain wait sail feet seed bee sheep week deep high night light fight might sigh goat boat coat road soap toad', tricky: 'was you they' },
+    { id: 'u12', stage: 'p3', title: 'oo oo ar or', gr: ['oo', 'oo*', 'ar', 'or'], words: 'moon soon food zoo roof cool book look cook foot wood good car bar park dark jar farm cart fork horn corn born sort torn', tricky: 'my by all' },
+    { id: 'u13', stage: 'p3', title: 'ur ow oi ear', gr: ['ur', 'ow', 'oi', 'ear'], words: 'turn hurt burn fur surf church cow how now town down owl coin oil boil soil join ear hear near dear beard', tricky: 'are sure pure' },
+    { id: 'u14', stage: 'p3', title: 'air er, double letters', gr: ['air', 'er'], words: 'hair fair pair chair her hammer letter ladder supper dinner' },
+    { id: 'u15', stage: 'p4', title: 'Words like tent and milk', gr: [], words: 'tent hand milk lamp jump belt help gift pond bend lost tusk', focus: 'cvcc', tricky: 'said so have like some come' },
+    { id: 'u16', stage: 'p4', title: 'Words like frog and crab', gr: [], words: 'frog crab drum flag spot stop swim trip plan clap snap grin', focus: 'ccvc', tricky: 'love do were here little says' },
+    { id: 'u17', stage: 'p4', title: 'Longer words', gr: [], words: 'train sweets bright spoon start storm shark crown toast green', focus: 'long', tricky: 'there when what one out today' },
+    { id: 'u18', stage: 'p5', title: 'ay ou ie ea', gr: ['ay', 'ou', 'ie', 'ea'], words: 'day play say tray out loud cloud shout mouth pie tie lie sea eat tea leaf bean', tricky: 'their people oh your' },
+    { id: 'u19', stage: 'p5', title: 'oy ir ue aw', gr: ['oy', 'ir', 'ue', 'aw'], words: 'boy toy joy bird girl shirt first blue glue clue true saw paw claw draw yawn straw', tricky: 'Mr Mrs ask could would should' },
+    { id: 'u20', stage: 'p5', title: 'wh ph ew oe au ey', gr: ['wh', 'ph', 'ew', 'oe', 'au', 'ey'], words: 'wheel which whip dolphin graph new few chew grew blew stew toe launch key monkey donkey', tricky: 'our house mouse water want' },
+    { id: 'u21', stage: 'p5', title: 'a-e e-e i-e o-e u-e', gr: ['a-e', 'e-e', 'i-e', 'o-e', 'u-e'], words: 'cake made late gate snake these bike time line kite slide smile five bone home rope nose rose phone cube tube flute', tricky: 'any many again who whole where two' },
+    { id: 'u22', stage: 'p5', title: 'More tricky words', gr: [], words: '', focus: 'tricky', tricky: 'school call different thought through friend work once laugh because eye' },
+  ];
+
+  const STAGES = [
+    { id: 'p2', name: 'Phase 2', when: 'Reception, autumn', desc: 'First sounds: s a t p … sh th ng nk' },
+    { id: 'p3', name: 'Phase 3', when: 'Reception, spring', desc: 'Two- and three-letter sounds: ai ee igh oa oo ar or …' },
+    { id: 'p4', name: 'Phase 4', when: 'Reception, summer', desc: 'Longer words with sounds next to each other: tent, frog, train' },
+    { id: 'p5', name: 'Phase 5', when: 'Year 1', desc: 'New ways to spell sounds: ay ou ie ea … a-e i-e o-e' },
+  ];
+
+  /* Short sentences using only taught sounds and tricky words, each with a question to show understanding. */
+  const SENTENCES = [
+    { u: 'u05', s: 'The cat is on the bed.', q: 'Where is the cat?', a: 'on the bed', w: ['in the bin', 'on the bus', 'in a box'] },
+    { u: 'u05', s: 'The big dog is in the mud.', q: 'Where is the dog?', a: 'in the mud', w: ['on the mat', 'in a hat', 'on a log'] },
+    { u: 'u05', s: 'Dad has a red hat.', q: 'What has Dad got?', a: 'a red hat', w: ['a red bag', 'a big dog', 'a hot bun'] },
+    { u: 'u06', s: 'The hen is on the hill.', q: 'What is on the hill?', a: 'the hen', w: ['the cat', 'the bell', 'the dog'] },
+    { u: 'u07', s: 'The fox got in the van.', q: 'Who got in the van?', a: 'the fox', w: ['the hen', 'the man', 'the pig'] },
+    { u: 'u08', s: 'The duck can quack.', q: 'What can the duck do?', a: 'quack', w: ['buzz', 'chop', 'sing'] },
+    { u: 'u09', s: 'The fish is in the dish.', q: 'Where is the fish?', a: 'in the dish', w: ['on the ship', 'in the shop', 'in the sink'] },
+    { u: 'u09', s: 'The king can sing a long song.', q: 'What can the king do?', a: 'sing', w: ['run', 'swim', 'think'] },
+    { u: 'u09', s: 'She has a pink ring.', q: 'What has she got?', a: 'a pink ring', w: ['a pink hat', 'a red ring', 'a long song'] },
+    { u: 'u11', s: 'The goat is in the rain.', q: 'Where is the goat?', a: 'in the rain', w: ['on the boat', 'in the night', 'on the road'] },
+    { u: 'u11', s: 'You can see a light in the night.', q: 'When can you see the light?', a: 'in the night', w: ['in the rain', 'at the park', 'on a boat'] },
+    { u: 'u12', s: 'The cook has a good book.', q: 'What has the cook got?', a: 'a good book', w: ['a cool car', 'a big jar', 'a red fork'] },
+    { u: 'u12', s: 'They park the car on the farm.', q: 'Where is the car?', a: 'on the farm', w: ['at the zoo', 'in the wood', 'on the moon'] },
+    { u: 'u13', s: 'The owl is in the town.', q: 'Where is the owl?', a: 'in the town', w: ['in the soil', 'on the cow', 'in the church'] },
+    { u: 'u14', s: 'Her chair is near the ladder.', q: 'What is near the ladder?', a: 'her chair', w: ['her hammer', 'her hair', 'her dinner'] },
+    { u: 'u15', s: 'The frog can jump in the pond.', q: 'What can the frog do?', a: 'jump in the pond', w: ['swim to the tent', 'help the crab', 'sing a song'] },
+    { u: 'u16', s: 'The crab and the frog swim to the flag.', q: 'Where do they swim?', a: 'to the flag', w: ['to the tent', 'to the drum', 'to the pond'] },
+    { u: 'u17', s: 'The train went past the green farm.', q: 'What did the train go past?', a: 'the green farm', w: ['the big shark', 'the dark storm', 'the hot toast'] },
+    { u: 'u17', s: 'Here is a little shark in the sea.', q: 'What is in the sea?', a: 'a little shark', w: ['a big crown', 'a little train', 'a green spoon'] },
+    { u: 'u18', s: 'Today we play out in the sea.', q: 'Where do they play?', a: 'in the sea', w: ['in the cloud', 'at the shop', 'on the tray'] },
+    { u: 'u19', s: 'The girl had a blue shirt.', q: 'What did the girl have?', a: 'a blue shirt', w: ['a blue bird', 'a red shirt', 'a new toy'] },
+    { u: 'u19', s: 'The bird sat on the boy’s toy.', q: 'Where did the bird sit?', a: 'on the toy', w: ['on the boy', 'on the claw', 'on the straw'] },
+    { u: 'u20', s: 'A monkey and a donkey ate the stew.', q: 'What did they eat?', a: 'the stew', w: ['the key', 'the wheel', 'the toast'] },
+    { u: 'u21', s: 'I like to ride my bike home.', q: 'Where does the bike go?', a: 'home', w: ['to the lake', 'to the cake', 'to school'] },
+    { u: 'u21', s: 'The snake ate five cakes at the gate.', q: 'How many cakes?', a: 'five', w: ['two', 'nine', 'one'] },
+  ];
+
+  /* Made-up "alien" words for the phonics screening check: they can be read with phonics, but they are not real words. */
+  const ALIEN = {
+    p2: 'vap zid tob muz jeck fim shom thib quop chab lus yod nush kib gax zep veck mib hond tuz',
+    p3: 'jair voin murt zeen foat quar shoob keesh thoik yeen geck chorn lurt baip koob dar mish torb nairp zigh',
+    p4: 'blan strom glarp frint splog brimp drent clob snep fusk trab grent plim stux jund',
+    p5: 'drowk blay phid wheb roy thirk prue gawn zay noit fraw clee spoe kew tade shile',
+  };
+
+  /* Toddler flashcards: one picture, one word, a natural voice. */
+  const CARDS = [
+    { id: 'animals', name: 'Animals', e: '🐶', cards: [['dog', '🐶'], ['cat', '🐱'], ['cow', '🐄'], ['pig', '🐷'], ['sheep', '🐑'], ['horse', '🐴'], ['duck', '🦆'], ['hen', '🐔'], ['fish', '🐟'], ['bird', '🐦'], ['frog', '🐸'], ['lion', '🦁'], ['elephant', '🐘'], ['monkey', '🐒'], ['bear', '🐻'], ['rabbit', '🐰'], ['mouse', '🐭'], ['giraffe', '🦒'], ['tiger', '🐯'], ['owl', '🦉']] },
+    { id: 'food', name: 'Food', e: '🍎', cards: [['apple', '🍎'], ['banana', '🍌'], ['orange', '🍊'], ['grapes', '🍇'], ['strawberry', '🍓'], ['bread', '🍞'], ['milk', '🥛'], ['egg', '🥚'], ['cheese', '🧀'], ['carrot', '🥕'], ['rice', '🍚'], ['water', '💧'], ['pear', '🍐'], ['watermelon', '🍉'], ['biscuit', '🍪']] },
+    { id: 'things', name: 'Things', e: '⚽', cards: [['ball', '⚽'], ['car', '🚗'], ['bus', '🚌'], ['train', '🚆'], ['plane', '✈️'], ['boat', '⛵'], ['book', '📖'], ['cup', '☕'], ['spoon', '🥄'], ['shoe', '👟'], ['hat', '🧢'], ['bed', '🛏️'], ['teddy', '🧸'], ['balloon', '🎈'], ['key', '🔑'], ['phone', '📱']] },
+    { id: 'body', name: 'My body', e: '👃', cards: [['eye', '👁️'], ['ear', '👂'], ['nose', '👃'], ['mouth', '👄'], ['hand', '✋'], ['foot', '🦶'], ['tooth', '🦷'], ['leg', '🦵']] },
+    { id: 'outside', name: 'Outside', e: '🌳', cards: [['sun', '☀️'], ['moon', '🌙'], ['star', '⭐'], ['tree', '🌳'], ['flower', '🌸'], ['rain', '🌧️'], ['snow', '❄️'], ['house', '🏠'], ['rainbow', '🌈'], ['cloud', '☁️']] },
+    { id: 'colours', name: 'Colours', e: '🔴', cards: [['red', '🔴'], ['blue', '🔵'], ['green', '🟢'], ['yellow', '🟡'], ['orange', '🟠'], ['purple', '🟣'], ['black', '⚫'], ['white', '⚪'], ['brown', '🟤']] },
+    { id: 'numbers', name: 'Numbers', e: '3️⃣', cards: [['one', '1️⃣'], ['two', '2️⃣'], ['three', '3️⃣'], ['four', '4️⃣'], ['five', '5️⃣'], ['six', '6️⃣'], ['seven', '7️⃣'], ['eight', '8️⃣'], ['nine', '9️⃣'], ['ten', '🔟']] },
+  ];
+
+  FMG.PHONICS = { G, PIC, UNITS, STAGES, SENTENCES, ALIEN, CARDS };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Family English — question logic (no screen code, so it can be tested in node).
+   Every question has A–D options; most can also be typed. Items: g:<unit>:<grapheme>, w:<unit>:<word>, t:<unit>:<tricky>, s:<index>, a:<stage>:<i>. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG, P = FMG.PHONICS;
+  const VERSION = 'english-1 (18 Nov 2026)';
+  const LET = ['A', 'B', 'C', 'D'];
+  const show = (g) => g.replace('*', '');
+  const uIndex = {}; P.UNITS.forEach((u, i) => { uIndex[u.id] = i; });
+  const unit = (id) => P.UNITS[uIndex[id]];
+  const stageOf = (id) => P.STAGES.find((s) => s.id === id);
+  const DOUBLES = ['mm', 'dd', 'tt', 'pp', 'nn', 'bb', 'gg', 'rr'];
+
+  /* Graphemes known by the end of a unit (double letters come in with Phase 3). */
+  const knownCache = {};
+  function known(uid) {
+    if (knownCache[uid]) return knownCache[uid];
+    const i = uIndex[uid], set = new Set();
+    P.UNITS.slice(0, i + 1).forEach((u) => u.gr.forEach((g) => set.add(show(g))));
+    if (i >= uIndex.u11) DOUBLES.forEach((d) => set.add(d));
+    return (knownCache[uid] = Array.from(set).filter((g) => !g.includes('-')).sort((a, b) => b.length - a.length));
+  }
+  /* Split a word into graphemes (the sounds a child says): longest known spelling first; split digraphs from u21. */
+  function split(word, uid) {
+    const w = word.toLowerCase();
+    const m = uIndex[uid] >= uIndex.u21 && /^(.*)([aeiou])([^aeiou])e$/.exec(w);
+    if (m && !/(ee|ue|ie|oe)$/.test(w)) return split(m[1], uid).concat(`${m[2]}-e`, m[3]);
+    const ks = known(uid), out = [];
+    for (let i = 0; i < w.length;) {
+      const g = ks.find((k) => w.startsWith(k, i)) || w[i];
+      out.push(g); i += g.length;
+    }
+    return out;
+  }
+  const wordsOf = (u) => (u.words ? u.words.split(' ').filter(Boolean) : []);
+  const trickyOf = (u) => (u.tricky ? u.tricky.split(' ') : []);
+  const allWords = () => P.UNITS.flatMap((u) => wordsOf(u).map((w) => ({ w, u: u.id })));
+  const REAL = new Set(allWords().map((x) => x.w).concat(P.UNITS.flatMap(trickyOf).map((t) => t.toLowerCase()),
+    'a an in on is it as at us up am ox ah oh be by me my we he so no go do to ta ha hi ho the and was saw tea ate eat met tie lie die pie see sea bee tee her his him its you your our are art rat tar star rats'.split(' ')));
+
+  /* ---------- Items of a unit ---------- */
+  function itemsOf(u) {
+    const out = [];
+    u.gr.forEach((g) => out.push(`g:${u.id}:${g}`));
+    wordsOf(u).forEach((w) => out.push(`w:${u.id}:${w}`));
+    trickyOf(u).forEach((t) => out.push(`t:${u.id}:${t}`));
+    P.SENTENCES.forEach((s, i) => { if (s.u === u.id) out.push(`s:${i}`); });
+    return out;
+  }
+  const stageUnits = (sid) => P.UNITS.filter((u) => u.stage === sid);
+  const stageItems = (sid) => stageUnits(sid).flatMap(itemsOf);
+  const unitOfItem = (it) => { const p = it.split(':'); if (p[0] === 's') return unit(P.SENTENCES[+p[1]].u); if (p[0] === 'a') return stageUnits(p[1]).slice(-1)[0]; return unit(p[1]); };
+
+  /* ---------- Helpers ---------- */
+  function options(rng, right, wrongs, extra) {
+    const pool = []; wrongs.forEach((w) => { if (w != null && w !== right && !pool.includes(w)) pool.push(w); });
+    const pick = rng.shuffle(pool).slice(0, 3);
+    if (pick.length < 3) return null;
+    const all = rng.shuffle([right].concat(pick));
+    return { options: all.map((v, i) => Object.assign({ letter: LET[i], value: v }, extra ? extra(v) : {})), answerIndex: all.indexOf(right) };
+  }
+  const graphemesUpTo = (uid) => P.UNITS.slice(0, uIndex[uid] + 1).flatMap((u) => u.gr);
+  const near = (uid, g) => { const own = unit(uid).gr.filter((x) => x !== g), before = graphemesUpTo(uid).filter((x) => x !== g && !own.includes(x)); return own.concat(before.slice(-12)); };
+  const sameLetters = (a, b) => show(a) === show(b);
+  /* Picture of a word, or null */
+  const pic = (w) => P.PIC[w] || null;
+  const rime = (w) => { const m = /[aeiouy].*$/.exec(w); return m ? m[0] : w; };
+
+  /* Misspellings for a word: swap one grapheme for another spelling of a similar sound, or two letters round. */
+  const ALT = { ai: ['ay', 'a-e', 'a'], ay: ['ai', 'a-e'], 'a-e': ['ai', 'ay'], ee: ['ea', 'e', 'ey'], ea: ['ee', 'e'], igh: ['ie', 'i-e', 'i'], ie: ['igh', 'i-e', 'y'], 'i-e': ['igh', 'ie'], oa: ['oe', 'o-e', 'ow'], oe: ['oa', 'o-e'], 'o-e': ['oa', 'oe'],
+    oo: ['ew', 'ue', 'u'], ew: ['oo', 'ue'], ue: ['oo', 'ew'], 'u-e': ['ew', 'ue'], ar: ['a', 'or'], or: ['aw', 'au', 'ar'], aw: ['or', 'au'], au: ['aw', 'or'], ur: ['ir', 'er'], ir: ['ur', 'er'], er: ['ur', 'a'],
+    ow: ['ou', 'o'], ou: ['ow', 'oo'], oi: ['oy', 'o'], oy: ['oi'], air: ['are', 'ear'], ear: ['eer', 'ere'], c: ['k'], k: ['c', 'ck'], ck: ['k', 'c'], ff: ['f'], ll: ['l'], ss: ['s'], zz: ['z'], f: ['ph', 'ff'], ph: ['f', 'ff'],
+    wh: ['w'], w: ['wh'], ch: ['sh', 'tch'], sh: ['ch', 's'], th: ['f', 'v'], ng: ['n', 'nk'], nk: ['ng', 'k'], qu: ['kw', 'q'], x: ['ks', 'cs'], ey: ['ee', 'y'],
+    a: ['e', 'u'], e: ['a', 'i'], i: ['e', 'y'], o: ['u', 'a'], u: ['o', 'a'], s: ['z', 'ss'], z: ['s', 'zz'], j: ['g'], v: ['f'], b: ['d', 'p'], d: ['b', 't'], p: ['b', 'q'], m: ['n'], n: ['m'], t: ['d'], g: ['j', 'c'], r: ['w'], l: ['ll'], h: [''], y: ['i'] };
+  function join(gs) {
+    let w = '', tail = '';
+    gs.forEach((g) => { const m = /^([a-z])-e$/.exec(g); if (m) { w += m[1]; tail = 'e'; } else { w += g + tail; tail = ''; } });
+    return w + tail;
+  }
+  function misspell(word, uid, rng) {
+    const gs = split(word, uid), out = new Set();
+    gs.forEach((g, i) => (ALT[g] || []).forEach((a) => { const c = gs.slice(); c[i] = a; out.add(join(c).replace(/-/g, '')); }));
+    for (let i = 0; i < word.length - 1; i++) if (word[i] !== word[i + 1]) out.add(word.slice(0, i) + word[i + 1] + word[i] + word.slice(i + 2));
+    return rng.shuffle(Array.from(out).filter((x) => x && x !== word && x.length > 1 && !REAL.has(x)));
+  }
+  function trickyWrong(t, rng) {
+    const w = t.toLowerCase(), out = new Set();
+    const VS = 'aeiou';
+    for (let i = 0; i < w.length; i++) {
+      if (VS.includes(w[i])) VS.split('').forEach((v) => { if (v !== w[i]) out.add(w.slice(0, i) + v + w.slice(i + 1)); });
+      if (i < w.length - 1 && w[i] !== w[i + 1]) out.add(w.slice(0, i) + w[i + 1] + w[i] + w.slice(i + 2));
+      if (w.length > 3) out.add(w.slice(0, i) + w.slice(i + 1));
+    }
+    const fix = (x) => (t[0] === t[0].toUpperCase() && t !== 'I' ? x[0].toUpperCase() + x.slice(1) : x);
+    return rng.shuffle(Array.from(out).filter((x) => x.length > 1 && x !== w && !REAL.has(x))).map(fix);
+  }
+
+  /* ---------- Questions ---------- */
+  function mk(base, o) { return o ? Object.assign(base, o) : null; }
+  function qGrapheme(u, g, rng, band) {
+    const [ex, emoji] = P.G[g], base = { item: `g:${u.id}:${g}`, unit: u.id, grapheme: g };
+    const kinds = ['gap', 'has', 'gap'];
+    if (band === 'big') kinds.push('has');
+    let kind = rng.pick(kinds);
+    if (kind === 'has' && allWords().filter((x) => uIndex[x.u] <= uIndex[u.id]).length < 12) kind = 'gap';
+    if (kind === 'gap') {
+      let shown;
+      if (g.includes('-')) { const m = /^(.*)([aeiou])([^aeiou])e$/.exec(ex); if (!m) return null; shown = `${m[1]}_${m[3]}_`; }
+      else { const at = ex.indexOf(show(g)); if (at < 0) return null; shown = ex.slice(0, at) + '_'.repeat(show(g).length) + ex.slice(at + show(g).length); }
+      const o = options(rng, show(g), near(u.id, g).filter((x) => x.includes('-') === g.includes('-')).map(show).filter((x) => x !== show(g)));
+      return mk(Object.assign(base, { qt: 'gap', prompt: `Which letters are missing from ${ex}?`, speak: `${ex}. Which letters are missing?`, pic: emoji, big: shown, hear: ex,
+        why: `${ex} is spelt ${ex.split('').join(' ')}. The missing sound is written ${show(g)}.`, typable: band !== 'tiny', accept: [show(g)] }), o);
+    }
+    const ws = allWords().filter((x) => uIndex[x.u] <= uIndex[u.id]);
+    const yes = ws.filter((x) => split(x.w, x.u).some((y) => y === g));
+    const no = ws.filter((x) => !x.w.includes(show(g).replace('-e', '')) && !split(x.w, x.u).some((y) => sameLetters(y, g)));
+    if (!yes.length || no.length < 3) return null;
+    const right = rng.pick(yes).w;
+    const o = options(rng, right, rng.shuffle(no).slice(0, 8).map((x) => x.w));
+    return mk(Object.assign(base, { qt: 'has', prompt: `Which word has ${show(g)} in it?`, speak: `Which word has the sound ${P.G[g][2]}, as in ${ex}?`, big: show(g),
+      why: `${right} has ${show(g)}: ${split(right, 'u21').join(' – ')}.` }), o);
+  }
+
+  function qWord(u, w, rng, band) {
+    const base = { item: `w:${u.id}:${w}`, unit: u.id, word: w, sounds: split(w, u.id) };
+    const kinds = [];
+    const ws = allWords().filter((x) => uIndex[x.u] <= uIndex[u.id] + 1);
+    if (pic(w)) kinds.push('readpic', 'picword');
+    kinds.push('spell');
+    if (!/x|qu|nk/.test(w) && base.sounds.length >= 2 && base.sounds.length <= 6) kinds.push('count');
+    const rhymes = ws.filter((x) => x.w !== w && rime(x.w) === rime(w) && x.w.length > 1);
+    if (rhymes.length) kinds.push('rhyme');
+    kinds.push('first');
+    const kind = rng.pick(kinds);
+    if (kind === 'readpic') {
+      const others = Object.keys(P.PIC).filter((x) => x !== w && P.PIC[x] !== P.PIC[w]);
+      const o = options(rng, P.PIC[w], rng.shuffle(others).map((x) => P.PIC[x]).filter((e, i, a) => a.indexOf(e) === i).slice(0, 8));
+      return mk(Object.assign(base, { qt: 'readpic', kind: 'pic', prompt: 'Read the word. Which picture is it?', speak: 'Read the word. Which picture is it?', big: w, noSayBig: true,
+        why: `${base.sounds.join(' – ')}: ${w}.` }), o);
+    }
+    if (kind === 'picword') {
+      const sim = ws.map((x) => x.w).filter((x) => x !== w && x.length === w.length && x.split('').filter((c, i) => c !== w[i]).length === 1);
+      const wrong = sim.concat(misspell(w, u.id, rng));
+      const o = options(rng, w, wrong.slice(0, 10));
+      return mk(Object.assign(base, { qt: 'picword', prompt: 'Which word matches the picture?', speak: 'Which word matches the picture?', pic: P.PIC[w], why: `The picture is ${w}: ${base.sounds.join(' – ')}.` }), o);
+    }
+    if (kind === 'spell') {
+      const o = options(rng, w, misspell(w, u.id, rng).concat(rng.shuffle(ws.map((x) => x.w).filter((x) => x !== w && Math.abs(x.length - w.length) <= 1))));
+      return mk(Object.assign(base, { qt: 'spell', prompt: 'Listen. Which is the right spelling?', speak: `Spell the word ${w}.`, hear: w, pic: pic(w), typable: true, accept: [w],
+        why: `${w} is spelt ${base.sounds.join(' – ')}.` }), o);
+    }
+    if (kind === 'count') {
+      const n = base.sounds.length;
+      const o = options(rng, String(n), [n - 1, n + 1, n + 2, n - 2].filter((x) => x >= 1).map(String));
+      return mk(Object.assign(base, { qt: 'count', prompt: `How many sounds are in ${w}?`, speak: `How many sounds are in ${w}?`, big: w, typable: true, accept: [String(n)],
+        why: `${w} has ${n} sounds: ${base.sounds.join(' – ')}. Letters that make one sound together count as one.` }), o);
+    }
+    if (kind === 'rhyme') {
+      const right = rng.pick(rhymes).w;
+      const o = options(rng, right, ws.map((x) => x.w).filter((x) => rime(x) !== rime(w)).slice(0, 60).sort(() => rng() - 0.5).slice(0, 8));
+      return mk(Object.assign(base, { qt: 'rhyme', prompt: `Which word rhymes with ${w}?`, speak: `Which word rhymes with ${w}?`, big: w, why: `${w} and ${right} both end in “${rime(w)}”.` }), o);
+    }
+    const first = base.sounds[0];
+    const o = options(rng, show(first), graphemesUpTo(u.id).map(show).filter((x) => x !== show(first) && !x.includes('-')).reverse().slice(0, 14));
+    return mk(Object.assign(base, { qt: 'first', prompt: `What is the first sound in ${w}?`, speak: `What is the first sound in ${w}?`, big: w, pic: pic(w), typable: true, accept: [show(first)],
+      why: `${w} starts with ${show(first)}: ${base.sounds.join(' – ')}.` }), o);
+  }
+
+  function qTricky(u, t, rng) {
+    const others = P.UNITS.flatMap(trickyOf).filter((x) => x !== t && Math.abs(x.length - t.length) <= 1);
+    const o = options(rng, t, trickyWrong(t, rng).slice(0, 3).concat(rng.shuffle(others)));
+    return mk({ item: `t:${u.id}:${t}`, unit: u.id, qt: 'tricky', prompt: 'Listen. Which is the tricky word?', speak: `Find the word ${t}.`, hear: t, typable: true, accept: [t, t.toLowerCase()],
+      why: `${t} is a tricky word: some of its letters do not make the sound you expect, so we learn it by heart.` }, o);
+  }
+  function qSentence(i, rng) {
+    const s = P.SENTENCES[i];
+    const o = options(rng, s.a, s.w);
+    return mk({ item: `s:${i}`, unit: s.u, qt: 'sentence', prompt: s.q, speak: s.q, sentence: s.s, why: `The sentence says: ${s.s}` }, o);
+  }
+  function qAlien(sid, i, rng) {
+    const al = P.ALIEN[sid].split(' '), real = stageUnits(sid).flatMap(wordsOf);
+    const realQ = rng() < 0.5;
+    const right = realQ ? rng.pick(real) : al[i % al.length];
+    const o = options(rng, right, realQ ? rng.shuffle(al).slice(0, 5) : rng.shuffle(real).slice(0, 5));
+    return mk({ item: `a:${sid}:${i}`, unit: stageUnits(sid).slice(-1)[0].id, qt: 'alien', prompt: realQ ? 'Which one is a real word?' : 'Which one is an alien word (a made-up word)?', speak: realQ ? 'Which one is a real word?' : 'Which one is an alien word?',
+      why: realQ ? `${right} is a real word. The others can be read with phonics, but they are made up.` : `${right} is made up: you can read it, but it is not a real word.` }, o);
+  }
+  function makeQuestion(item, rng, band) {
+    const p = item.split(':');
+    try {
+      if (p[0] === 'g') return qGrapheme(unit(p[1]), p[2], rng, band);
+      if (p[0] === 'w') return qWord(unit(p[1]), p[2], rng, band);
+      if (p[0] === 't') return qTricky(unit(p[1]), p[2], rng);
+      if (p[0] === 's') return qSentence(+p[1], rng);
+      if (p[0] === 'a') return qAlien(p[1], +p[2], rng);
+    } catch (e) { return null; }
+    return null;
+  }
+  /* Typed answers: case and spaces do not matter. */
+  const matchTyped = (v, q) => (q.accept || [q.options[q.answerIndex].value]).some((a) => String(a).trim().toLowerCase() === String(v).trim().toLowerCase());
+
+  /* ---------- Progress ---------- */
+  function itemStates(attempts) {
+    const by = {}; attempts.forEach((a) => { (by[a.c] = by[a.c] || []).push(a); });
+    const out = {};
+    Object.keys(by).forEach((k) => { const l = by[k].sort((a, b) => a.at - b.at); let run = 0; l.forEach((a) => { run = a.ok ? run + 1 : 0; }); out[k] = { n: l.length, right: l.filter((a) => a.ok).length, run, secure: run >= 3, last: l[l.length - 1].at }; });
+    return out;
+  }
+  const st = (states, it) => states[it] || { n: 0, right: 0, run: 0, secure: false };
+  function unitProgress(u, states) {
+    const its = itemsOf(u), sec = its.filter((i) => st(states, i).secure).length;
+    return { n: its.length, secure: sec, started: its.some((i) => st(states, i).n), pct: its.length ? Math.round((sec / its.length) * 100) : 0, star: its.length && sec / its.length >= 0.8 };
+  }
+  /* A practice round: weak and new items first, mixed question kinds, no item twice. */
+  function buildSet(items, rng, o = {}) {
+    const states = o.states || {}, count = o.count || 10;
+    const score = (i) => { const s = st(states, i); return s.n && !s.secure ? 0 : !s.n ? 1 : 2; };
+    const ranked = rng.shuffle(items).sort((a, b) => score(a) - score(b));
+    const out = [];
+    for (let k = 0; k < ranked.length && out.length < count; k++) { const q = makeQuestion(ranked[k], rng, o.band); if (q && q.options.length === 4) out.push(q); }
+    for (let k = 0; out.length < count && k < count * 4 && ranked.length; k++) { const q = makeQuestion(rng.pick(ranked), rng, o.band); if (q && q.options.length === 4) out.push(q); }
+    return rng.shuffle(out);
+  }
+
+  /* ---------- Phonics screening check practice (Year 1 style: 40 words, 20 real and 20 alien; 32 is the usual pass mark) ---------- */
+  function screeningCheck(rng) {
+    const pick = (arr, n) => rng.shuffle(arr).slice(0, n);
+    const real1 = pick(['p2', 'p3'].flatMap((s) => stageUnits(s).flatMap(wordsOf)).filter((w) => w.length >= 3), 10);
+    const real2 = pick(['p4', 'p5'].flatMap((s) => stageUnits(s).flatMap(wordsOf)), 10);
+    const al1 = pick(P.ALIEN.p2.split(' ').concat(P.ALIEN.p3.split(' ')), 10), al2 = pick(P.ALIEN.p4.split(' ').concat(P.ALIEN.p5.split(' ')), 10);
+    const sec = (al, re) => al.slice(0, 4).map((w) => ({ w, alien: true })).concat(re.slice(0, 2).map((w) => ({ w })), rng.shuffle(al.slice(4).map((w) => ({ w, alien: true })).concat(re.slice(2).map((w) => ({ w })))));
+    return { pass: 32, words: sec(al1, real1).concat(sec(al2, real2)) };
+  }
+
+  /* ---------- Reading ladder: climb the phases ---------- */
+  const UP = 3, DOWN = 2;
+  function ladderStep(stt, ok) {
+    const n = Object.assign({}, stt); let moved = 0; const max = P.STAGES.length - 1;
+    if (ok) { n.streak = (n.streak || 0) + 1; n.miss = 0; } else { n.miss = (n.miss || 0) + 1; n.streak = 0; }
+    if (n.streak >= UP && n.r < max) { n.r++; n.streak = 0; moved = 1; } else if (n.miss >= DOWN && n.r > 0) { n.r--; n.miss = 0; moved = -1; }
+    return { st: n, moved };
+  }
+  function ladderQuestion(stt, rng, band) {
+    const sid = P.STAGES[stt.r].id, items = stageItems(sid).concat(P.ALIEN[sid].split(' ').map((_, i) => `a:${sid}:${i}`));
+    for (let k = 0; k < 20; k++) { const q = makeQuestion(rng.pick(items), rng, band); if (q && q.options.length === 4) return q; }
+    return null;
+  }
+
+  FMG.english = { VERSION, P, show, unit, stageOf, split, known, wordsOf, trickyOf, itemsOf, stageUnits, stageItems, unitOfItem, makeQuestion, matchTyped, misspell, trickyWrong,
+    itemStates, st, unitProgress, buildSet, screeningCheck, UP, DOWN, ladderStep, ladderQuestion, REAL };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Family English — adapted from the Family Maths store. Local storage with transactional commits, read-back verification and versioned backups. Spec §9. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG;
+  const KEY = 'familyEnglishGame.db';
+  const SCHEMA = 1;
+  const FORMAT = 'family-english-backup';
+
+  function emptyDb() { return { schema: SCHEMA, profiles: [], attempts: [], settings: { parentGate: true }, seen: {}, signoffs: {}, exams: {}, createdAt: Date.now() }; }
+
+  function createStore(backend) {
+    if (!backend) { try { backend = root.localStorage || null; } catch (e) { backend = null; } }
+    let db = null;
+    let lastError = null;
+
+    function load() {
+      try {
+        const raw = backend && backend.getItem(KEY);
+        db = raw ? JSON.parse(raw) : emptyDb();
+        if (!db.schema) db = emptyDb();
+        lastError = null;
+      } catch (e) { db = emptyDb(); lastError = 'Could not read saved progress on this device.'; }
+      return db;
+    }
+
+    /* Apply a change to a copy; persist; verify by reading back. Only then adopt it. */
+    function commit(mutator) {
+      const next = JSON.parse(JSON.stringify(db));
+      mutator(next);
+      next.updatedAt = Date.now();
+      const text = JSON.stringify(next);
+      try {
+        if (!backend) throw new Error('No storage available');
+        backend.setItem(KEY, text);
+        if (backend.getItem(KEY) !== text) throw new Error('Read-back mismatch');
+        db = next; lastError = null;
+        return { ok: true };
+      } catch (e) {
+        lastError = 'Not saved — this device’s storage is unavailable or full. Progress from this question may be lost.';
+        return { ok: false, error: lastError };
+      }
+    }
+
+    const get = () => db;
+
+    function upsertAttempt(att) {
+      return commit((d) => {
+        const i = d.attempts.findIndex((a) => a.id === att.id);
+        if (i >= 0) d.attempts[i] = att; else d.attempts.push(att);
+      });
+    }
+
+    function exportBackup() {
+      return {
+        format: FORMAT, formatVersion: 1, schema: db.schema, exportedAt: new Date().toISOString(),
+        policy: 'english-v1',
+        content: FMG.english && FMG.english.VERSION,
+        profiles: db.profiles, attempts: db.attempts, settings: db.settings, seen: db.seen || {}, signoffs: db.signoffs || {}, exams: db.exams || {},
+      };
+    }
+
+    function validateBackup(obj) {
+      const errs = [];
+      if (!obj || obj.format !== FORMAT) errs.push('This is not a Family English backup file.');
+      else {
+        if (!Array.isArray(obj.profiles)) errs.push('Missing profiles.');
+        if (!Array.isArray(obj.attempts)) errs.push('Missing attempts.');
+        if (obj.schema > SCHEMA) errs.push('This backup is from a newer version of the game.');
+        (obj.attempts || []).forEach((a, i) => { if (!a.id || !a.profileId || !a.c) errs.push(`Attempt ${i + 1} is incomplete.`); });
+      }
+      return errs.slice(0, 5);
+    }
+
+    function previewImport(obj) {
+      const errors = validateBackup(obj);
+      if (errors.length) return { ok: false, errors };
+      const haveA = new Set(db.attempts.map((a) => a.id));
+      const haveP = new Set(db.profiles.map((p) => p.id));
+      return {
+        ok: true,
+        profiles: obj.profiles.length, newProfiles: obj.profiles.filter((p) => !haveP.has(p.id)).length,
+        attempts: obj.attempts.length, newAttempts: obj.attempts.filter((a) => !haveA.has(a.id)).length,
+        duplicates: obj.attempts.filter((a) => haveA.has(a.id)).length,
+      };
+    }
+
+    function applyImport(obj, mode) {
+      const p = previewImport(obj);
+      if (!p.ok) return { ok: false, error: p.errors.join(' ') };
+      return commit((d) => {
+        if (mode === 'replace') { d.profiles = obj.profiles; d.attempts = dedupe(obj.attempts); d.seen = obj.seen || {}; d.signoffs = obj.signoffs || {}; d.exams = obj.exams || {}; return; }
+        d.exams = d.exams || {}; Object.entries(obj.exams || {}).forEach(([pid, m]) => { const mine = d.exams[pid] || { results: [], ladder: {} }, have = new Set((mine.results || []).map((r) => r.id));
+          d.exams[pid] = { results: (mine.results || []).concat((m.results || []).filter((r) => !have.has(r.id))), ladder: Object.assign({}, m.ladder || {}, mine.ladder || {}) }; });
+        d.signoffs = d.signoffs || {}; Object.entries(obj.signoffs || {}).forEach(([pid, m]) => { d.signoffs[pid] = Object.assign({}, m, d.signoffs[pid] || {}); });
+        d.seen = d.seen || {}; Object.entries(obj.seen || {}).forEach(([pid, m]) => { d.seen[pid] = Object.assign({}, m, d.seen[pid] || {}); });
+        const pids = new Set(d.profiles.map((x) => x.id));
+        obj.profiles.forEach((x) => { if (!pids.has(x.id)) d.profiles.push(x); });
+        const ids = new Set(d.attempts.map((x) => x.id));
+        obj.attempts.forEach((x) => { if (!ids.has(x.id)) { d.attempts.push(x); ids.add(x.id); } });
+      });
+    }
+
+    function dedupe(list) { const seen = new Set(); return list.filter((a) => (seen.has(a.id) ? false : (seen.add(a.id), true))); }
+
+    return { load, commit, get, upsertAttempt, exportBackup, previewImport, applyImport, lastError: () => lastError, KEY };
+  }
+
+  FMG.createStore = createStore;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Family English — voices.
+   Words and sentences: Claude's own voice when opened from claude.ai (artifact tts), otherwise the most natural English voice
+   on the device (never a novelty or robot voice). Pure phonics sounds: computer voices cannot say them properly, so a grown-up
+   can record each sound once in their own voice (kept on this device only). */
+(function (root) {
+  'use strict';
+  if (typeof document === 'undefined') return;
+  const FMG = root.FMG;
+  const use = (name) => (root.claude && typeof root.claude.use === 'function' ? root.claude.use(name).catch(() => null) : Promise.resolve(null));
+  const NATURAL = /(natural|neural|premium|enhanced|siri|sonia|libby|ryan|maisie|thomas|serena|kate|daniel|google uk english|online)/i;
+  const ROBOTIC = /(fred|albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|ralph|kathy|princess|bruce|agnes|vicki|victoria|grandma|grandpa|eddy|flo|reed|rocko|sandy|shelley|compact|espeak)/i;
+  function deviceVoice() {
+    if (typeof speechSynthesis === 'undefined') return null;
+    const all = speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang) && !ROBOTIC.test(v.name));
+    const score = (v) => (NATURAL.test(v.name) ? 0 : 10) + (/en-GB/i.test(v.lang) ? 0 : 3);
+    return all.sort((a, b) => score(a) - score(b))[0] || null;
+  }
+  let tts = null, blocked = false, audio = null;
+  use('tts').then((t) => { tts = t; });
+  const voice = {
+    rate: 0.92,
+    async say(text) {
+      const t = String(text || '').replace(/<[^>]+>/g, ' ').replace(/_+/g, ' blank ').replace(/\s+/g, ' ').trim().slice(0, 900);
+      if (!t) return;
+      this.stop();
+      if (tts && !blocked) { try { await tts.speak(t, { voice: 'airy', rate: this.rate, language: 'en-GB' }); return; } catch (e) { if (e && (e.code === 'not_granted' || e.code === 'unavailable')) blocked = true; else return; } }
+      if (typeof speechSynthesis === 'undefined') return;
+      try { const u = new SpeechSynthesisUtterance(t); u.voice = deviceVoice(); u.lang = 'en-GB'; u.rate = this.rate; speechSynthesis.speak(u); } catch (e) { /* ignore */ }
+    },
+    stop() { try { if (tts) tts.stop().catch(() => {}); } catch (e) { /* ignore */ } try { if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel(); } catch (e) { /* ignore */ } if (audio) { audio.pause(); audio = null; } },
+    kind() { return tts && !blocked ? 'Claude’s voice' : deviceVoice() ? deviceVoice().name : 'none'; },
+  };
+  if (typeof speechSynthesis !== 'undefined') try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => {}; } catch (e) { /* ignore */ }
+
+  /* ---------- Recorded sounds (IndexedDB: one clip per grapheme) ---------- */
+  const DB = 'familyEnglishSounds';
+  const open = () => new Promise((res, rej) => { const r = indexedDB.open(DB, 1); r.onupgradeneeded = () => r.result.createObjectStore('s'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  const tx = async (mode, fn) => { const db = await open(); return new Promise((res, rej) => { const t = db.transaction('s', mode), q = fn(t.objectStore('s')); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); }); };
+  let have = new Set();
+  const sounds = {
+    async load() { try { const keys = await tx('readonly', (s) => s.getAllKeys()); have = new Set(keys || []); } catch (e) { have = new Set(); } return have; },
+    has: (g) => have.has(g),
+    count: () => have.size,
+    async put(g, blob) { await tx('readwrite', (s) => s.put(blob, g)); have.add(g); },
+    async del(g) { await tx('readwrite', (s) => s.delete(g)); have.delete(g); },
+    async play(g) {
+      if (!have.has(g)) return false;
+      try { const blob = await tx('readonly', (s) => s.get(g)); if (!blob) return false; voice.stop(); audio = new Audio(URL.createObjectURL(blob)); await audio.play(); return true; } catch (e) { return false; }
+    },
+    canRecord: () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && root.MediaRecorder),
+    async record(ms) {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const rec = new MediaRecorder(stream), parts = [];
+      rec.ondataavailable = (e) => { if (e.data && e.data.size) parts.push(e.data); };
+      const done = new Promise((res) => { rec.onstop = () => { stream.getTracks().forEach((t) => t.stop()); res(new Blob(parts, { type: rec.mimeType || 'audio/mp4' })); }; });
+      rec.start(); setTimeout(() => rec.state !== 'inactive' && rec.stop(), ms || 1600);
+      return done;
+    },
+  };
+  sounds.load();
+  FMG.voice = voice; FMG.sounds = sounds;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Family English — handwriting. Print letters (joined handwriting comes in Year 2), drawn stroke by stroke with a finger or Apple Pencil.
+   Box: 100 wide × 120 high. Lines: top 15 (tall letters), middle 45 (small letters), base 80, bottom 106 (tails). */
+(function (root) {
+  'use strict';
+  const FMG = (root.FMG = root.FMG || {});
+  /* [strokes, how to say it]. Each stroke is an SVG path, traced in order from its start. */
+  const L = {
+    a: [['M64 52 C56 42 32 42 32 63 C32 84 56 85 64 72 L64 46 L64 80'], 'Round like a c, up to the top, and straight down.'],
+    b: [['M34 15 L34 80 L34 62 C36 46 66 44 66 63 C66 84 36 84 34 72'], 'Down the long stick, back up, and round the tummy.'],
+    c: [['M64 50 C56 40 32 42 32 63 C32 84 56 86 64 75'], 'Start at the top and curl round like a c.'],
+    d: [['M64 52 C56 42 32 42 32 63 C32 84 56 85 64 72 L64 15 L64 80'], 'Round like a c, up very tall, and straight down.'],
+    e: [['M32 63 L64 63 C64 44 34 40 32 62 C32 84 56 86 64 75'], 'Across the middle, over the top, and curl round.'],
+    f: [['M62 22 C56 12 42 13 42 28 L42 80', 'M30 46 L56 46'], 'Over the top and down the long stick. Then a line across.'],
+    g: [['M64 52 C56 42 32 42 32 63 C32 84 56 85 64 72 L64 46 L64 98 C62 110 38 110 33 100'], 'Round like a c, up, then down under the line and curl.'],
+    h: [['M34 15 L34 80 L34 62 C38 44 64 44 64 60 L64 80'], 'Down the long stick, back up, over the hump and down.'],
+    i: [['M48 46 L48 80', 'M48 30 L48 32'], 'Straight down, then a dot on top.'],
+    j: [['M54 46 L54 98 C52 110 34 108 30 100', 'M54 30 L54 32'], 'Down under the line and curl. Then a dot on top.'],
+    k: [['M34 15 L34 80', 'M62 46 L34 66 L64 80'], 'Down the long stick. Then in, and out.'],
+    l: [['M46 15 L46 80'], 'Start at the top and go straight down.'],
+    m: [['M24 46 L24 80 L24 58 C27 44 46 44 46 58 L46 80 L46 58 C49 44 70 44 70 58 L70 80'], 'Down, up and over, up and over again.'],
+    n: [['M32 46 L32 80 L32 60 C36 44 64 44 64 60 L64 80'], 'Down, back up, over the hump and down.'],
+    o: [['M48 45 C29 45 29 81 48 81 C67 81 67 45 48 45'], 'Start at the top and go all the way round.'],
+    p: [['M34 46 L34 106 L34 62 C36 44 66 44 66 63 C66 84 36 84 34 72'], 'Down under the line, back up, and round.'],
+    q: [['M64 52 C56 42 32 42 32 63 C32 84 56 85 64 72 L64 46 L64 106'], 'Round like a c, up, and straight down under the line.'],
+    r: [['M36 46 L36 80 L36 62 C40 46 54 42 64 48'], 'Down, back up, and a little bump.'],
+    s: [['M62 50 C56 40 34 42 35 54 C36 64 62 60 62 72 C62 86 36 84 31 76'], 'Curl one way, then the other.'],
+    t: [['M44 22 L44 74 C44 82 54 82 60 78', 'M32 46 L58 46'], 'Down and a little curl. Then a line across.'],
+    u: [['M32 46 L32 68 C32 84 62 84 64 66 L64 46 L64 80'], 'Down, round, up, and down.'],
+    v: [['M28 46 L48 80 L68 46'], 'Down the slope and back up.'],
+    w: [['M20 46 L33 80 L48 52 L63 80 L76 46'], 'Down, up, down, up.'],
+    x: [['M31 46 L65 80', 'M65 46 L31 80'], 'One slope down, then the other.'],
+    y: [['M30 46 L48 80', 'M66 46 L40 106'], 'A little slope, then a long slope down under the line.'],
+    z: [['M31 46 L65 46 L31 80 L65 80'], 'Across, down the slope, and across.'],
+  };
+  const FAMILIES = [
+    { name: 'Long ladder letters', letters: 'l i t u j y' },
+    { name: 'Curly caterpillar letters', letters: 'c a d o g q e s f' },
+    { name: 'One-armed robot letters', letters: 'r n m h b k p' },
+    { name: 'Zig-zag letters', letters: 'v w x z' },
+  ];
+
+  /* Mount a tracing pad. opts: { onStroke(i, n), onDone(), guide: true } */
+  function mount(el, letter, opts = {}) {
+    const def = L[letter]; if (!def) return null;
+    const strokes = def[0], NS = 'http://www.w3.org/2000/svg';
+    el.innerHTML = `<div class="tr-pad"><svg viewBox="0 0 100 120" class="tr-svg" aria-label="Trace the letter ${letter}">
+      <line x1="2" x2="98" y1="15" y2="15" class="tr-line faint"/><line x1="2" x2="98" y1="45" y2="45" class="tr-line dash"/><line x1="2" x2="98" y1="80" y2="80" class="tr-line base"/><line x1="2" x2="98" y1="106" y2="106" class="tr-line faint"/>
+      ${opts.guide === false ? '' : strokes.map((d, i) => `<path d="${d}" class="tr-guide" data-s="${i}"/>`).join('')}
+      <g class="tr-done"></g><path class="tr-ink" d=""/><g class="tr-mark"></g></svg></div>`;
+    const svg = el.querySelector('svg'), ink = el.querySelector('.tr-ink'), doneG = el.querySelector('.tr-done'), mark = el.querySelector('.tr-mark');
+    const measure = strokes.map((d) => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); svg.appendChild(p); p.style.display = 'none'; const len = p.getTotalLength(), pts = []; for (let k = 0; k <= len; k += 3) { const q = p.getPointAtLength(k); pts.push([q.x, q.y]); } return { len, pts }; });
+    let cur = 0, drawn = [], down = false;
+    const showMark = () => {
+      if (cur >= strokes.length) { mark.innerHTML = ''; return; }
+      const [x0, y0] = measure[cur].pts[0], [x1, y1] = measure[cur].pts[Math.min(4, measure[cur].pts.length - 1)];
+      const ang = Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI;
+      mark.innerHTML = `<circle cx="${x0}" cy="${y0}" r="5.5" class="tr-start"/><path d="M0 -3 L6 0 L0 3 Z" class="tr-arrow" transform="translate(${x0 + 9 * Math.cos(ang * Math.PI / 180)} ${y0 + 9 * Math.sin(ang * Math.PI / 180)}) rotate(${ang})"/>`;
+      el.querySelectorAll('.tr-guide').forEach((g) => g.classList.toggle('now', +g.dataset.s === cur));
+    };
+    const pt = (e) => { const r = svg.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * 100, ((e.clientY - r.top) / r.height) * 120]; };
+    const path = (ps) => ps.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+    svg.addEventListener('pointerdown', (e) => { if (cur >= strokes.length) return; e.preventDefault(); svg.setPointerCapture(e.pointerId); down = true; drawn = [pt(e)]; ink.setAttribute('d', path(drawn)); });
+    svg.addEventListener('pointermove', (e) => { if (!down) return; e.preventDefault(); drawn.push(pt(e)); ink.setAttribute('d', path(drawn)); });
+    const up = () => {
+      if (!down) return; down = false;
+      const m = measure[cur], d2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
+      const startOk = d2(drawn[0], m.pts[0]) < 16 ** 2;
+      const covered = m.pts.filter((p) => drawn.some((q) => d2(p, q) < 10 ** 2)).length / m.pts.length;
+      const stray = drawn.filter((q) => !m.pts.some((p) => d2(p, q) < 16 ** 2)).length / drawn.length;
+      const tiny = m.len < 6; // a dot: a tap near it is enough
+      const ok = tiny ? startOk : startOk && covered >= 0.8 && stray < 0.25;
+      ink.setAttribute('d', '');
+      if (ok) {
+        doneG.insertAdjacentHTML('beforeend', `<path d="${strokes[cur]}" class="tr-good"/>`);
+        cur++; showMark(); if (opts.onStroke) opts.onStroke(cur, strokes.length, true);
+        if (cur >= strokes.length && opts.onDone) opts.onDone();
+      } else if (opts.onStroke) opts.onStroke(cur, strokes.length, false, !startOk ? 'start' : 'path');
+    };
+    svg.addEventListener('pointerup', up); svg.addEventListener('pointercancel', up);
+    showMark();
+    return { reset() { cur = 0; doneG.innerHTML = ''; showMark(); }, strokes: strokes.length };
+  }
+  FMG.trace = { L, FAMILIES, mount };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Family English — screens. Phonics (Little Wandle order), reading, tricky words, handwriting, phonics check practice,
+   a reading ladder and toddler flashcards. Same rules as Family Maths: A–D options with a Type it switch, natural voices only. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG, E = FMG.english, P = E.P, esc = FMG.esc, V = FMG.voice, SND = FMG.sounds, T = FMG.trace;
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+  const app = document.getElementById('app');
+  const store = FMG.createStore(); store.load();
+  const BANDS = { tiny: 'Flashcards (age 1–3)', little: 'Reading and writing (age 4–7)', big: 'Reading and writing (age 7+)' };
+
+  /* ---------- Profiles ---------- */
+  const COLOURS = ['#e0602a', '#0a6fd6', '#5847eb', '#0b8a8a', '#d6336c'];
+  function ensureProfiles() {
+    if (store.get().profiles.length) return;
+    store.commit((d) => { d.profiles = [['Tiny explorer', 'tiny'], ['Little explorer', 'little'], ['Big explorer', 'big']].map(([n, b], i) => ({ id: FMG.uid('p'), nickname: n, band: b, colour: COLOURS[i], prefs: { speech: true }, createdAt: Date.now() })); });
+  }
+  ensureProfiles();
+  let pid = null; try { pid = sessionStorage.getItem('fe.profile'); } catch (e) { /* ignore */ }
+  const profile = () => store.get().profiles.find((p) => p.id === pid);
+  const setProfile = (id) => { pid = id; try { sessionStorage.setItem('fe.profile', id); } catch (e) { /* ignore */ } };
+  const attemptsOf = (id) => store.get().attempts.filter((a) => a.profileId === id);
+  const statesOf = (p) => E.itemStates(attemptsOf(p.id));
+  const tiny = () => profile() && profile().band === 'tiny';
+  const say = (t) => V.say(t);
+  const sayIfOn = (t) => { const p = profile(); if (p && p.prefs.speech !== false) say(t); };
+  function saved(res) { if (res && !res.ok) { const b = $('#savebar'); if (b) { b.textContent = res.error; b.classList.add('show'); } } }
+
+  /* ---------- Routing ---------- */
+  const routes = []; const route = (re, fn) => routes.push([re, fn]);
+  let cleanup = null, guard = null;
+  function render() {
+    V.stop(); if (cleanup) { const c = cleanup; cleanup = null; c(); }
+    guard = null;
+    const h = location.hash || '#/';
+    if (!profile() && !/^#\/(parent.*)?$/.test(h)) { if (h !== '#/') { location.hash = '#/'; return; } }
+    for (const [re, fn] of routes) { const m = h.match(re); if (m) { fn(...m.slice(1)); window.scrollTo(0, 0); return; } }
+    location.hash = '#/';
+  }
+  window.addEventListener('hashchange', render);
+  document.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a || !guard) return; const g = guard(); if (g && !confirm(g)) { e.preventDefault(); } else guard = null; }, true);
+
+  function shell(inner, o = {}) {
+    const p = profile();
+    app.innerHTML = `<header class="top">
+        ${o.back ? `<a class="tbtn" href="${o.back}" aria-label="Back">‹ <span>${esc(o.backText || 'Back')}</span></a>` : `<a class="brand" href="${p ? '#/home' : '#/'}"><span class="logo" aria-hidden="true">Aa</span><span>Family English</span></a>`}
+        <div class="sp"></div>
+        ${p ? `<a class="who" href="#/" title="Change learner"><span class="av" style="background:${p.colour}">${esc(p.nickname[0])}</span><span class="wn">${esc(p.nickname)}</span></a>` : ''}
+        <a class="tbtn" href="#/parent" aria-label="Grown-ups">👪<span>Grown-ups</span></a></header>
+      <div id="savebar" class="savebar" role="status"></div>
+      <main class="page ${o.cls || ''}">${inner}</main>`;
+    $$('[data-say]').forEach((b) => (b.onclick = (e) => { e.preventDefault(); say(b.dataset.say); }));
+    $$('[data-snd]').forEach((b) => (b.onclick = async (e) => { e.preventDefault(); if (!(await SND.play(b.dataset.snd))) say(b.dataset.ex); }));
+  }
+  const bar = (pct) => `<span class="bar"><span style="width:${pct}%"></span></span>`;
+  const gchip = (g) => `<button class="gchip" data-snd="${esc(g)}" data-ex="${esc(P.G[g][0])}" title="Hear it">${esc(E.show(g))}<small>${P.G[g][1]} ${esc(P.G[g][0])}</small></button>`;
+  const soundButtons = (w, uid) => `<button class="sbw" data-say="${esc(w)}">${E.split(w, uid).map((g) => `<span class="sb ${E.show(g).length > 1 || g.includes('-') ? 'dash' : 'dot'}">${esc(g.includes('-') ? g[0] + '…e' : E.show(g))}</span>`).join('')}</button>`;
+
+  /* ---------- Who is learning ---------- */
+  route(/^#\/?$/, () => {
+    const ps = store.get().profiles;
+    shell(`<div class="center hero"><h1>Who is learning?</h1><p class="muted">Tap your name.</p></div>
+      <div class="whos">${ps.map((p) => `<button class="whob" data-p="${p.id}"><span class="av big" style="background:${p.colour}">${esc(p.nickname[0])}</span><b>${esc(p.nickname)}</b><small>${esc(BANDS[p.band] || '')}</small></button>`).join('')}</div>
+      <p class="center small muted">Grown-ups can rename learners in the Grown-ups area.</p>`);
+    $$('[data-p]').forEach((b) => (b.onclick = () => { setProfile(b.dataset.p); location.hash = '#/home'; }));
+  });
+
+  /* ---------- Home ---------- */
+  route(/^#\/home$/, () => {
+    const p = profile();
+    if (p.band === 'tiny') return cardsHome();
+    const states = statesOf(p);
+    const next = P.UNITS.find((u) => !E.unitProgress(u, states).star) || P.UNITS[0];
+    const stars = P.UNITS.filter((u) => E.unitProgress(u, states).star).length;
+    shell(`<section class="hero"><h1>Hello, ${esc(p.nickname)}! 📚</h1><p class="muted">Let’s read and write.</p>
+        <a class="nextcard" href="#/unit/${next.id}"><span class="eyebrow">Next: ${esc(E.stageOf(next.stage).name)}</span><b>${esc(next.title)}</b><span>${next.gr.length ? next.gr.map((g) => esc(E.show(g))).join('  ') : esc(E.wordsOf(next).slice(0, 4).join(', '))}</span><span class="go">Start ›</span></a></section>
+      <div class="tiles">
+        <a class="tile t-read" href="#/phonics"><span>🔤</span><b>Phonics</b><small>Sounds, words and sentences · ${stars}/${P.UNITS.length} ⭐</small></a>
+        <a class="tile t-write" href="#/write"><span>✏️</span><b>Handwriting</b><small>Trace every letter</small></a>
+        <a class="tile t-tricky" href="#/play/tricky"><span>🧩</span><b>Tricky words</b><small>Words to know by heart</small></a>
+        <a class="tile t-ladder" href="#/ladder"><span>🪜</span><b>Reading ladder</b><small>Climb from Phase 2 to Phase 5</small></a>
+        <a class="tile t-check" href="#/check"><span>📝</span><b>Phonics check</b><small>Year 1 check practice: 40 words</small></a>
+        <a class="tile t-cards" href="#/cards"><span>🃏</span><b>Flashcards</b><small>Pictures and words</small></a>
+      </div>
+      <p class="small muted center">Coming next: spelling and grammar (KS1–KS2), reading comprehension, then English Language and Literature up to GCSE.</p>`);
+  });
+
+  route(/^#\/phonics$/, () => {
+    const p = profile(), states = statesOf(p);
+    shell(`<h1>🔤 Phonics</h1><p class="muted">In the order most English schools teach it (Little Wandle). Tap a lesson to learn its sounds, read its words and practise.</p>
+      ${P.STAGES.map((s) => `<section class="stage"><h2>${esc(s.name)} <small>${esc(s.when)}</small></h2><p class="small muted">${esc(s.desc)}</p>
+        <div class="units">${E.stageUnits(s.id).map((u) => { const pr = E.unitProgress(u, states); return `<a class="unit ${pr.star ? 'star' : ''}" href="#/unit/${u.id}"><b>${esc(u.title)}</b>${pr.star ? '<span class="st">⭐</span>' : ''}${bar(pr.pct)}</a>`; }).join('')}</div>
+        <div class="row"><a class="btn ghost sm" href="#/play/${s.id}">Mixed practice: ${esc(s.name)}</a></div></section>`).join('')}`, { back: '#/home', backText: 'Home' });
+  });
+
+  route(/^#\/unit\/(u\d+)$/, (id) => {
+    const u = E.unit(id); if (!u) { location.hash = '#/phonics'; return; }
+    const p = profile(), pr = E.unitProgress(u, statesOf(p));
+    const letters = u.gr.filter((g) => g.length === 1 && T.L[g]);
+    const ws = E.wordsOf(u), tr = E.trickyOf(u);
+    shell(`<span class="eyebrow">${esc(E.stageOf(u.stage).name)} · ${esc(E.stageOf(u.stage).when)}</span><h1>${esc(u.title)}</h1>
+      ${u.gr.length ? `<h2 class="h2">New sounds</h2><p class="small muted">Tap a sound to hear it.${SND.count() ? '' : ' (A grown-up can record the pure sounds in the Grown-ups area; until then you hear the example word.)'}</p><div class="gchips">${u.gr.map(gchip).join('')}</div>` : ''}
+      <div class="row actions"><a class="btn primary big" href="#/play/${u.id}">▶ Practise</a>${letters.length ? `<a class="btn ghost" href="#/write/${letters.join('')}">✏️ Write ${letters.join(' ')}</a>` : ''}</div>
+      ${ws.length ? `<h2 class="h2">Read these words</h2><p class="small muted">Say each sound under the dots and dashes, then blend them. Tap a word to hear it.</p><div class="words">${ws.map((w) => soundButtons(w, u.id)).join('')}</div>` : ''}
+      ${tr.length ? `<h2 class="h2">Tricky words</h2><div class="words">${tr.map((t) => `<button class="sbw tricky" data-say="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : ''}
+      <p class="small muted">Progress: ${pr.secure} of ${pr.n} things known well${pr.star ? ' ⭐' : ''}.</p>`, { back: '#/phonics', backText: 'Phonics' });
+  });
+
+  /* ---------- Questions ---------- */
+  function qHtml(q, typing) {
+    const big = q.sentence ? `<p class="sentence">${esc(q.sentence)}</p>` : q.big ? `<div class="qbig">${esc(q.big)}</div>` : '';
+    return `<div class="qcard">
+      ${q.pic ? `<div class="qpic" aria-hidden="true">${q.pic}</div>` : ''}${big}
+      <p class="prompt">${esc(q.prompt)}</p>
+      <div class="qtools">${q.typable ? `<div class="seg" role="radiogroup" aria-label="How to answer"><button role="radio" aria-checked="${!typing}" data-tm="0">A B C D</button><button role="radio" aria-checked="${typing}" data-tm="1">Type it</button></div>` : ''}
+        ${q.hear ? `<button class="btn sm ghost" id="hear">🔊 Hear the word</button>` : ''}<button class="btn sm ghost" id="sayq">🗣️ Read it</button></div>
+      ${typing ? `<form class="type-row" id="tf" autocomplete="off"><input id="ans" class="type-in" placeholder="Type your answer" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Your answer"><button class="btn primary">Check</button></form>`
+        : `<div class="abcd ${q.kind === 'pic' ? 'pics' : ''}">${q.options.map((o, i) => `<button class="opt" data-opt="${i}"><span class="l">${o.letter}</span><span class="v">${esc(o.value)}</span></button>`).join('')}</div>`}
+      <div id="fb" aria-live="polite"></div></div>`;
+  }
+  /* Run a set of questions. o: { qs | next(), label, back, mode, onEnd(results), ladder } */
+  function runRound(o) {
+    const p = profile(), S = { i: 0, res: [], typeMode: null, sess: FMG.uid('s') };
+    let ended = false; guard = () => (!ended && S.res.length && o.qs ? 'Leave this round? Your answers so far are saved.' : null);
+    const draw = (q) => {
+      q = q || (o.qs ? o.qs[S.i] : o.next());
+      if (!q) { o.onEnd && o.onEnd(S.res); return; }
+      const typing = q.typable && (S.typeMode != null ? S.typeMode : p.band === 'big' && /spell|tricky/.test(q.qt));
+      const top = o.qs ? `<div class="qprog">${o.qs.map((x, k) => `<span class="${k < S.i ? (S.res[k] && S.res[k].ok ? 'good' : 'done') : k === S.i ? 'cur' : ''}"></span>`).join('')}</div>` : `<span class="small muted">${S.res.filter((r) => r.ok).length} right · ${S.res.length} answered</span>`;
+      shell(`<div class="qtop"><span class="qmode">${esc(o.label)}</span>${top}</div>${o.above ? o.above() : ''}${qHtml(q, typing)}
+        <div class="qnav"><a class="btn ghost" href="${o.back}">Stop</a><button class="btn primary big" id="next" hidden>${o.qs && S.i === o.qs.length - 1 ? 'See how I did' : 'Next ›'}</button></div>`, { back: o.back, cls: 'focus' });
+      if (o.bind) o.bind(draw);
+      $$('[data-tm]').forEach((b) => (b.onclick = () => { S.typeMode = b.dataset.tm === '1'; draw(q); }));
+      $('#sayq').onclick = () => say(q.speak || q.prompt);
+      const hb = $('#hear'); if (hb) hb.onclick = () => say(q.hear);
+      if (q.hear) setTimeout(() => sayIfOn(q.speak || q.hear), 250); else if (p.band === 'little') setTimeout(() => sayIfOn(q.speak || q.prompt), 250);
+      const done = (ok, given, idx) => {
+        S.res.push({ q, ok });
+        saved(store.upsertAttempt({ id: FMG.uid('a'), profileId: p.id, c: q.item, unit: q.unit, qt: q.qt, ok, mode: o.mode, day: FMG.today(), at: Date.now(), sess: S.sess, given: String(given || '').slice(0, 40), typed: typing }));
+        $$('[data-opt]').forEach((b) => { b.disabled = true; const i = +b.dataset.opt; if (i === q.answerIndex) b.classList.add('right'); else if (i === idx) b.classList.add('wrong'); });
+        const right = q.options[q.answerIndex].value;
+        const moved = o.after ? o.after(ok) : '';
+        $('#fb').innerHTML = `<div class="fb ${ok ? 'good' : ''}"><b>${ok ? rng1(['🎉 Yes!', '⭐ Well done!', '👏 Brilliant!', '✅ That’s right!']) : 'Nearly!'}</b> ${ok ? '' : `The answer is <b>${esc(right)}</b>.`}<p>${esc(q.why || '')}</p>${moved || ''}</div>`;
+        if (!ok) sayIfOn(`Nearly. The answer is ${right}.`); else if (p.band === 'little') sayIfOn('Yes!');
+        const nx = $('#next'); nx.hidden = false; nx.focus();
+        nx.onclick = () => { S.i++; if (o.qs && S.i >= o.qs.length) { ended = true; o.onEnd(S.res); } else draw(); };
+      };
+      if (typing) { const f = $('#tf'), inp = $('#ans'); inp.focus(); f.onsubmit = (e) => { e.preventDefault(); const v = inp.value.trim(); if (!v) return; inp.disabled = true; $('button', f).disabled = true; done(E.matchTyped(v, q), v, -1); }; }
+      else $$('[data-opt]').forEach((b) => (b.onclick = () => done(+b.dataset.opt === q.answerIndex, q.options[+b.dataset.opt].value, +b.dataset.opt)));
+    };
+    const key = (e) => { const i = 'abcd'.indexOf((e.key || '').toLowerCase()); const b = $(`[data-opt="${i}"]`); if (i >= 0 && b && !b.disabled && !/input/i.test(e.target.tagName)) b.click(); else if (e.key === 'Enter' && $('#next') && !$('#next').hidden && document.activeElement !== $('#next')) $('#next').click(); };
+    document.addEventListener('keydown', key); cleanup = () => document.removeEventListener('keydown', key);
+    draw();
+  }
+  const rng1 = (a) => a[Math.floor(Math.random() * a.length)];
+  function results(res, back, again, title) {
+    const right = res.filter((r) => r.ok).length, wrong = res.filter((r) => !r.ok);
+    shell(`<div class="center end"><div class="end-e">${right === res.length ? '🌟' : right >= res.length * 0.7 ? '🎉' : '🌱'}</div><h1>${right} out of ${res.length}</h1><p class="muted">${esc(title || '')}</p></div>
+      ${wrong.length ? `<h2 class="h2">Look at these again</h2><ul class="review">${wrong.map((r) => `<li>${r.q.pic ? r.q.pic + ' ' : ''}${esc(r.q.prompt)} <b>${esc(r.q.options[r.q.answerIndex].value)}</b><br><small class="muted">${esc(r.q.why || '')}</small></li>`).join('')}</ul>` : ''}
+      <div class="row center"><a class="btn primary" href="${again}" id="again">Go again</a><a class="btn ghost" href="${back}">Done</a></div>`, { back });
+    $('#again').onclick = (e) => { e.preventDefault(); render(); };
+    sayIfOn(`${right} out of ${res.length}. ${right === res.length ? 'Amazing!' : 'Well done!'}`);
+  }
+  route(/^#\/play\/([\w]+)$/, (target) => {
+    const p = profile(), rng = FMG.rng(FMG.newSeed());
+    let items, label, back;
+    if (/^u\d+$/.test(target)) { const u = E.unit(target); items = E.itemsOf(u); label = u.title; back = `#/unit/${u.id}`; }
+    else if (/^p\d$/.test(target)) { items = E.stageItems(target); label = `${E.stageOf(target).name} mixed`; back = '#/phonics'; }
+    else if (target === 'tricky') { items = P.UNITS.flatMap((u) => E.trickyOf(u).map((t) => `t:${u.id}:${t}`)); label = 'Tricky words'; back = '#/home'; }
+    else { location.hash = '#/home'; return; }
+    const qs = E.buildSet(items, rng, { band: p.band, count: p.band === 'little' ? 8 : 10, states: statesOf(p) });
+    runRound({ qs, label, back, mode: 'practice', onEnd: (res) => results(res, back, location.hash, label) });
+  });
+
+  /* ---------- Reading ladder ---------- */
+  route(/^#\/ladder$/, () => {
+    const p = profile(), rng = FMG.rng(FMG.newSeed()), key = `fe.ladder.${p.id}`;
+    let st = { r: 0, streak: 0, miss: 0 }; try { const s = JSON.parse(localStorage.getItem(key) || 'null'); if (s) st = Object.assign(st, { r: s.r }); } catch (e) { /* ignore */ }
+    let msg = '';
+    const keep = () => { try { localStorage.setItem(key, JSON.stringify({ r: st.r })); } catch (e) { /* ignore */ } };
+    runRound({ label: '🪜 Reading ladder', back: '#/home', mode: 'ladder',
+      next: () => E.ladderQuestion(st, rng, p.band),
+      above: () => `<div class="rungs">${P.STAGES.map((s, i) => `<button class="rung ${i === st.r ? 'cur' : ''}" data-rung="${i}">${esc(s.name)}<small>${esc(s.when)}</small></button>`).join('')}</div>
+        <p class="level"><span class="badge">${esc(P.STAGES[st.r].name)}</span> ${esc(P.STAGES[st.r].desc)} <small class="muted">· ${E.UP - (st.streak || 0)} right in a row to climb</small></p>${msg ? `<p class="moved">${msg}</p>` : ''}`,
+      bind: (draw) => $$('[data-rung]').forEach((b) => (b.onclick = () => { st = { r: +b.dataset.rung, streak: 0, miss: 0 }; msg = ''; keep(); draw(); })),
+      after: (ok) => { const r = E.ladderStep(st, ok); st = r.st; keep(); msg = r.moved > 0 ? `⬆️ Up to ${P.STAGES[st.r].name}! Brilliant reading.` : r.moved < 0 ? `⬇️ Back to ${P.STAGES[st.r].name} for a bit more practice.` : ''; return msg ? `<p class="moved">${msg}</p>` : ''; },
+    });
+  });
+
+  /* ---------- Phonics screening check practice ---------- */
+  route(/^#\/check$/, () => {
+    const p = profile(), past = ((store.get().exams || {})[p.id] || { results: [] }).results.filter((r) => r.kind === 'check').slice(-5).reverse();
+    shell(`<h1>📝 Phonics check practice</h1>
+      <p>In June of Year 1, every child in England reads 40 words to their teacher: <b>20 real words and 20 alien words</b> (made-up words they read using phonics). The pass mark has been <b>32 out of 40</b> every year so far.</p>
+      <p class="muted">How to do it: sit with your child. They read each word aloud; you tap <b>✓</b> if they read it right or <b>✗</b> if not. Alien words are shown with an alien 👽: any sensible phonics reading counts. The app cannot hear your child, so a grown-up marks.</p>
+      <div class="row"><a class="btn primary big" href="#/check/go">Start the 40 words</a></div>
+      ${past.length ? `<h2 class="h2">Past tries</h2><ul class="review">${past.map((r) => `<li>${esc(FMG.prettyDate ? FMG.prettyDate(r.day) : r.day)}: <b>${r.right}/40</b> ${r.right >= 32 ? '✅ at the pass mark' : '🌱 not yet'}</li>`).join('')}</ul>` : ''}`, { back: '#/home', backText: 'Home' });
+  });
+  route(/^#\/check\/go$/, () => {
+    const p = profile(), chk = E.screeningCheck(FMG.rng(FMG.newSeed())), marks = [];
+    guard = () => (marks.length && marks.length < 40 ? 'Leave the phonics check? This try will not be saved.' : null);
+    const draw = () => {
+      const i = marks.length;
+      if (i >= 40) return finish();
+      const w = chk.words[i];
+      shell(`<div class="qtop"><span class="qmode">Phonics check · ${i < 20 ? 'Section 1' : 'Section 2'}</span><span class="small muted">Word ${i + 1} of 40</span></div>
+        <div class="qcard center"><div class="chk-word">${w.alien ? '<span class="alien" title="Alien word">👽</span>' : ''}${esc(w.w)}</div>
+        <p class="small muted">${w.alien ? 'An alien word: read it with your sounds.' : 'A real word.'}</p>
+        <div class="row center"><button class="btn mark yes" id="y">✓ Read it right</button><button class="btn mark no" id="n">✗ Not yet</button></div></div>
+        <div class="qnav"><a class="btn ghost" href="#/check">Stop</a>${i ? '<button class="btn ghost" id="undo">↶ Undo last</button>' : ''}</div>`, { back: '#/check', cls: 'focus' });
+      $('#y').onclick = () => { marks.push(true); draw(); }; $('#n').onclick = () => { marks.push(false); draw(); };
+      const u = $('#undo'); if (u) u.onclick = () => { marks.pop(); draw(); };
+    };
+    const finish = () => {
+      guard = null;
+      const right = marks.filter(Boolean).length, missed = chk.words.filter((_, i) => !marks[i]);
+      saved(store.commit((d) => { d.exams = d.exams || {}; const m = d.exams[p.id] = d.exams[p.id] || { results: [] }; m.results = (m.results || []).concat({ id: FMG.uid('x'), kind: 'check', right, n: 40, day: FMG.today(), at: Date.now(), missed: missed.map((x) => x.w) }).slice(-100); }));
+      shell(`<div class="center end"><div class="end-e">${right >= 32 ? '🏆' : '🌱'}</div><h1>${right} out of 40</h1><p>${right >= 32 ? 'That is at the pass mark (32). Brilliant reading!' : `The pass mark is 32, so ${32 - right} more to go. Keep practising the sounds below.`}</p></div>
+        ${missed.length ? `<h2 class="h2">Words to practise</h2><div class="words">${missed.map((x) => `<span class="sbw ${x.alien ? 'tricky' : ''}">${x.alien ? '👽 ' : ''}${esc(x.w)}</span>`).join('')}</div>` : ''}
+        <div class="row center"><a class="btn primary" href="#/check">Done</a><a class="btn ghost" href="#/ladder">Reading ladder</a></div>`, { back: '#/check' });
+    };
+    draw();
+  });
+
+  /* ---------- Handwriting ---------- */
+  route(/^#\/write$/, () => {
+    shell(`<h1>✏️ Handwriting</h1><p class="muted">Print letters first, as in Reception and Year 1. Start at the green dot and follow the arrow. A finger works; an Apple Pencil is even better. Joined handwriting comes later, from Year 2.</p>
+      ${T.FAMILIES.map((f) => `<section class="stage"><h2>${esc(f.name)}</h2><div class="letters">${f.letters.split(' ').map((l) => `<a class="letter" href="#/write/${l}">${l}</a>`).join('')}</div><div class="row"><a class="btn ghost sm" href="#/write/${f.letters.replace(/ /g, '')}">Write them all</a></div></section>`).join('')}
+      <section class="stage"><h2>The whole alphabet</h2><div class="row"><a class="btn primary" href="#/write/abcdefghijklmnopqrstuvwxyz">a to z</a></div></section>`, { back: '#/home', backText: 'Home' });
+  });
+  route(/^#\/write\/([a-z]+)$/, (letters) => {
+    const p = profile(); let i = 0, tries = 0;
+    const draw = (guide) => {
+      const l = letters[i], def = T.L[l]; if (!def) { i++; if (i < letters.length) draw(true); return; }
+      shell(`<div class="qtop"><span class="qmode">✏️ Write ${esc(l)}</span><span class="small muted">${letters.length > 1 ? `Letter ${i + 1} of ${letters.length}` : ''}</span></div>
+        <div class="qcard center"><p class="prompt">${esc(def[1])}</p><div class="row center"><button class="btn sm ghost" id="sayl">🗣️ Say it</button><button class="btn sm ghost" id="redo">↺ Start again</button>${guide ? '<button class="btn sm ghost" id="noguide">🙈 Try without the grey letter</button>' : '<button class="btn sm ghost" id="withguide">👀 Show the grey letter</button>'}</div>
+        <div id="pad"></div><div id="tfb" aria-live="polite" class="small"></div></div>
+        <div class="qnav"><a class="btn ghost" href="#/write">Stop</a><button class="btn primary big" id="next" hidden>${i === letters.length - 1 ? 'Finished' : 'Next letter ›'}</button></div>`, { back: '#/write', cls: 'focus' });
+      $('#sayl').onclick = () => say(`${l}. ${def[1]}`); $('#redo').onclick = () => draw(guide);
+      const ng = $('#noguide'); if (ng) ng.onclick = () => draw(false); const wg = $('#withguide'); if (wg) wg.onclick = () => draw(true);
+      if (p.band === 'little') sayIfOn(def[1]);
+      T.mount($('#pad'), l, { guide, onStroke: (n, of, ok, why) => {
+        if (ok) { $('#tfb').textContent = n < of ? `Lovely! Now stroke ${n + 1} of ${of}.` : ''; return; }
+        tries++; $('#tfb').textContent = why === 'start' ? 'Start at the green dot.' : 'Nearly! Follow the grey line, starting at the green dot.';
+      }, onDone: () => {
+        $('#tfb').innerHTML = '<b>🎉 Beautiful!</b>'; sayIfOn('Beautiful!');
+        saved(store.upsertAttempt({ id: FMG.uid('a'), profileId: p.id, c: `h:${l}`, qt: 'trace', ok: true, mode: guide ? 'trace' : 'write', day: FMG.today(), at: Date.now(), tries }));
+        tries = 0; const nx = $('#next'); nx.hidden = false; nx.onclick = () => { i++; if (i >= letters.length) location.hash = '#/write'; else draw(true); };
+      } });
+    };
+    draw(true);
+  });
+
+  /* ---------- Flashcards ---------- */
+  function cardsHome() {
+    shell(`<div class="center hero"><h1>${tiny() ? '👶 ' : ''}Flashcards</h1><p class="muted">Tap a set. Tap a card to hear its word.</p></div>
+      <div class="tiles cards">${P.CARDS.map((c) => `<a class="tile" href="#/cards/${c.id}"><span>${c.e}</span><b>${esc(c.name)}</b><small>${c.cards.length} cards</small></a>`).join('')}</div>
+      <h2 class="h2 center">Games</h2><div class="tiles cards">${P.CARDS.map((c) => `<a class="tile game" href="#/find/${c.id}"><span>🔎</span><b>Find the ${esc(c.name.toLowerCase())}</b></a>`).join('')}</div>`, tiny() ? {} : { back: '#/home', backText: 'Home' });
+  }
+  route(/^#\/cards$/, cardsHome);
+  route(/^#\/cards\/(\w+)$/, (cid) => {
+    const set = P.CARDS.find((c) => c.id === cid); if (!set) { location.hash = '#/cards'; return; }
+    let i = 0;
+    const draw = () => {
+      const [w, e] = set.cards[i];
+      shell(`<div class="flash" id="card" role="button" tabindex="0" aria-label="${esc(w)}"><div class="fpic">${e}</div><div class="fword">${esc(w)}</div></div>
+        <div class="row center flnav"><button class="btn big ghost" id="prev" ${i ? '' : 'disabled'}>‹</button><span class="muted">${i + 1} / ${set.cards.length}</span><button class="btn big primary" id="nx">${i < set.cards.length - 1 ? '›' : '↺'}</button></div>`, { back: '#/cards', backText: 'Sets', cls: 'focus' });
+      $('#card').onclick = () => { say(w); $('#card').classList.remove('pop'); void $('#card').offsetWidth; $('#card').classList.add('pop'); };
+      $('#prev').onclick = () => { i--; draw(); }; $('#nx').onclick = () => { i = (i + 1) % set.cards.length; draw(); };
+      setTimeout(() => say(w), 200);
+    };
+    let sx = null; const ts = (e) => { sx = e.touches[0].clientX; }, te = (e) => { if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; sx = null; if (Math.abs(dx) > 50) { const b = dx < 0 ? $('#nx') : $('#prev'); if (b && !b.disabled) b.click(); } };
+    document.addEventListener('touchstart', ts); document.addEventListener('touchend', te);
+    cleanup = () => { document.removeEventListener('touchstart', ts); document.removeEventListener('touchend', te); };
+    draw();
+  });
+  route(/^#\/find\/(\w+)$/, (cid) => {
+    const set = P.CARDS.find((c) => c.id === cid); if (!set) { location.hash = '#/cards'; return; }
+    const rng = FMG.rng(FMG.newSeed()), n = tiny() ? 2 : 4; let score = 0, turns = 0;
+    const draw = () => {
+      const pick = rng.shuffle(set.cards).slice(0, n), target = rng.pick(pick);
+      shell(`<div class="center"><h1 class="findq">Where is the <b>${esc(target[0])}</b>?</h1><button class="btn sm ghost" id="again">🔊 Say it again</button></div>
+        <div class="findgrid n${n}">${pick.map((c, k) => `<button class="findc" data-k="${k}" aria-label="${esc(c[0])}">${c[1]}</button>`).join('')}</div>
+        <p class="center muted">${score} ⭐</p>`, { back: '#/cards', backText: 'Sets', cls: 'focus' });
+      const ask = () => say(`Where is the ${target[0]}?`); ask(); $('#again').onclick = ask;
+      $$('[data-k]').forEach((b) => (b.onclick = () => {
+        const c = pick[+b.dataset.k];
+        if (c === target) { score++; turns++; b.classList.add('right'); say(rng1(['Yes! The ' + c[0] + '!', 'Well done! ' + c[0] + '!', 'Clever! That is the ' + c[0] + '.'])); setTimeout(draw, 1800); }
+        else { b.classList.add('nope'); say(`That is the ${c[0]}. Where is the ${target[0]}?`); setTimeout(() => b.classList.remove('nope'), 700); }
+      }));
+    };
+    draw();
+  });
+
+  /* ---------- Grown-ups ---------- */
+  route(/^#\/parent$/, () => {
+    const ps = store.get().profiles, all = Object.keys(P.G);
+    shell(`<h1>👪 Grown-ups</h1>
+      <section class="stage"><h2>Learners</h2>${ps.map((p) => `<div class="prow"><span class="av" style="background:${p.colour}">${esc(p.nickname[0])}</span><input value="${esc(p.nickname)}" data-name="${p.id}" aria-label="Name"><select data-band="${p.id}">${Object.entries(BANDS).map(([k, v]) => `<option value="${k}" ${p.band === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select><label class="small"><input type="checkbox" data-speech="${p.id}" ${p.prefs.speech !== false ? 'checked' : ''}> Read aloud</label></div>`).join('')}
+        <div class="row"><button class="btn primary" id="savep">Save</button><button class="btn ghost" id="addp">Add a learner</button></div></section>
+      <section class="stage"><h2>Voice</h2><p class="small">Words and sentences are read by: <b>${esc(V.kind())}</b>. On iPad, a much more natural voice is in Settings › Accessibility › Spoken Content › Voices › English: download an “Enhanced” or “Premium” voice.</p></section>
+      <section class="stage"><h2>Record the pure sounds (${SND.count()}/${all.length})</h2>
+        <p class="small">Phonics uses <b>pure sounds</b> (“mmm”, not “muh”). Computer voices cannot say them properly, so record each one in your own voice: tap ● and say the sound (it records for 1.6 seconds). Recordings stay on this device. ${SND.canRecord() ? '' : '<b>This browser cannot record sound.</b>'}</p>
+        <div class="recs">${all.map((g) => `<div class="rec"><b>${esc(E.show(g))}</b><small>${esc(P.G[g][2])} · ${esc(P.G[g][0])}</small><span>${SND.has(g) ? `<button class="btn sm ghost" data-play="${esc(g)}">▶</button><button class="btn sm ghost" data-del="${esc(g)}">🗑</button>` : ''}<button class="btn sm rec-b" data-rec="${esc(g)}" ${SND.canRecord() ? '' : 'disabled'}>●</button></span></div>`).join('')}</div></section>
+      <section class="stage"><h2>Progress backup</h2><div class="row"><button class="btn ghost" id="exp">Save a backup file</button></div></section>
+      <p class="small muted">${esc(E.VERSION)} · Phonics order follows Little Wandle Letters and Sounds Revised; check your school’s own chart.</p>`, { back: profile() ? '#/home' : '#/', backText: 'Back' });
+    $('#savep').onclick = () => { saved(store.commit((d) => d.profiles.forEach((p) => { const n = $(`[data-name="${p.id}"]`); if (n && n.value.trim()) p.nickname = n.value.trim().slice(0, 24); const b = $(`[data-band="${p.id}"]`); if (b) p.band = b.value; const s = $(`[data-speech="${p.id}"]`); if (s) p.prefs.speech = s.checked; }))); render(); };
+    $('#addp').onclick = () => { saved(store.commit((d) => d.profiles.push({ id: FMG.uid('p'), nickname: 'New learner', band: 'little', colour: COLOURS[d.profiles.length % COLOURS.length], prefs: { speech: true }, createdAt: Date.now() }))); render(); };
+    $$('[data-play]').forEach((b) => (b.onclick = () => SND.play(b.dataset.play)));
+    $$('[data-del]').forEach((b) => (b.onclick = async () => { await SND.del(b.dataset.del); render(); }));
+    $$('[data-rec]').forEach((b) => (b.onclick = async () => { try { b.textContent = '🎙️'; b.disabled = true; const blob = await SND.record(1600); await SND.put(b.dataset.rec, blob); render(); } catch (e) { b.textContent = '●'; b.disabled = false; alert('Could not record: please allow the microphone.'); } }));
+    $('#exp').onclick = () => { const blob = new Blob([JSON.stringify(store.exportBackup(), null, 1)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `family-english-backup-${FMG.today()}.json`; a.click(); };
+  });
+
+  FMG.app = { store, profile, render };
+  SND.load().then(render);
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<a href="../" class="fam-home" aria-label="Back to Family Learning apps">⌂ Apps</a>
+<style>.fam-home{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;padding:.5rem .8rem;border-radius:999px;
+background:rgba(20,20,40,.82);color:#fff;font:600 14px/1 -apple-system,system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+@media print{.fam-home{display:none}}</style>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('../sw.js',{scope:'../'}).catch(function(){});</script>
+</body>
+</html>
