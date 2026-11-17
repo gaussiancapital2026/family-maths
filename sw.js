@@ -1,5 +1,5 @@
 // Family Maths offline cache. Version changes whenever the game is rebuilt, so the iPad picks up updates when online.
-const V = 'fm-b38d2879e3';
+const V = 'fm-4cb31f77d3';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(V).then((c) => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== V).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
