@@ -96,6 +96,8 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
 .badge.g-distinction{background:#d9a400}.badge.g-merit{background:#0a6fd6}.badge.g-pass{background:var(--good)}.badge.g-notyet{background:var(--muted)}
 .strand{font-size:.95rem;margin:.8rem 0 0;color:var(--muted)}
 .passage{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:.8rem 1rem;margin:0 0 .8rem}.passage summary{cursor:pointer}.passage p{font-size:1.08rem;line-height:1.65;margin:.6rem 0}
+.essay{width:100%;font:inherit;font-size:1.05rem;line-height:1.6;padding:.8rem;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);resize:vertical}
+.prompt.left{text-align:left}.tips{margin:.4rem 0 .8rem}.tips summary{cursor:pointer;font-weight:650}.band{border-top:1px solid var(--line);padding:.5rem 0}
 
 </style>
 </head>
@@ -1151,6 +1153,231 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
 
 </script>
   <script>
+/* Family English — KS3 and GCSE content.
+   Literature texts are out of copyright (Shakespeare, Dickens, Stevenson, and poems by Shelley, Blake, Tennyson, Owen and Browning), so short quotations are used freely.
+   Example sentences, extracts and mark-scheme wording are written for this app; papers are "in the style of" AQA GCSE English, not real papers. */
+(function (root) {
+  'use strict';
+  const FMG = (root.FMG = root.FMG || {});
+
+  /* Language devices: [name, definition, examples written for this app]. */
+  const DEVICES = [
+    ['simile', 'compares two things using “like” or “as”', ['Her voice was as soft as falling snow.', 'The crowd moved like a slow river.', 'He ran like a startled deer.']],
+    ['metaphor', 'says one thing is another, without “like” or “as”', ['The classroom was a zoo.', 'Time is a thief.', 'His words were knives.']],
+    ['personification', 'gives human qualities to something that is not human', ['The wind howled its anger at the house.', 'The old car coughed and wheezed up the hill.', 'Ivy clutched at the crumbling walls.']],
+    ['alliteration', 'repeats the same sound at the start of nearby words', ['Silent snakes slid slowly south.', 'The big bold bear bounded back.', 'Dark, dismal days dragged on.']],
+    ['onomatopoeia', 'a word that sounds like the noise it describes', ['The fire crackled and hissed.', 'Bees buzzed around the hive.', 'The door slammed with a bang.']],
+    ['sibilance', 'repeats soft “s” or “sh” sounds', ['The sea sighed and whispered on the sand.', 'Softly, silently, the shadows shifted.']],
+    ['pathetic fallacy', 'uses the weather or setting to reflect a mood', ['As she read the letter, thunder rumbled and the sky turned black.', 'On the morning of the wedding, the sun beamed over the fields.']],
+    ['oxymoron', 'puts two opposite words side by side', ['It was a deafening silence.', 'She gave a sad smile.', 'They faced the bitter sweetness of goodbye.']],
+    ['hyperbole', 'deliberate exaggeration for effect', ['I have told you a million times!', 'This bag weighs a ton.', 'I was so hungry I could eat a horse.']],
+    ['rhetorical question', 'a question asked for effect, not for an answer', ['Do we really want to leave a ruined planet to our children?', 'Who could ignore such suffering?']],
+    ['imperative', 'a command verb that tells the reader to act', ['Act now before it is too late.', 'Imagine a world without plastic.', 'Join us this Saturday.']],
+    ['juxtaposition', 'places two contrasting ideas close together', ['The mansion stood beside a row of crumbling huts.', 'Laughter drifted from the party while a child cried alone outside.']],
+    ['semantic field', 'a group of words linked to the same topic', ['The meeting was a battlefield: arguments fired, tempers exploded and the losers retreated.', 'The garden was a feast: buttery sunlight, candyfloss clouds and honeyed air.']],
+    ['repetition', 'repeats a word or phrase for emphasis', ['We will not give up. We will not give in. We will not go back.', 'Never, never, never forget.']],
+    ['triplet (rule of three)', 'a list of three for emphasis', ['The holiday was relaxing, exciting and unforgettable.', 'Our school is safe, friendly and inspiring.']],
+    ['direct address', 'speaks straight to the reader using “you”', ['You can make a difference today.', 'You have probably felt this way too.']],
+    ['emotive language', 'words chosen to make the reader feel strongly', ['Helpless, starving puppies are abandoned every single day.', 'Innocent families have lost everything.']],
+    ['statistics', 'uses numbers or facts to persuade', ['Nine out of ten dentists recommend it.', 'Over 70% of students said they felt happier.']],
+    ['anecdote', 'a short personal story used to make a point', ['When I was ten, I watched my grandfather plant an oak tree; today it shades the whole street.']],
+    ['foreshadowing', 'hints at what will happen later', ['Nobody noticed the small crack spreading across the dam.', 'She laughed off the warning. Later, she would wish she had listened.']],
+  ];
+  /* Structure terms: [name, meaning]. */
+  const STRUCTURE = [
+    ['flashback', 'the narrative jumps back to an earlier time'], ['cyclical structure', 'the ending returns to the opening situation or image'], ['shift in focus', 'the writer moves the reader’s attention to something new'],
+    ['zooming in', 'the focus narrows from a wide view to a small detail'], ['foreshadowing', 'early hints about later events'], ['in medias res', 'the story starts in the middle of the action'],
+    ['cliffhanger', 'a section ends at a tense, unresolved moment'], ['climax', 'the point of greatest tension'], ['resolution', 'the problem is settled near the end'], ['dialogue', 'characters’ spoken words, which can slow the pace or reveal character'],
+    ['short sentence for impact', 'a very short sentence that creates tension or emphasis'], ['change of pace', 'the writer speeds up or slows down the action'],
+  ];
+  /* Sentence forms. */
+  const SENTENCES = [
+    ['She ran.', 'simple'], ['The rain fell.', 'simple'], ['The fox crept forward and the hens fell silent.', 'compound'], ['I wanted to go, but I was too tired.', 'compound'],
+    ['Although it was late, we kept walking.', 'complex'], ['The girl, who had been waiting for hours, finally smiled.', 'complex'], ['Silence.', 'minor'], ['What a day.', 'minor'], ['Because the bridge was closed, the bus took a longer route.', 'complex'], ['He laughed and she joined in.', 'compound'],
+  ];
+  /* Punctuation for effect: [example, mark, effect]. */
+  const PUNCT = [
+    ['There was only one thing left to do: run.', 'colon', 'introduces an explanation or a dramatic reveal'], ['The house was silent; nobody had lived there for years.', 'semicolon', 'joins two closely linked independent clauses'],
+    ['I opened the door and saw – nothing.', 'dash', 'creates a pause before a surprise'], ['The footsteps came closer... and closer...', 'ellipsis', 'builds suspense or shows trailing off'],
+    ['She had three wishes: health, happiness and home.', 'colon', 'introduces a list'], ['Stop!', 'exclamation mark', 'shows strong emotion or urgency'], ['The plan (which nobody liked) went ahead.', 'brackets', 'adds extra information'],
+  ];
+  /* Poetry terms. */
+  const POETRY = [
+    ['sonnet', 'a poem of 14 lines, often about love or a single idea'], ['iambic pentameter', 'a line of ten syllables in five da-DUM beats'], ['enjambment', 'a sentence runs on from one line into the next without punctuation'],
+    ['caesura', 'a pause in the middle of a line, often marked by punctuation'], ['stanza', 'a group of lines in a poem, like a paragraph'], ['free verse', 'poetry with no regular rhyme or rhythm'],
+    ['dramatic monologue', 'a poem spoken by one character to a silent listener'], ['volta', 'a turning point in a poem, especially a sonnet'], ['rhyming couplet', 'two lines in a row that rhyme'], ['refrain', 'a line or phrase repeated through a poem'],
+  ];
+  /* Academic vocabulary for analysis: [word, meaning, wrong meanings]. */
+  const VOCAB = [
+    ['connotation', 'an idea or feeling a word suggests beyond its basic meaning', ['the dictionary meaning of a word', 'a word that sounds like its noise', 'a spelling rule']], ['juxtapose', 'to place contrasting things side by side', ['to repeat a sound', 'to exaggerate', 'to summarise']],
+    ['ominous', 'suggesting something bad will happen', ['cheerful and bright', 'extremely loud', 'very old']], ['melancholy', 'a deep, lasting sadness', ['great excitement', 'angry shouting', 'calm happiness']],
+    ['ambiguous', 'having more than one possible meaning', ['completely clear', 'very short', 'written in rhyme']], ['juvenile', 'young or childish', ['very old', 'wise', 'dangerous']],
+    ['benevolent', 'kind and generous', ['cruel', 'lazy', 'nervous']], ['malevolent', 'wishing to do harm', ['kind', 'forgetful', 'shy']], ['ostentatious', 'showy, designed to impress', ['plain and simple', 'quiet', 'honest']],
+    ['tenacious', 'refusing to give up', ['giving up easily', 'very tall', 'careless']], ['candid', 'honest and direct', ['secretive', 'sweet-tasting', 'shy']], ['futile', 'having no useful result', ['very successful', 'sudden', 'enjoyable']],
+    ['eerie', 'strange and frightening', ['ordinary', 'joyful', 'busy']], ['desolate', 'empty, bleak and lonely', ['crowded', 'colourful', 'noisy']], ['inevitable', 'certain to happen', ['impossible', 'unlikely', 'forgotten']], ['vulnerable', 'easily hurt or harmed', ['strong', 'proud', 'cheerful']],
+  ];
+
+  /* Literature: texts, plot order, characters, themes, context and quotations. */
+  const LIT = [
+    { id: 'macbeth', title: 'Macbeth', author: 'William Shakespeare', year: 'about 1606', form: 'play (tragedy)',
+      plot: ['The witches meet on the heath.', 'The witches predict Macbeth will be king.', 'Lady Macbeth reads Macbeth’s letter and plans the murder.', 'Macbeth murders King Duncan.', 'Macbeth has Banquo murdered.', 'Banquo’s ghost appears at the banquet.', 'Macbeth has Macduff’s family killed.', 'Lady Macbeth sleepwalks.', 'Macduff kills Macbeth.'],
+      chars: [['Macbeth', 'a brave Scottish general whose ambition leads him to murder and tyranny'], ['Lady Macbeth', 'Macbeth’s wife, who pushes him to kill Duncan and is later destroyed by guilt'], ['Banquo', 'Macbeth’s friend; the witches say his descendants will be kings'], ['Duncan', 'the good and trusting King of Scotland'], ['Macduff', 'a Scottish nobleman who suspects Macbeth and finally kills him'], ['Malcolm', 'Duncan’s son, who becomes king at the end'], ['The witches', 'three supernatural figures who make the prophecies']],
+      themes: ['ambition', 'guilt', 'the supernatural', 'kingship', 'appearance and reality'],
+      context: [['King James I, on the throne when the play was written, was fascinated by witchcraft.', true], ['Killing a king (regicide) was seen as a crime against God and nature.', true], ['The Divine Right of Kings was the belief that monarchs are chosen by God.', true], ['Shakespeare wrote Macbeth in Victorian times.', false], ['Macbeth is set in France.', false], ['Macbeth was written by Charles Dickens.', false], ['Macbeth becomes king because the people vote for him.', false]],
+      quotes: [['Fair is foul, and foul is fair', 'The witches', 'appearance and reality'], ['Stars, hide your fires; Let not light see my black and deep desires', 'Macbeth', 'ambition'], ['Look like th’ innocent flower, But be the serpent under’t', 'Lady Macbeth', 'appearance and reality'], ['Is this a dagger which I see before me', 'Macbeth', 'the supernatural'], ['Will all great Neptune’s ocean wash this blood clean from my hand?', 'Macbeth', 'guilt'], ['A little water clears us of this deed', 'Lady Macbeth', 'guilt'], ['O, full of scorpions is my mind, dear wife!', 'Macbeth', 'guilt'], ['Out, damned spot! out, I say!', 'Lady Macbeth', 'guilt'], ['Vaulting ambition, which o’erleaps itself', 'Macbeth', 'ambition'], ['Yet do I fear thy nature; It is too full o’ th’ milk of human kindness', 'Lady Macbeth', 'ambition'], ['Life’s but a walking shadow', 'Macbeth', null], ['This dead butcher and his fiend-like queen', 'Malcolm', 'kingship']] },
+    { id: 'romeo', title: 'Romeo and Juliet', author: 'William Shakespeare', year: 'about 1595', form: 'play (tragedy)',
+      plot: ['A street fight breaks out between the Montagues and Capulets.', 'Romeo meets Juliet at the Capulet party.', 'Romeo and Juliet declare their love at the balcony.', 'Friar Laurence marries them in secret.', 'Tybalt kills Mercutio and Romeo kills Tybalt.', 'Romeo is banished to Mantua.', 'Juliet takes the Friar’s sleeping potion.', 'Romeo, believing Juliet dead, takes poison.', 'Juliet wakes and kills herself with Romeo’s dagger.'],
+      chars: [['Romeo', 'a passionate young Montague who falls in love with Juliet'], ['Juliet', 'the thirteen-year-old daughter of the Capulets'], ['Mercutio', 'Romeo’s witty friend, killed by Tybalt'], ['Tybalt', 'Juliet’s hot-tempered cousin'], ['Friar Laurence', 'the priest who marries the lovers and gives Juliet the potion'], ['The Nurse', 'Juliet’s talkative nurse and confidante'], ['Lord Capulet', 'Juliet’s father, who insists she marry Paris']],
+      themes: ['love', 'conflict', 'fate', 'family', 'youth and age'],
+      context: [['In Elizabethan England, fathers usually arranged their daughters’ marriages.', true], ['The play is set in Verona, Italy.', true], ['Many Elizabethans believed the stars could control a person’s fate.', true], ['The play is set in London.', false], ['Romeo and Juliet is a comedy that ends happily.', false], ['Juliet’s parents want her to marry Romeo.', false], ['The play was written in the twentieth century.', false]],
+      quotes: [['A pair of star-cross’d lovers take their life', 'The Chorus (Prologue)', 'fate'], ['My only love sprung from my only hate!', 'Juliet', 'love'], ['O Romeo, Romeo! wherefore art thou Romeo?', 'Juliet', 'love'], ['A plague o’ both your houses!', 'Mercutio', 'conflict'], ['These violent delights have violent ends', 'Friar Laurence', 'fate'], ['Thus with a kiss I die', 'Romeo', 'love'], ['What, drawn, and talk of peace! I hate the word, As I hate hell, all Montagues, and thee', 'Tybalt', 'conflict'], ['Did my heart love till now? forswear it, sight!', 'Romeo', 'love']] },
+    { id: 'carol', title: 'A Christmas Carol', author: 'Charles Dickens', year: '1843', form: 'novella (five staves)',
+      plot: ['Scrooge refuses to give to charity and dismisses his nephew.', 'Marley’s ghost visits Scrooge in chains.', 'The Ghost of Christmas Past shows Scrooge his childhood.', 'The Ghost of Christmas Present shows the Cratchits’ Christmas.', 'Scrooge sees Ignorance and Want.', 'The Ghost of Christmas Yet to Come shows Scrooge’s own grave.', 'Scrooge wakes on Christmas morning a changed man.', 'Scrooge raises Bob Cratchit’s salary.'],
+      chars: [['Ebenezer Scrooge', 'a cold, miserly businessman who is transformed'], ['Jacob Marley', 'Scrooge’s dead business partner, bound in chains'], ['Bob Cratchit', 'Scrooge’s poorly paid, loyal clerk'], ['Tiny Tim', 'Bob’s youngest son, who is ill'], ['Fred', 'Scrooge’s cheerful nephew'], ['Belle', 'the young woman who left Scrooge because he loved money more'], ['Fezziwig', 'Scrooge’s kind former employer']],
+      themes: ['redemption', 'poverty', 'social responsibility', 'Christmas spirit', 'family'],
+      context: [['Dickens wrote it partly to draw attention to the suffering of the poor in Victorian England.', true], ['Workhouses were harsh places where the poor were sent.', true], ['Dickens himself worked in a factory as a child.', true], ['The novella was written in the twentieth century.', false], ['Scrooge is a kind man from the start.', false], ['The story is set in New York.', false], ['Tiny Tim is Scrooge’s son.', false]],
+      quotes: [['Bah! Humbug!', 'Scrooge', 'Christmas spirit'], ['solitary as an oyster', 'The narrator (about Scrooge)', null], ['If they would rather die, they had better do it, and decrease the surplus population', 'Scrooge', 'poverty'], ['Are there no prisons?', 'Scrooge', 'social responsibility'], ['I wear the chain I forged in life', 'Marley', 'redemption'], ['Mankind was my business', 'Marley', 'social responsibility'], ['This boy is Ignorance. This girl is Want.', 'The Ghost of Christmas Present', 'poverty'], ['God bless Us, Every One!', 'Tiny Tim', 'family'], ['I will honour Christmas in my heart, and try to keep it all the year', 'Scrooge', 'redemption'], ['I am as light as a feather, I am as happy as an angel', 'Scrooge', 'redemption']] },
+    { id: 'jekyll', title: 'The Strange Case of Dr Jekyll and Mr Hyde', author: 'Robert Louis Stevenson', year: '1886', form: 'novella',
+      plot: ['Enfield tells Utterson about Hyde trampling a girl.', 'Utterson worries about Jekyll’s will, which names Hyde.', 'Hyde murders Sir Danvers Carew.', 'Jekyll says he is finished with Hyde.', 'Lanyon dies after a terrible shock.', 'Utterson and Poole break into Jekyll’s laboratory.', 'Jekyll’s full statement explains the transformation.'],
+      chars: [['Dr Henry Jekyll', 'a respected scientist who creates a potion to separate his darker side'], ['Mr Edward Hyde', 'Jekyll’s violent, ape-like other self'], ['Mr Utterson', 'a calm, loyal lawyer who investigates'], ['Dr Lanyon', 'a former friend of Jekyll who sees the transformation and dies of shock'], ['Poole', 'Jekyll’s loyal butler'], ['Mr Enfield', 'Utterson’s cousin, who tells the story of the door'], ['Sir Danvers Carew', 'a gentle MP murdered by Hyde']],
+      themes: ['duality', 'secrecy', 'science', 'reputation', 'good and evil'],
+      context: [['Victorian gentlemen were expected to protect their public reputation.', true], ['Darwin’s ideas about evolution made some Victorians fear humans could “go backwards”.', true], ['The novella is set mainly in London.', true], ['It was written in the 1990s.', false], ['Hyde is calm and gentle.', false], ['Utterson is a doctor.', false], ['The novella was written by Charles Dickens.', false]],
+      quotes: [['If he be Mr. Hyde... I shall be Mr. Seek', 'Utterson', 'secrecy'], ['the man seems hardly human! Something troglodytic', 'Utterson', 'good and evil'], ['if ever I read Satan’s signature upon a face, it is on that of your new friend', 'Utterson', 'good and evil'], ['with ape-like fury', 'The maid (narrated)', 'good and evil'], ['man is not truly one, but truly two', 'Jekyll', 'duality'], ['the thorough and primitive duality of man', 'Jekyll', 'duality']] },
+  ];
+  const POEMS = [
+    { id: 'ozymandias', title: 'Ozymandias', poet: 'Percy Bysshe Shelley', year: '1818', form: 'sonnet', theme: 'the arrogance of power and how time destroys it', quotes: ['Two vast and trunkless legs of stone', 'Look on my Works, ye Mighty, and despair!', 'The lone and level sands stretch far away'] },
+    { id: 'london', title: 'London', poet: 'William Blake', year: '1794', form: 'four quatrains with regular rhyme', theme: 'suffering and the abuse of power in the city', quotes: ['mind-forg’d manacles', 'Marks of weakness, marks of woe', 'chartered street'] },
+    { id: 'charge', title: 'The Charge of the Light Brigade', poet: 'Alfred, Lord Tennyson', year: '1854', form: 'narrative poem with a galloping rhythm', theme: 'the courage of soldiers and the cost of a military blunder', quotes: ['Into the valley of Death Rode the six hundred', 'Theirs not to reason why, Theirs but to do and die', 'Someone had blunder’d'] },
+    { id: 'exposure', title: 'Exposure', poet: 'Wilfred Owen', year: 'written 1917–18', form: 'stanzas ending with a short half-line refrain', theme: 'the misery of soldiers facing the cold in the trenches', quotes: ['Our brains ache, in the merciless iced east winds that knive us', 'But nothing happens.'] },
+    { id: 'duchess', title: 'My Last Duchess', poet: 'Robert Browning', year: '1842', form: 'dramatic monologue in rhyming couplets', theme: 'the Duke’s jealousy, pride and control', quotes: ['That’s my last Duchess painted on the wall', 'I gave commands; Then all smiles stopped together'] },
+  ];
+
+  /* GCSE Language practice extracts (written for this app). */
+  const EXTRACTS = [
+    { id: 'storm', paper: 1, title: 'The Storm Keeper', kind: 'Fiction (twenty-first century)', text: 'The lighthouse had stood on the point for two hundred years, and for forty of them Elena had kept its light. Tonight the sea was furious. Waves hurled themselves at the rocks and burst into white, ragged spray that rattled against the windows like gravel. She climbed the spiral stairs, counting each one as her father had taught her: one hundred and twelve. At the top, the great lamp waited, patient and enormous, its glass eye catching the last grey light of the evening. Elena wiped the lens with a soft cloth, slowly, the way a mother might wipe a child’s face. Below, somewhere in the blackness, a ship was coming. She could not see it yet, but she could feel it, the way you feel someone watching you from across a room. The wind screamed. The tower trembled. And then, far out on the heaving water, a small orange light flickered, vanished, and flickered again.',
+      q1: [['How long had the lighthouse stood on the point?', 'two hundred years', ['forty years', 'one hundred years', 'twelve years']], ['How many stairs did Elena count?', 'one hundred and twelve', ['two hundred', 'forty', 'twelve']], ['Who taught Elena to count the stairs?', 'her father', ['her mother', 'a sailor', 'nobody']], ['What did Elena use to wipe the lens?', 'a soft cloth', ['her sleeve', 'a brush', 'water']]],
+      tasks: [
+        { n: 2, marks: 8, ask: 'Look at the description of the sea and the storm. How does the writer use language to describe the storm? You could include the writer’s choice of words and phrases, language features and techniques, and sentence forms.', tips: ['Quote short phrases (“hurled themselves”, “screamed”, “rattled… like gravel”).', 'Name the method (personification, simile, verbs) and explain the effect on the reader.', 'Zoom in on single words and their connotations.'] },
+        { n: 3, marks: 8, ask: 'How has the writer structured the text to interest you as a reader? Think about what the writer focuses your attention on at the beginning, how and why this changes, and any other structural features.', tips: ['Beginning: the lighthouse’s long history, then the storm.', 'Middle: zooming in on Elena climbing and cleaning the lamp.', 'End: a shift to the ship and short sentences that build tension.'] },
+        { n: 4, marks: 20, ask: 'A student said, “This part of the story makes Elena seem calm and caring, even in danger.” To what extent do you agree? Write about your own impressions of Elena, evaluate how the writer creates them, and support your opinions with quotations.', tips: ['Give a clear view: agree, partly agree, or disagree.', 'Use evidence: “slowly, the way a mother might wipe a child’s face”.', 'Evaluate the writer’s methods, not just the character.'] },
+        { n: 5, marks: 40, ask: 'Write a description suggested by a stormy night OR write a story about a moment when someone must make a brave decision. (24 marks for content and organisation, 16 for technical accuracy.)', tips: ['Plan five paragraphs; vary their lengths.', 'Use a range of sentence forms and ambitious vocabulary.', 'Check spelling, punctuation and paragraphing at the end.'] },
+      ] },
+    { id: 'screens', paper: 2, title: 'Two views on screen time', kind: 'Non-fiction: a modern newspaper column and a letter written in a Victorian style (both written for this app)', text: 'SOURCE A (modern column): Every evening, my living room glows blue. My son scrolls, my daughter swipes, and I, I confess, check my emails one last time. Experts suggest that teenagers now spend more than seven hours a day looking at screens outside school. Yet I am not convinced this is a disaster. My children use those screens to video-call their grandmother in Lahore, to learn guitar from strangers, to build worlds with friends. The danger is not the screen itself; it is forgetting to look up.\n\nSOURCE B (a letter written in the style of the 1850s): My dear Sister, I write in some alarm. Our nephew Thomas has taken to reading penny novels by candlelight until the very small hours, and is, in consequence, pale, idle and inattentive at his lessons. His father declares that such cheap tales of highwaymen and ghosts will rot the boy’s mind entirely. I confess I am less certain; the child reads, at least, and I recall that we ourselves were scolded for the very same crime. Your affectionate brother, William.',
+      q1: [['Which statement about Source A is TRUE?', 'The writer checks her emails in the evening.', ['The writer has no children.', 'The writer thinks screens are a disaster.', 'The writer’s grandmother lives in London.']], ['Which statement about Source A is TRUE?', 'The children use screens to talk to their grandmother.', ['The children never use screens.', 'The writer bans screens at home.', 'The writer works in a school.']], ['Which statement about Source B is TRUE?', 'Thomas reads by candlelight late at night.', ['Thomas reads newspapers.', 'William is Thomas’s father.', 'Thomas is excellent at his lessons.']], ['Which statement about Source B is TRUE?', 'William is unsure the reading is harmful.', ['William is certain the books are evil.', 'William has never read novels.', 'The letter is to William’s mother.']]],
+      tasks: [
+        { n: 2, marks: 8, ask: 'Use details from both sources. Write a summary of the differences between the young people in each source.', tips: ['Make inferences, not just a list of facts.', 'Use connectives of contrast: whereas, however, on the other hand.', 'Support each point with a short quotation from both sources.'] },
+        { n: 3, marks: 12, ask: 'You now need to refer only to Source B. How does the writer use language to show his feelings about Thomas’s reading?', tips: ['Look at “in some alarm”, “rot the boy’s mind”, “I confess I am less certain”.', 'Explain how the tone shifts from worry to doubt.', 'Comment on formal, old-fashioned language and its effect.'] },
+        { n: 4, marks: 16, ask: 'Compare how the two writers convey their different perspectives on young people and new forms of entertainment.', tips: ['Compare ideas AND methods in both sources.', 'Notice both writers question the worry around them.', 'Use comparative phrases throughout.'] },
+        { n: 5, marks: 40, ask: '“Young people today spend far too much time on screens. Schools should ban phones completely.” Write an article for a newspaper in which you explain your point of view on this statement. (24 marks for content and organisation, 16 for technical accuracy.)', tips: ['Choose a clear viewpoint and keep it.', 'Use persuasive methods: rhetorical questions, statistics, anecdote, direct address.', 'Write a strong opening and ending.'] },
+      ] },
+  ];
+  /* Mark-scheme levels (summarised in our own words; these follow the usual four-level GCSE pattern). */
+  const LEVELS = [
+    { n: 4, name: 'Level 4: detailed and perceptive', desc: 'Analyses the writer’s methods in detail, with well-chosen quotations and precise subject terms; ideas are insightful and developed.' },
+    { n: 3, name: 'Level 3: clear and relevant', desc: 'Clearly explains the effects of methods, with relevant quotations and accurate subject terms.' },
+    { n: 2, name: 'Level 2: some understanding', desc: 'Makes some comments on methods and their effects, with some relevant quotations.' },
+    { n: 1, name: 'Level 1: simple', desc: 'Makes simple comments, may retell or copy, with limited reference to methods.' },
+  ];
+  /* Literature essay questions (Macbeth etc.), self- or parent-marked. */
+  const ESSAYS = [
+    { lit: 'macbeth', ask: 'How does Shakespeare present the theme of ambition in Macbeth? Write about the play as a whole and the context in which it was written.', marks: 30 },
+    { lit: 'macbeth', ask: 'How does Shakespeare present Lady Macbeth as a powerful woman?', marks: 30 },
+    { lit: 'romeo', ask: 'How does Shakespeare present the conflict between the Montagues and the Capulets?', marks: 30 },
+    { lit: 'carol', ask: 'How does Dickens use the character of Scrooge to explore ideas about redemption?', marks: 30 },
+    { lit: 'carol', ask: 'How does Dickens present the importance of social responsibility?', marks: 30 },
+    { lit: 'jekyll', ask: 'How does Stevenson present the duality of human nature?', marks: 30 },
+  ];
+
+  FMG.GCSE = { DEVICES, STRUCTURE, SENTENCES, PUNCT, POETRY, VOCAB, LIT, POEMS, EXTRACTS, LEVELS, ESSAYS };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Family English — KS3 and GCSE questions (no screen code). Items are g:<skill>:<key>.
+   Short questions are marked automatically; long answers are written in a box and marked against a level-based mark scheme. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG, C = FMG.GCSE, LET = ['A', 'B', 'C', 'D'];
+  const uniq = (a) => a.filter((x, i) => x != null && x !== '' && a.indexOf(x) === i);
+  function options(rng, right, wrongs) { const pick = rng.shuffle(uniq(wrongs).filter((w) => w !== right)).slice(0, 3); if (pick.length < 3) return null; const all = rng.shuffle([right].concat(pick)); return { options: all.map((v, i) => ({ letter: LET[i], value: v })), answerIndex: all.indexOf(right) }; }
+  const Q = (o, x) => (o ? Object.assign(x, o) : null);
+  const kit = (rng, claim, right, wrongs, prompt, why, qt, extra) => { const yes = 'Yes, Kit is right.'; const D = (x) => (typeof dp === 'function' ? dp(x) : x); const o = claim === right ? options(rng, yes, wrongs.map((x) => `No, it is ${D(x)}.`)) : options(rng, `No, it is ${D(right)}.`, [yes].concat(wrongs.filter((x) => x !== claim).map((x) => `No, it is ${D(x)}.`))); return Q(o, Object.assign({ qt, prompt, speak: prompt, why }, extra || {})); };
+  const SK = []; const add = (id, stage, strand, name, keys, gens) => SK.push({ id, stage, strand, name, keys, gens });
+  const pickGen = (sk, key, rng) => { for (const g of rng.shuffle(sk.gens.slice())) { const r = g(key, rng); if (r && r.options && r.options.length === 4) return r; } return null; };
+  const art = (w) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
+  const COUNT = ['simile', 'metaphor', 'oxymoron', 'rhetorical question', 'imperative', 'semantic field', 'triplet (rule of three)', 'anecdote'];
+  const dp = (n) => (COUNT.includes(n) ? `${art(n)} ${n}` : n);
+
+  // ---- KS3 language skills ----
+  const DV = C.DEVICES, dvNames = DV.map((d) => d[0]);
+  const close = { simile: ['metaphor', 'personification'], metaphor: ['simile', 'personification'], personification: ['metaphor', 'simile'], alliteration: ['sibilance', 'onomatopoeia'], sibilance: ['alliteration', 'onomatopoeia'], onomatopoeia: ['alliteration', 'sibilance'], 'pathetic fallacy': ['personification', 'foreshadowing'], oxymoron: ['juxtaposition', 'hyperbole'], juxtaposition: ['oxymoron', 'semantic field'], hyperbole: ['oxymoron', 'emotive language'], 'emotive language': ['hyperbole', 'direct address'], 'direct address': ['imperative', 'rhetorical question'], imperative: ['direct address', 'rhetorical question'], repetition: ['triplet (rule of three)', 'alliteration'], 'triplet (rule of three)': ['repetition', 'statistics'] };
+  // These examples use more than one device, so only their own device and clearly different ones are offered.
+  const clash = (ex) => dvNames.filter((n) => (n === 'sibilance' && /\b[sS]\w*\s+[sS]/.test(ex)) || (n === 'alliteration' && /\b(\w)\w*\s+\1/i.test(ex)) || (n === 'personification' && /(howled|coughed|wheezed|clutched|sighed|whispered|beamed)/.test(ex)) || (n === 'direct address' && /\byou\b/i.test(ex)) || (n === 'emotive language' && /(starving|innocent|helpless|suffering)/i.test(ex)) || (n === 'imperative' && /^(Imagine|Act|Join)/.test(ex)) || (n === 'rhetorical question' && /\?$/.test(ex)) || (n === 'statistics' && /\d/.test(ex)) || (n === 'repetition' && /(never|will not)/i.test(ex)) || (n === 'triplet (rule of three)' && /, \w+ and \w+\.$/.test(ex)) || (n === 'simile' && /\b(like|as)\b/.test(ex)) || (n === 'hyperbole' && /(million|ton|horse)/.test(ex)) || (n === 'semantic field' && /:/.test(ex)) || (n === 'metaphor' && /(was a|is a|were knives)/.test(ex)) || (n === 'pathetic fallacy' && /(thunder|sun beamed|sky)/.test(ex)) || (n === 'foreshadowing' && /(Later|crack)/.test(ex)) || (n === 'juxtaposition' && /(beside|while)/.test(ex)) || (n === 'onomatopoeia' && /(crackled|hissed|buzzed|bang)/.test(ex)));
+  add('devices', 'ks3', 'Language', 'Language devices', DV.flatMap((d, i) => d[2].map((_, j) => `${i}.${j}`)), [
+    (k, rng) => { const [i, j] = k.split('.').map(Number), [n, , ex] = DV[i], e = ex[j], bad = clash(e); const wr = (close[n] || []).concat(rng.shuffle(dvNames)).filter((x) => x !== n && !bad.includes(x));
+      return Q(options(rng, n, wr), { qt: 'device-name', prompt: 'Which technique is used here?', speak: `${e} Which technique is used?`, sentence: e, why: `This is ${dp(n)}: it ${DV[i][1]}.` }); },
+    (k, rng) => { const [i] = k.split('.').map(Number), [n, d] = DV[i]; return Q(options(rng, d, rng.shuffle(DV.filter((x) => x[0] !== n)).map((x) => x[1])), { qt: 'device-def', prompt: `What is ${dp(n)}?`, speak: `What is ${dp(n)}?`, big: n, why: `${n[0].toUpperCase() + n.slice(1)} ${d}.` }); },
+    (k, rng) => { const [i, j] = k.split('.').map(Number), [n, d, ex] = DV[i]; const others = DV.filter((x) => x[0] !== n && !(close[n] || []).includes(x[0])).flatMap((x) => x[2]).filter((e) => !clash(e).includes(n));
+      return Q(options(rng, ex[j], rng.shuffle(others)), { qt: 'device-find', prompt: `Which sentence uses ${dp(n)}?`, speak: `Which sentence uses ${dp(n)}?`, why: `“${ex[j]}” uses ${dp(n)}: it ${d}.` }); },
+    (k, rng) => { const [i, j] = k.split('.').map(Number), [n, , ex] = DV[i], e = ex[j], bad = clash(e); const wr = (close[n] || []).concat(rng.shuffle(dvNames)).filter((x) => x !== n && !bad.includes(x)); const claim = rng() < 0.3 ? n : wr[0];
+      return kit(rng, claim, n, wr.slice(0, 5), `Kit says this sentence uses ${dp(claim)}. Is Kit right?`, `It is ${dp(n)}.`, 'device-kit', { sentence: e }); },
+  ]);
+  const pairs = (id, stage, strand, name, list, label) => add(id, stage, strand, name, list.map((x) => x[0]), [
+    (k, rng) => { const [n, d] = list.find((x) => x[0] === k); return Q(options(rng, d, list.filter((x) => x[0] !== n).map((x) => x[1])), { qt: `${id}-def`, prompt: `What does “${n}” mean?`, speak: `What does ${n} mean?`, big: n, why: `${n[0].toUpperCase() + n.slice(1)}: ${d}.` }); },
+    (k, rng) => { const [n, d] = list.find((x) => x[0] === k); return Q(options(rng, n, list.filter((x) => x[0] !== n).map((x) => x[0])), { qt: `${id}-term`, prompt: `Which ${label} is this? “${d}”`, speak: `Which ${label} means: ${d}?`, why: `That is ${art(n)} ${n}.` }); },
+  ]);
+  pairs('structure', 'ks3', 'Language', 'Structure terms', C.STRUCTURE, 'structural feature');
+  pairs('poetry', 'ks3', 'Poetry', 'Poetry terms', C.POETRY, 'poetry term');
+  add('vocab', 'ks3', 'Vocabulary', 'Words for analysis', C.VOCAB.map((x) => x[0]), [
+    (k, rng) => { const [w, m, wr] = C.VOCAB.find((x) => x[0] === k); return Q(options(rng, m, wr), { qt: 'vocab-mean', prompt: `What does “${w}” mean?`, speak: `What does ${w} mean?`, big: w, why: `${w}: ${m}.` }); },
+    (k, rng) => { const [w, m] = C.VOCAB.find((x) => x[0] === k); return Q(options(rng, w, C.VOCAB.filter((x) => x[0] !== w).map((x) => x[0])), { qt: 'vocab-word', prompt: `Which word means “${m}”?`, speak: `Which word means ${m}?`, why: `${w} means ${m}.` }); },
+  ]);
+  add('sentforms', 'ks3', 'Language', 'Sentence forms', C.SENTENCES.map((x) => x[0]), [
+    (k, rng) => { const t = C.SENTENCES.find((x) => x[0] === k)[1]; return Q(options(rng, t, ['simple', 'compound', 'complex', 'minor'].filter((x) => x !== t)), { qt: 'sentform', prompt: 'What kind of sentence is this?', speak: k, sentence: k, why: { simple: 'A simple sentence has one main clause.', compound: 'A compound sentence joins two main clauses with and, but, or, so.', complex: 'A complex sentence has a main clause and a subordinate clause.', minor: 'A minor sentence has no main verb; it is used for effect.' }[t] }); },
+  ]);
+  add('punct', 'ks3', 'Language', 'Punctuation for effect', C.PUNCT.map((x) => x[0]), [
+    (k, rng) => { const [, m] = C.PUNCT.find((x) => x[0] === k); return Q(options(rng, m, uniq(C.PUNCT.map((x) => x[1]).concat(['comma', 'full stop']))), { qt: 'punct-name', prompt: 'Which punctuation mark is used for effect here?', speak: 'Which punctuation mark is used for effect?', sentence: k, why: `The ${m} ${C.PUNCT.find((x) => x[0] === k)[2]}.` }); },
+    (k, rng) => { const [, m, e] = C.PUNCT.find((x) => x[0] === k); return Q(options(rng, e, C.PUNCT.filter((x) => x[1] !== m).map((x) => x[2])), { qt: 'punct-effect', prompt: `What does the ${m} do in this sentence?`, speak: `What does the ${m} do?`, sentence: k, why: `Here the ${m} ${e}.` }); },
+  ]);
+
+  // ---- GCSE Literature knowledge ----
+  C.LIT.forEach((L) => {
+    const qk = L.quotes.map((_, i) => `q${i}`), pk = L.plot.map((_, i) => `p${i}`), ck = L.chars.map((_, i) => `c${i}`), xk = L.context.map((_, i) => `x${i}`);
+    const speakers = uniq(L.quotes.map((x) => x[1]).concat(L.chars.map((c) => c[0])));
+    add(`lit-${L.id}`, 'gcse', 'Literature', `${L.title} (${L.author})`, qk.concat(pk, ck, xk), [
+      (k, rng) => { if (k[0] !== 'q') return null; const [qq, who] = L.quotes[+k.slice(1)]; return Q(options(rng, who, speakers.filter((s) => s !== who && !(who.includes('narrator') && s.includes('narrator')))), { qt: 'lit-who', prompt: `Who says: “${qq}”?`, speak: `Who says: ${qq}?`, why: `${who} says this.` }); },
+      (k, rng) => { if (k[0] !== 'q') return null; const [qq, , th] = L.quotes[+k.slice(1)]; if (!th) return null; return Q(options(rng, th, L.themes.filter((t) => t !== th)), { qt: 'lit-theme', prompt: `Which theme does this quotation link to most clearly? “${qq}”`, speak: `Which theme does this quotation link to?`, why: `“${qq}” links most clearly to ${th}.` }); },
+      (k, rng) => { if (k[0] !== 'q') return null; const [qq] = L.quotes[+k.slice(1)]; const ws = qq.split(' '); if (ws.length < 4) return null; const idx = rng.int(1, ws.length - 1), word = ws[idx].replace(/[^\w’']/g, ''); if (word.length < 3) return null;
+        const pool = uniq(L.quotes.flatMap((x) => x[0].split(' ')).map((w) => w.replace(/[^\w’']/g, '')).filter((w) => w.length >= 3 && w.toLowerCase() !== word.toLowerCase()));
+        return Q(options(rng, word, rng.shuffle(pool)), { qt: 'lit-complete', prompt: 'Complete the quotation.', speak: 'Complete the quotation.', sentence: ws.map((w, i) => (i === idx ? w.replace(word, '____') : w)).join(' '), why: `The quotation is: “${qq}”.` }); },
+      (k, rng) => { if (k[0] !== 'p') return null; const i = +k.slice(1); if (i >= L.plot.length - 1) return null; return Q(options(rng, L.plot[i + 1], L.plot.filter((_, j) => j !== i + 1 && j !== i)), { qt: 'lit-next', prompt: `What happens next? “${L.plot[i]}”`, speak: `What happens next after: ${L.plot[i]}`, why: `Next: ${L.plot[i + 1]}` }); },
+      (k, rng) => { if (k[0] !== 'p') return null; const i = +k.slice(1); const others = rng.shuffle(L.plot.filter((_, j) => j !== i)).slice(0, 3); const four = others.concat(L.plot[i]); const first = four.slice().sort((a, b) => L.plot.indexOf(a) - L.plot.indexOf(b))[0];
+        return Q(options(rng, first, four.filter((x) => x !== first)), { qt: 'lit-first', prompt: 'Which of these happens first?', speak: 'Which of these happens first?', why: `“${first}” comes first.` }); },
+      (k, rng) => { if (k[0] !== 'c') return null; const [n, d] = L.chars[+k.slice(1)]; return Q(options(rng, n, L.chars.filter((c) => c[0] !== n).map((c) => c[0])), { qt: 'lit-char', prompt: `Which character is this? ${d[0].toUpperCase() + d.slice(1)}.`, speak: `Which character is ${d}?`, why: `${n}: ${d}.` }); },
+      (k, rng) => { if (k[0] !== 'x') return null; const [fact, tr] = L.context[+k.slice(1)]; if (!tr) { const trues = L.context.filter((c) => c[1]).map((c) => c[0]); return Q(options(rng, fact, trues), { qt: 'lit-context-false', prompt: `Which statement about ${L.title} is FALSE?`, speak: `Which statement is false?`, why: `False: ${fact}` }); }
+        return Q(options(rng, fact, L.context.filter((c) => !c[1]).map((c) => c[0])), { qt: 'lit-context-true', prompt: `Which statement about ${L.title} and its context is TRUE?`, speak: 'Which statement is true?', why: fact }); },
+      (k, rng) => { if (k[0] !== 'c') return null; const other = C.LIT.filter((o) => o !== L); return Q(options(rng, L.title, other.map((o) => o.title)), { qt: 'lit-which-text', prompt: `In which text is ${L.chars[+k.slice(1)][0]} a character?`, speak: `In which text is ${L.chars[+k.slice(1)][0]} a character?`, why: `${L.chars[+k.slice(1)][0]} is in ${L.title} by ${L.author}.` }); },
+    ]);
+  });
+  add('poems', 'gcse', 'Literature', 'Anthology poems (out of copyright)', C.POEMS.flatMap((p) => p.quotes.map((_, i) => `${p.id}.${i}`)).concat(C.POEMS.map((p) => p.id)), [
+    (k, rng) => { if (!k.includes('.')) return null; const [id, i] = k.split('.'), p = C.POEMS.find((x) => x.id === id); return Q(options(rng, p.title, C.POEMS.filter((x) => x !== p).map((x) => x.title)), { qt: 'poem-which', prompt: `Which poem is this from? “${p.quotes[+i]}”`, speak: 'Which poem is this from?', why: `It is from ${p.title} by ${p.poet}.` }); },
+    (k, rng) => { const p = C.POEMS.find((x) => x.id === k.split('.')[0]); return Q(options(rng, p.poet, C.POEMS.filter((x) => x !== p).map((x) => x.poet)), { qt: 'poem-poet', prompt: `Who wrote ${p.title}?`, speak: `Who wrote ${p.title}?`, why: `${p.title} was written by ${p.poet} (${p.year}).` }); },
+    (k, rng) => { if (k.includes('.')) return null; const p = C.POEMS.find((x) => x.id === k); return Q(options(rng, p.theme, C.POEMS.filter((x) => x !== p).map((x) => x.theme)), { qt: 'poem-theme', prompt: `What is ${p.title} mainly about?`, speak: `What is ${p.title} mainly about?`, why: `${p.title} explores ${p.theme}.` }); },
+    (k, rng) => { if (k.includes('.')) return null; const p = C.POEMS.find((x) => x.id === k); return Q(options(rng, p.form, C.POEMS.filter((x) => x !== p).map((x) => x.form)), { qt: 'poem-form', prompt: `What is the form of ${p.title}?`, speak: `What is the form of ${p.title}?`, why: `${p.title}: ${p.form}.` }); },
+  ]);
+
+  const STAGES = [{ id: 'ks3', name: 'KS3 (Years 7–9)', key: 'Language and poetry skills' }, { id: 'gcse', name: 'GCSE (Years 10–11)', key: 'English Literature set texts' }];
+  const skill = (id) => SK.find((s) => s.id === id);
+  const itemsOf = (sk) => sk.keys.map((k) => `g:${sk.id}:${k}`);
+  function makeQ(item, rng) { const m = /^g:([^:]+):(.*)$/.exec(item); const sk = m && skill(m[1]); if (!sk) return null; const r = pickGen(sk, m[2], rng); return r ? Object.assign({ item, unit: sk.id }, r) : null; }
+  /* A level-based mark scheme for an n-mark task: four even bands. */
+  function bands(n) { const per = n / 4; return C.LEVELS.map((L) => ({ ...L, lo: Math.round(per * (L.n - 1)) + 1, hi: Math.round(per * L.n) })); }
+  function knowledgeTest(litId, rng) { const sk = skill(`lit-${litId}`), out = []; for (let k = 0; out.length < 12 && k < 300; k++) { const it = `g:${sk.id}:${rng.pick(sk.keys)}`; if (out.some((x) => x.item === it)) continue; const x = makeQ(it, rng); if (x) out.push(x); } return out; }
+  FMG.gcse = { STAGES, SKILLS: SK, skill, itemsOf, makeQ, bands, knowledgeTest, EXTRACTS: C.EXTRACTS, ESSAYS: C.ESSAYS, LIT: C.LIT, LEVELS: C.LEVELS };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
 /* Family English — adapted from the Family Maths store. Local storage with transactional commits, read-back verification and versioned backups. Spec §9. */
 (function (root) {
   'use strict';
@@ -1501,8 +1728,9 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
         <a class="tile t-spag" href="#/spag"><span>✍️</span><b>Spelling and grammar</b><small>Year 2 to Year 6</small></a>
         <a class="tile t-readc" href="#/read"><span>📖</span><b>Reading comprehension</b><small>Stories and information texts</small></a>
         <a class="tile t-paper" href="#/paper"><span>🎓</span><b>SATs-style paper</b><small>KS2 grammar, punctuation and spelling</small></a>
+        <a class="tile t-gcse" href="#/gcse"><span>🏫</span><b>KS3 and GCSE</b><small>Language skills, Literature texts, practice papers</small></a>
       </div>
-      <p class="small muted center">Coming next: more reading, writing tasks, then English Language and Literature up to GCSE.</p>`);
+      <p class="small muted center">From first sounds to GCSE: tap any tile.</p>`);
   });
 
   route(/^#\/phonics$/, () => {
@@ -1585,6 +1813,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     const p = profile(), rng = FMG.rng(FMG.newSeed());
     let items, label, back;
     if (/^k-/.test(target)) { const sk = G.skill(target.slice(2)); if (!sk) { location.hash = '#/spag'; return; } items = G.itemsOf(sk); label = sk.name; back = '#/spag'; }
+    else if (/^g-/.test(target)) { const sk = FMG.gcse.skill(target.slice(2)); if (!sk) { location.hash = '#/gcse'; return; } items = FMG.gcse.itemsOf(sk); label = sk.name; back = '#/gcse'; }
     else if (/^y-/.test(target)) { items = G.SKILLS.filter((k) => k.year === target.slice(2)).flatMap(G.itemsOf); label = `${(G.YEARS.find((y) => y.id === target.slice(2)) || {}).name} mixed`; back = '#/spag'; }
     else if (/^u\d+$/.test(target)) { const u = E.unit(target); items = E.itemsOf(u); label = u.title; back = `#/unit/${u.id}`; }
     else if (/^p\d$/.test(target)) { items = E.stageItems(target); label = `${E.stageOf(target).name} mixed`; back = '#/phonics'; }
@@ -1592,8 +1821,9 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     else { location.hash = '#/home'; return; }
     const states = statesOf(p), count = p.band === 'little' ? 8 : 10;
     const rank = (i) => { const t = E.st(states, i); return t.n && !t.secure ? 0 : !t.n ? 1 : 2; };
-    const qs = /^k:/.test(items[0] || '') ? (() => { const ranked = rng.shuffle(items).sort((a, b) => rank(a) - rank(b)), out = [];
-      for (let k = 0; out.length < count && k < count * 6; k++) { const x = G.makeQ(ranked[k % ranked.length], rng, p.band); if (x) out.push(x); } return rng.shuffle(out); })()
+    const MQ = /^g:/.test(items[0] || '') ? FMG.gcse.makeQ : G.makeQ;
+    const qs = /^[kg]:/.test(items[0] || '') ? (() => { const ranked = rng.shuffle(items).sort((a, b) => rank(a) - rank(b)), out = [];
+      for (let k = 0; out.length < count && k < count * 6; k++) { const x = MQ(ranked[k % ranked.length], rng, p.band); if (x) out.push(x); } return rng.shuffle(out); })()
       : E.buildSet(items, rng, { band: p.band, count, states });
     runRound({ qs, label, back, mode: 'practice', onEnd: (res) => results(res, back, location.hash, label) });
   });
@@ -1642,6 +1872,66 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
       onEnd: (res) => { const gpR = res.filter((r) => r.q.section !== 'Spelling'), spR = res.filter((r) => r.q.section === 'Spelling');
         const rec = { kind: 'paper', gp: gpR.filter((r) => r.ok).length, gpn: gpR.length, sp: spR.filter((r) => r.ok).length, spn: spR.length };
         record(p, rec); results(res, '#/paper', `#/paper/${len}`, `Grammar and punctuation ${rec.gp}/${rec.gpn} · Spelling ${rec.sp}/${rec.spn}`); } });
+  });
+
+  /* ---------- KS3 and GCSE ---------- */
+  const GC = FMG.gcse;
+  route(/^#\/gcse$/, () => {
+    const p = profile(), states = statesOf(p), res = examsOf2(p);
+    const pct = (sk) => { const its = GC.itemsOf(sk); return its.length ? Math.round((100 * its.filter((i) => E.st(states, i).secure).length) / its.length) : 0; };
+    const best = (kind, stage) => res.filter((r) => r.kind === kind && r.stage === stage).reduce((m, r) => (!m || r.got / r.of > m.got / m.of ? r : m), null);
+    const bt = (r) => (r ? ` <span class="badge">${r.got}/${r.of}</span>` : '');
+    shell(`<h1>🎓 KS3 and GCSE English</h1><p class="muted">Practice in the style of GCSE English Language and English Literature (AQA is the most common board in England). Short questions mark themselves; for long answers you write in a box, then mark it against a mark scheme in four levels: on your own, or with a grown-up.</p>
+      <section class="stage"><h2>KS3 skills <small>Years 7–9</small></h2><div class="units">${GC.SKILLS.filter((k) => k.stage === 'ks3').map((k) => `<a class="unit" href="#/play/g-${k.id}"><b>${esc(k.name)}</b><small class="muted">${k.keys.length} items</small>${bar(pct(k))}</a>`).join('')}</div></section>
+      <section class="stage"><h2>English Language practice papers <small>GCSE</small></h2>
+        ${GC.EXTRACTS.map((x) => `<div class="prow"><b>Paper ${x.paper}: ${esc(x.title)}</b><span class="small muted">${esc(x.kind)}</span></div><div class="row"><a class="btn primary sm" href="#/gcse/paper/${x.id}">Question 1 (4 marks)</a>${x.tasks.map((t) => `<a class="btn ghost sm" href="#/gcse/write/${x.id}/${t.n}">Q${t.n} (${t.marks} marks)${bt(best('gcse-task', `${x.id}.${t.n}`))}</a>`).join('')}</div>`).join('')}</section>
+      <section class="stage"><h2>English Literature <small>GCSE set texts</small></h2>
+        ${GC.LIT.map((L) => { const sk = GC.skill(`lit-${L.id}`); return `<div class="prow"><b>${esc(L.title)}</b><span class="small muted">${esc(L.author)}, ${esc(L.year)} · ${esc(L.form)}</span></div><div class="row"><a class="btn ghost sm" href="#/play/g-${sk.id}">Practise ${bar(pct(sk))}</a><a class="btn primary sm" href="#/gcse/test/${L.id}">Knowledge test${bt(best('gcse-test', L.id))}</a>${GC.ESSAYS.map((e, i) => (e.lit === L.id ? `<a class="btn ghost sm" href="#/gcse/essay/${i}">Essay ${i + 1}${bt(best('gcse-essay', String(i)))}</a>` : '')).join('')}</div>`; }).join('')}
+        <div class="row"><a class="btn ghost sm" href="#/play/g-poems">Anthology poems</a></div></section>`, { back: '#/home', backText: 'Home' });
+  });
+  const extractBox = (x) => `<details class="passage"><summary><b>${esc(x.title)}</b> <span class="small muted">${esc(x.kind)} · tap to show or hide</span></summary>${x.text.split('\n\n').map((t) => `<p>${esc(t)}</p>`).join('')}</details>`;
+  route(/^#\/gcse\/paper\/(\w+)$/, (id) => {
+    const x = GC.EXTRACTS.find((e) => e.id === id); if (!x) { location.hash = '#/gcse'; return; }
+    const rng = FMG.rng(FMG.newSeed());
+    const qs = x.q1.map(([qq, a, w], i) => Object.assign({ item: `gl:${id}:${i}`, unit: `gcse-${id}`, qt: 'gcse-q1', prompt: qq, speak: qq, why: `The answer is in the text: ${a}.` }, (() => { const all = rng.shuffle([a].concat(w)); return { options: all.map((v, j) => ({ letter: 'ABCD'[j], value: v })), answerIndex: all.indexOf(a) }; })()));
+    runRound({ qs, label: `Paper ${x.paper} · Question 1`, back: '#/gcse', mode: 'gcse', above: () => extractBox(x).replace('<details class="passage">', '<details class="passage" open>'),
+      onEnd: (res) => { const got = res.filter((r) => r.ok).length; record(profile(), { kind: 'gcse-task', stage: `${id}.1`, got, of: 4 }); results(res, '#/gcse', `#/gcse/paper/${id}`, `Question 1: ${got} out of 4 marks. Next, try Question 2 on the GCSE page.`); } });
+  });
+  route(/^#\/gcse\/test\/(\w+)$/, (lit) => {
+    const L = GC.LIT.find((x) => x.id === lit); if (!L) { location.hash = '#/gcse'; return; }
+    runRound({ qs: GC.knowledgeTest(lit, FMG.rng(FMG.newSeed())), label: `📚 ${L.title}: knowledge test`, back: '#/gcse', mode: 'gcse',
+      onEnd: (res) => { const got = res.filter((r) => r.ok).length; record(profile(), { kind: 'gcse-test', stage: lit, got, of: res.length }); results(res, '#/gcse', `#/gcse/test/${lit}`, `${L.title}: ${got} out of ${res.length}.`); } });
+  });
+  /* Long answers: write, then mark against the level bands. Drafts are kept on this device. */
+  function writeTask(o) {
+    const p = profile(), key = `fe.draft.${p.id}.${o.key}`; let draft = ''; try { draft = localStorage.getItem(key) || ''; } catch (e) { /* ignore */ }
+    const bands = GC.bands(o.marks);
+    shell(`<div class="qtop"><span class="qmode">${esc(o.label)}</span><span class="badge">${o.marks} marks</span></div>
+      ${o.extract ? extractBox(o.extract) : ''}
+      <div class="qcard"><p class="prompt left">${esc(o.ask)}</p>
+        <details class="tips"><summary>💡 Tips</summary><ul>${o.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></details>
+        <textarea id="essay" class="essay" rows="14" placeholder="Write your answer here. It is saved on this device as you type.">${esc(draft)}</textarea>
+        <p class="small muted" id="wc"></p>
+        <div class="row"><button class="btn primary" id="markit">✅ I have finished: mark it</button><button class="btn ghost sm" id="sayq">🗣️ Read the question</button></div>
+        <div id="markbox"></div></div>`, { back: '#/gcse', backText: 'GCSE', cls: 'focus' });
+    const ta = $('#essay'), wc = () => { const n = (ta.value.match(/\S+/g) || []).length; $('#wc').textContent = `${n} words`; try { localStorage.setItem(key, ta.value); } catch (e) { /* ignore */ } };
+    ta.oninput = wc; wc(); $('#sayq').onclick = () => say(o.ask);
+    $('#markit').onclick = () => {
+      $('#markbox').innerHTML = `<h3>Mark scheme</h3><p class="small muted">Read the answer, find the level that fits best, then choose a mark in that level. Higher in the level if it fully matches, lower if only partly.</p>
+        ${bands.map((b) => `<div class="band"><b>${esc(b.name)} (${b.lo}–${b.hi} marks)</b><p class="small">${esc(b.desc)}</p><div class="row">${Array.from({ length: b.hi - b.lo + 1 }, (_, i) => b.lo + i).map((m) => `<button class="btn sm ghost" data-mark="${m}">${m}</button>`).join('')}</div></div>`).join('')}
+        <div class="row"><button class="btn sm ghost" data-mark="0">0 (nothing relevant yet)</button></div>`;
+      $$('[data-mark]').forEach((b) => (b.onclick = () => { const got = +b.dataset.mark; record(p, { kind: o.kind, stage: o.key, got, of: o.marks, words: (ta.value.match(/\S+/g) || []).length, text: ta.value.slice(0, 6000) });
+        $('#markbox').innerHTML = `<div class="fb good"><b>Saved: ${got} out of ${o.marks}.</b><p>Your answer is kept on this device. Try the next question, or improve this one using the tips and mark it again.</p></div><div class="row"><a class="btn primary" href="#/gcse">Back to GCSE</a></div>`; }));
+      $('#markbox').scrollIntoView({ behavior: 'smooth' });
+    };
+  }
+  route(/^#\/gcse\/write\/(\w+)\/(\d)$/, (id, n) => {
+    const x = GC.EXTRACTS.find((e) => e.id === id), t = x && x.tasks.find((k) => k.n === +n); if (!t) { location.hash = '#/gcse'; return; }
+    writeTask({ key: `${id}.${n}`, kind: 'gcse-task', label: `Paper ${x.paper} · Question ${n}`, ask: t.ask, tips: t.tips, marks: t.marks, extract: t.n === 5 ? null : x });
+  });
+  route(/^#\/gcse\/essay\/(\d+)$/, (i) => {
+    const e = GC.ESSAYS[+i]; if (!e) { location.hash = '#/gcse'; return; } const L = GC.LIT.find((x) => x.id === e.lit);
+    writeTask({ key: String(i), kind: 'gcse-essay', label: `${L.title} essay`, ask: e.ask, marks: e.marks, tips: ['Make a clear argument in your opening (your thesis).', 'Use short, embedded quotations and analyse key words.', `Link to context: ${L.context.filter((c) => c[1]).slice(0, 2).map((c) => c[0]).join(' ')}`, 'Write about the whole text, not just one scene.', 'Spelling, punctuation and grammar also count.'] });
   });
 
   /* ---------- Phase tests ---------- */
