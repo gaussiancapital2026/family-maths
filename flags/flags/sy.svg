@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="flag-icons-sy" viewBox="0 0 640 480">
+  <!-- Syria: green, white and black with three red stars (flag re-adopted in 2025; drawn for this game) -->
+  <path fill="#000" d="M0 0h640v480H0Z"/>
+  <path fill="#fff" d="M0 0h640v320H0Z"/>
+  <path fill="#007a3d" d="M0 0h640v160H0Z"/>
+  <path fill="#ce1126" d="M176.0 196.0L185.9 226.4L217.8 226.4L192.0 245.2L201.9 275.6L176.0 256.8L150.1 275.6L160.0 245.2L134.2 226.4L166.1 226.4ZM320.0 196.0L329.9 226.4L361.8 226.4L336.0 245.2L345.9 275.6L320.0 256.8L294.1 275.6L304.0 245.2L278.2 226.4L310.1 226.4ZM464.0 196.0L473.9 226.4L505.8 226.4L480.0 245.2L489.9 275.6L464.0 256.8L438.1 275.6L448.0 245.2L422.2 226.4L454.1 226.4Z"/>
+</svg>
