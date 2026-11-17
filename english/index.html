@@ -94,6 +94,8 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
 @media (max-width:520px){.qbig{font-size:2.4rem}.opt{font-size:1.25rem}.abcd.pics .opt{font-size:2.5rem}.chk-word{font-size:3rem}}
 [hidden]{display:none!important}
 .badge.g-distinction{background:#d9a400}.badge.g-merit{background:#0a6fd6}.badge.g-pass{background:var(--good)}.badge.g-notyet{background:var(--muted)}
+.strand{font-size:.95rem;margin:.8rem 0 0;color:var(--muted)}
+.passage{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:.8rem 1rem;margin:0 0 .8rem}.passage summary{cursor:pointer}.passage p{font-size:1.08rem;line-height:1.65;margin:.6rem 0}
 
 </style>
 </head>
@@ -794,6 +796,361 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
 
 </script>
   <script>
+/* Family English — KS1 and KS2 spelling, grammar, punctuation and reading content.
+   Spelling lists: the statutory word lists in the National Curriculum for England (Years 3–4 and 5–6).
+   Grammar terms follow the KS2 English grammar, punctuation and spelling test framework. Passages are written for this app. */
+(function (root) {
+  'use strict';
+  const FMG = (root.FMG = root.FMG || {});
+  const L = (s) => s.trim().split(/\s+/);
+
+  const Y34 = L(`accident accidentally actual actually address answer appear arrive believe bicycle breath breathe build busy business calendar caught centre century certain circle complete consider continue decide describe different difficult disappear early earth eight eighth enough exercise experience experiment extreme famous favourite February forward forwards fruit grammar group guard guide heard heart height history imagine increase important interest island knowledge learn length library material medicine mention minute natural naughty notice occasion occasionally often opposite ordinary particular peculiar perhaps popular position possess possession possible potatoes pressure probably promise purpose quarter question recent regular reign remember sentence separate special straight strange strength suppose surprise therefore though although thought through various weight woman women`);
+  const Y56 = L(`accommodate accompany according achieve aggressive amateur ancient apparent appreciate attached available average awkward bargain bruise category cemetery committee communicate community competition conscience conscious controversy convenience correspond criticise curiosity definite desperate determined develop dictionary disastrous embarrass environment equip equipped equipment especially exaggerate excellent existence explanation familiar foreign forty frequently government guarantee harass hindrance identity immediate immediately individual interfere interrupt language leisure lightning marvellous mischievous muscle necessary neighbour nuisance occupy occur opportunity parliament persuade physical prejudice privilege profession programme pronunciation queue recognise recommend relevant restaurant rhyme rhythm sacrifice secretary shoulder signature sincere sincerely soldier stomach sufficient suggest symbol system temperature thorough twelfth variety vegetable vehicle yacht`);
+  const Y2 = L(`door floor poor because find kind mind behind child children wild climb most only both old cold gold hold told every everybody even great break steak pretty beautiful after fast last past father class grass pass plant path bath hour move prove improve sure sugar eye could should would who whole any many clothes busy people water again half money Mr Mrs parents Christmas`);
+
+  /* Suffix words: [root, +ing, +ed] etc. Written out in full so every answer is checked by hand. */
+  const ING = [['jump', 'jumping'], ['play', 'playing'], ['hop', 'hopping'], ['run', 'running'], ['swim', 'swimming'], ['make', 'making'], ['ride', 'riding'], ['shop', 'shopping'], ['sit', 'sitting'], ['write', 'writing'], ['smile', 'smiling'], ['skip', 'skipping'], ['clap', 'clapping'], ['bake', 'baking'], ['hope', 'hoping'], ['stop', 'stopping'], ['dance', 'dancing'], ['sing', 'singing'], ['read', 'reading'], ['cry', 'crying'], ['shine', 'shining'], ['plan', 'planning'], ['drop', 'dropping'], ['wave', 'waving'], ['carry', 'carrying'], ['begin', 'beginning'], ['forget', 'forgetting'], ['travel', 'travelling'], ['visit', 'visiting'], ['open', 'opening']];
+  const ED = [['jump', 'jumped'], ['play', 'played'], ['hop', 'hopped'], ['bake', 'baked'], ['cry', 'cried'], ['carry', 'carried'], ['stop', 'stopped'], ['smile', 'smiled'], ['clap', 'clapped'], ['hope', 'hoped'], ['try', 'tried'], ['skip', 'skipped'], ['dance', 'danced'], ['hurry', 'hurried'], ['plan', 'planned'], ['wave', 'waved'], ['copy', 'copied'], ['travel', 'travelled'], ['visit', 'visited'], ['drop', 'dropped'], ['enjoy', 'enjoyed'], ['prefer', 'preferred'], ['happen', 'happened'], ['tap', 'tapped']];
+  const ER_EST = [['big', 'bigger', 'biggest'], ['fast', 'faster', 'fastest'], ['happy', 'happier', 'happiest'], ['nice', 'nicer', 'nicest'], ['hot', 'hotter', 'hottest'], ['tall', 'taller', 'tallest'], ['funny', 'funnier', 'funniest'], ['large', 'larger', 'largest'], ['sad', 'sadder', 'saddest'], ['small', 'smaller', 'smallest'], ['easy', 'easier', 'easiest'], ['wet', 'wetter', 'wettest'], ['brave', 'braver', 'bravest'], ['busy', 'busier', 'busiest'], ['thin', 'thinner', 'thinnest'], ['late', 'later', 'latest']];
+  const SUFFIX = [['care', 'ful', 'careful'], ['hope', 'less', 'hopeless'], ['kind', 'ness', 'kindness'], ['enjoy', 'ment', 'enjoyment'], ['happy', 'ly', 'happily'], ['play', 'ful', 'playful'], ['help', 'less', 'helpless'], ['sad', 'ness', 'sadness'], ['pay', 'ment', 'payment'], ['quick', 'ly', 'quickly'], ['beauty', 'ful', 'beautiful'], ['happy', 'ness', 'happiness'], ['merry', 'ment', 'merriment'], ['angry', 'ly', 'angrily'], ['gentle', 'ly', 'gently'], ['basic', 'ly', 'basically'], ['plenty', 'ful', 'plentiful'], ['fear', 'less', 'fearless'], ['ill', 'ness', 'illness'], ['move', 'ment', 'movement'], ['sudden', 'ly', 'suddenly'], ['use', 'ful', 'useful'], ['lazy', 'ly', 'lazily'], ['dark', 'ness', 'darkness']];
+  const PLURAL = [['cat', 'cats'], ['box', 'boxes'], ['baby', 'babies'], ['child', 'children'], ['mouse', 'mice'], ['leaf', 'leaves'], ['bus', 'buses'], ['dish', 'dishes'], ['church', 'churches'], ['lady', 'ladies'], ['key', 'keys'], ['wolf', 'wolves'], ['foot', 'feet'], ['tooth', 'teeth'], ['man', 'men'], ['woman', 'women'], ['knife', 'knives'], ['potato', 'potatoes'], ['sheep', 'sheep'], ['fox', 'foxes'], ['city', 'cities'], ['toy', 'toys'], ['half', 'halves'], ['person', 'people'], ['goose', 'geese'], ['party', 'parties']];
+  const CONTRACT = [['do not', "don't"], ['can not', "can't"], ['I am', "I'm"], ['it is', "it's"], ['they are', "they're"], ['we will', "we'll"], ['would not', "wouldn't"], ['should have', "should've"], ['you are', "you're"], ['she is', "she's"], ['is not', "isn't"], ['did not', "didn't"], ['I have', "I've"], ['we are', "we're"], ['could not', "couldn't"], ['they have', "they've"], ['will not', "won't"], ['he will', "he'll"], ['I would', "I'd"], ['let us', "let's"], ['are not', "aren't"], ['have not', "haven't"]];
+  /* Homophone sets with a sentence for each spelling ("_" is the gap). */
+  const HOMO = [
+    { set: ['there', 'their', "they're"], s: [['The cat is over _.', 'there'], ['The children put on _ coats.', 'their'], ['I think _ going to win.', "they're"]] },
+    { set: ['to', 'too', 'two'], s: [['We walked _ the park.', 'to'], ['I would like some cake _.', 'too'], ['She has _ brothers.', 'two']] },
+    { set: ['see', 'sea'], s: [['The boat sailed across the _.', 'sea'], ['Can you _ the moon?', 'see']] },
+    { set: ['hear', 'here'], s: [['Come and sit _.', 'here'], ['I can _ the birds singing.', 'hear']] },
+    { set: ['night', 'knight'], s: [['The _ wore shining armour.', 'knight'], ['Owls hunt at _.', 'night']] },
+    { set: ['blue', 'blew'], s: [['The wind _ the leaves away.', 'blew'], ['The sky is _ today.', 'blue']] },
+    { set: ['sun', 'son'], s: [['Their _ is five years old.', 'son'], ['The _ is shining.', 'sun']] },
+    { set: ['one', 'won'], s: [['Our team _ the match.', 'won'], ['I have _ sister.', 'one']] },
+    { set: ['where', 'wear', 'were'], s: [['What will you _ to the party?', 'wear'], ['_ is my bag?', 'where'], ['We _ late for school.', 'were']] },
+    { set: ['by', 'buy', 'bye'], s: [['I want to _ a new book.', 'buy'], ['The shop is _ the river.', 'by'], ['She waved and said good_.', 'bye']] },
+    { set: ['right', 'write'], s: [['Please _ your name here.', 'write'], ['Turn _ at the corner.', 'right']] },
+    { set: ['knew', 'new'], s: [['I _ the answer straight away.', 'knew'], ['He has a _ bike.', 'new']] },
+    { set: ['peace', 'piece'], s: [['Can I have a _ of cake?', 'piece'], ['The war ended and there was _.', 'peace']] },
+    { set: ['main', 'mane'], s: [['The lion shook its _.', 'mane'], ['This is the _ road into town.', 'main']] },
+    { set: ['weather', 'whether'], s: [['The _ is cold today.', 'weather'], ['I am not sure _ to go.', 'whether']] },
+    { set: ['accept', 'except'], s: [['Everyone came _ Sam.', 'except'], ['Please _ this gift.', 'accept']] },
+    { set: ['affect', 'effect'], s: [['The rain will _ the match.', 'affect'], ['The medicine had a good _.', 'effect']] },
+    { set: ['passed', 'past'], s: [['We walked _ the school.', 'past'], ['She _ her test.', 'passed']] },
+    { set: ['bare', 'bear'], s: [['A brown _ lives in the forest.', 'bear'], ['He walked on the sand in _ feet.', 'bare']] },
+    { set: ['flour', 'flower'], s: [['Mix the _ with the eggs.', 'flour'], ['A _ grew in the garden.', 'flower']] },
+    { set: ['meet', 'meat'], s: [['Let us _ at the gate.', 'meet'], ['The butcher sells _.', 'meat']] },
+    { set: ['whole', 'hole'], s: [['The dog dug a _.', 'hole'], ['He ate the _ pizza.', 'whole']] },
+    { set: ['scene', 'seen'], s: [['Have you _ my keys?', 'seen'], ['The first _ of the play was funny.', 'scene']] },
+    { set: ['allowed', 'aloud'], s: [['Read the poem _.', 'aloud'], ['Dogs are not _ in the shop.', 'allowed']] },
+  ];
+  const PREFIX = [['happy', 'unhappy'], ['appear', 'disappear'], ['possible', 'impossible'], ['legal', 'illegal'], ['regular', 'irregular'], ['correct', 'incorrect'], ['kind', 'unkind'], ['agree', 'disagree'], ['behave', 'misbehave'], ['polite', 'impolite'], ['visible', 'invisible'], ['lock', 'unlock'], ['like', 'dislike'], ['spell', 'misspell'], ['patient', 'impatient'], ['logical', 'illogical'], ['responsible', 'irresponsible'], ['fair', 'unfair'], ['obey', 'disobey'], ['mature', 'immature'], ['active', 'inactive'], ['tidy', 'untidy']];
+  const TION = [['act', 'action'], ['invent', 'invention'], ['inject', 'injection'], ['expand', 'expansion'], ['discuss', 'discussion'], ['music', 'musician'], ['electric', 'electrician'], ['magic', 'magician'], ['confess', 'confession'], ['extend', 'extension'], ['complete', 'completion'], ['educate', 'education'], ['decide', 'decision'], ['express', 'expression'], ['permit', 'permission'], ['divide', 'division'], ['politics', 'politician'], ['inform', 'information']];
+
+  /* Tagged sentences for word classes: n noun, pn proper noun, v verb, adj adjective, adv adverb, pro pronoun, prep preposition, det determiner, conj conjunction, x not asked. */
+  const TAGGED = [
+    'The/det big/adj dog/n ran/v quickly/adv across/prep the/det park/n ./x',
+    'She/pro ate/v a/det red/adj apple/n ./x',
+    'Tom/pn kicked/v the/det ball/n over/prep the/det wall/n ./x',
+    'The/det tiny/adj mouse/n hid/v under/prep the/det bed/n ./x',
+    'We/pro sang/v loudly/adv in/prep the/det hall/n ./x',
+    'The/det old/adj man/n walked/v slowly/adv to/prep the/det shop/n ./x',
+    'They/pro played/v happily/adv on/prep the/det beach/n ./x',
+    'A/det huge/adj wave/n crashed/v onto/prep the/det rocks/n ./x',
+    'He/pro carefully/adv opened/v the/det heavy/adj door/n ./x',
+    'Mia/pn found/v a/det shiny/adj coin/n in/prep the/det sand/n ./x',
+    'The/det hungry/adj fox/n crept/v quietly/adv towards/prep the/det farm/n ./x',
+    'I/pro wrote/v a/det long/adj letter/n to/prep Grandma/pn ./x',
+    'The/det children/n laughed/v and/conj the/det baby/n smiled/v ./x',
+    'It/pro rained/v heavily/adv but/conj we/pro stayed/v dry/adj ./x',
+    'The/det brave/adj firefighter/n climbed/v up/prep the/det ladder/n ./x',
+    'Our/x cat/n sleeps/v peacefully/adv beside/prep the/det fire/n ./x',
+    'The/det clever/adj girl/n solved/v the/det puzzle/n quickly/adv ./x',
+    'You/pro must/x wait/v patiently/adv for/prep the/det bus/n ./x',
+    'London/pn is/v a/det busy/adj city/n ./x',
+    'The/det bird/n flew/v high/adv above/prep the/det trees/n ./x',
+    'Ali/pn hid/v behind/prep the/det curtain/n because/conj he/pro was/v shy/adj ./x',
+    'The/det soup/n tasted/v delicious/adj ./x',
+    'We/pro visited/v Paris/pn in/prep April/pn ./x',
+    'The/det lazy/adj cat/n yawned/v loudly/adv ./x',
+    'She/pro whispered/v softly/adv so/conj nobody/x heard/v ./x',
+    'The/det river/n flowed/v gently/adv under/prep the/det bridge/n ./x',
+    'They/pro built/v a/det tall/adj tower/n with/prep blocks/n ./x',
+    'The/det angry/adj bull/n charged/v across/prep the/det field/n ./x',
+    'He/pro finished/v his/x homework/n before/prep tea/n ./x',
+    'The/det wind/n howled/v fiercely/adv during/prep the/det storm/n ./x',
+  ];
+  const CLASS_NAME = { n: 'noun', pn: 'proper noun', v: 'verb', adj: 'adjective', adv: 'adverb', pro: 'pronoun', prep: 'preposition', det: 'determiner', conj: 'conjunction' };
+
+  /* Sentence types (KS2 test framework: an exclamation starts with What or How and contains a verb). */
+  const TYPES = [
+    ['Where are you going?', 'question'], ['Close the door.', 'command'], ['What a beautiful garden you have!', 'exclamation'], ['The dog is asleep.', 'statement'],
+    ['How tall that tree is!', 'exclamation'], ['Put your coat on.', 'command'], ['Did you see the rainbow?', 'question'], ['We are going to the beach.', 'statement'],
+    ['Stir the mixture slowly.', 'command'], ['What an amazing goal that was!', 'exclamation'], ['Can I have a drink?', 'question'], ['Lions live in Africa.', 'statement'],
+    ['Wash your hands before lunch.', 'command'], ['How quickly the time has passed!', 'exclamation'], ['Why is the sky blue?', 'question'], ['My sister likes swimming.', 'statement'],
+    ['Turn left at the end of the road.', 'command'], ['What a mess this room is!', 'exclamation'], ['Who wants to play?', 'question'], ['The shop opens at nine.', 'statement'],
+  ];
+  /* Conjunction gaps: [sentence with _, answer, wrong choices that do not make sense]. */
+  const CONJ = [
+    ['I wore my coat _ it was cold.', 'because', ['but', 'or', 'although']], ['We can have pizza _ pasta.', 'or', ['because', 'when', 'so']], ['She was tired _ she kept running.', 'but', ['because', 'so', 'or']],
+    ['It started to rain, _ we went inside.', 'so', ['but', 'or', 'although']], ['I brushed my teeth _ I went to bed.', 'before', ['because', 'or', 'although']], ['You can play outside _ you finish your homework.', 'when', ['but', 'or', 'although']],
+    ['_ it was sunny, the water was freezing.', 'Although', ['Because', 'So', 'Or']], ['We will go to the park _ it stops raining.', 'if', ['but', 'or', 'although']], ['She cried _ she fell over.', 'when', ['but', 'or', 'although']],
+    ['I like apples _ I like bananas too.', 'and', ['because', 'or', 'although']], ['Wait here _ I get the car.', 'while', ['but', 'or', 'because']], ['She could not sleep _ the dog was barking.', 'because', ['but', 'or', 'although']],
+  ];
+  const IRREG = [['go', 'went'], ['see', 'saw'], ['eat', 'ate'], ['run', 'ran'], ['swim', 'swam'], ['write', 'wrote'], ['take', 'took'], ['buy', 'bought'], ['think', 'thought'], ['catch', 'caught'], ['sing', 'sang'], ['bring', 'brought'], ['come', 'came'], ['give', 'gave'], ['make', 'made'], ['find', 'found'], ['teach', 'taught'], ['fly', 'flew'], ['draw', 'drew'], ['speak', 'spoke'], ['break', 'broke'], ['sleep', 'slept'], ['feel', 'felt'], ['know', 'knew']];
+  /* Tense: [sentence, tense]. */
+  const TENSE = [
+    ['I walked to school.', 'past'], ['I walk to school.', 'present'], ['I will walk to school.', 'future'], ['She is reading a book.', 'present progressive'], ['She was reading a book.', 'past progressive'],
+    ['They have finished their lunch.', 'present perfect'], ['They had finished their lunch.', 'past perfect'], ['We ate pizza.', 'past'], ['We eat pizza on Fridays.', 'present'], ['He will play football later.', 'future'],
+    ['The birds are singing.', 'present progressive'], ['The birds were singing.', 'past progressive'], ['I have seen that film.', 'present perfect'], ['Mum had left before we arrived.', 'past perfect'],
+  ];
+  const PRONOUN = [['Sam ate the apple.', 'He ate the apple.', 'Sam', 'He'], ['The girls played chess.', 'They played chess.', 'The girls', 'They'], ['I gave the book to Ella.', 'I gave the book to her.', 'Ella', 'her'], ['The car is red.', 'It is red.', 'The car', 'It'], ['Mum called Dad and me.', 'Mum called us.', 'Dad and me', 'us'], ['Give the pen to Tom.', 'Give the pen to him.', 'Tom', 'him']];
+  const ARTICLE = [['apple', 'an'], ['banana', 'a'], ['hour', 'an'], ['unicorn', 'a'], ['elephant', 'an'], ['dog', 'a'], ['umbrella', 'an'], ['egg', 'an'], ['house', 'a'], ['owl', 'an'], ['university', 'a'], ['island', 'an'], ['honest boy', 'an'], ['one-way street', 'a'], ['orange', 'an'], ['uniform', 'a'], ['ice cream', 'an'], ['European city', 'a']];
+  /* Apostrophes: [phrase meaning, right, wrongs]. */
+  const APOS = [
+    ['the bone that belongs to the dog', "the dog's bone", ["the dogs' bone", 'the dogs bone', "the dog's' bone"]], ['the bones that belong to the dogs', "the dogs' bones", ["the dog's bones", 'the dogs bones', "the dogs's bones"]],
+    ['the toys that belong to the children', "the children's toys", ["the childrens' toys", 'the childrens toys', "the children' toys"]], ['the hat that belongs to James', "James's hat", ["James' hats", 'Jamess hat', "Jame's hat"]],
+    ['the tail of the cat', "the cat's tail", ["the cats' tail", 'the cats tail', "the cats's tail"]], ['the classroom of the teachers', "the teachers' classroom", ["the teacher's' classroom", 'the teachers classroom', "the teacher'es classroom"]],
+    ['the nest that belongs to the bird', "the bird's nest", ["the birds' nests", 'the birds nest', "the birds's nest"]], ['the coats that belong to the women', "the women's coats", ["the womens' coats", 'the womens coats', "the woman's' coats"]],
+  ];
+  /* Correctly punctuated speech and look-alikes. */
+  const SPEECH = [
+    ['“Come here,” said Mum.', ['“Come here” said Mum.', '“Come here,” said Mum', 'Come here, “said Mum.”']], ['“Where are you going?” asked Leo.', ['“Where are you going,” asked Leo.', '“Where are you going?” asked Leo', 'Where are you going? “asked Leo.”']],
+    ['Dad said, “It is time for bed.”', ['Dad said “It is time for bed.”', 'Dad said, “it is time for bed.”', 'Dad said, It is time for bed.']], ['“Watch out!” shouted Priya.', ['“Watch out” shouted Priya!', '“Watch out!” Shouted Priya.', 'Watch out! shouted “Priya.”']],
+    ['“I love this song,” said Nadia, “because it is so happy.”', ['“I love this song,” said Nadia, “Because it is so happy.”', '“I love this song” said Nadia “because it is so happy.”', 'I love this song, said Nadia, “because it is so happy.”']],
+  ];
+  const FRONTED = [
+    ['After lunch, we played outside.', ['After lunch we, played outside.', 'After, lunch we played outside.', 'After lunch we played, outside.']], ['In the morning, the birds began to sing.', ['In the morning the birds, began to sing.', 'In, the morning the birds began to sing.', 'In the morning the, birds began to sing.']],
+    ['Slowly, the door creaked open.', ['Slowly the door, creaked open.', 'Slowly the, door creaked open.', 'Slowly the door creaked, open.']], ['Without a sound, the cat crept forward.', ['Without a sound the cat, crept forward.', 'Without, a sound the cat crept forward.', 'Without a sound the cat crept, forward.']],
+    ['As the sun set, we walked home.', ['As the sun, set we walked home.', 'As the sun set we, walked home.', 'As, the sun set we walked home.']], ['Before the race, Amir felt nervous.', ['Before the race Amir, felt nervous.', 'Before, the race Amir felt nervous.', 'Before the race Amir felt, nervous.']],
+  ];
+  const SYN = [['big', 'large', ['tiny', 'slow', 'quiet']], ['happy', 'cheerful', ['gloomy', 'angry', 'tired']], ['quick', 'rapid', ['sluggish', 'heavy', 'dull']], ['begin', 'start', ['finish', 'stop', 'wait']], ['shout', 'yell', ['whisper', 'mutter', 'sigh']], ['scared', 'frightened', ['brave', 'calm', 'bored']], ['tired', 'exhausted', ['lively', 'awake', 'eager']], ['tidy', 'neat', ['messy', 'loud', 'cold']], ['brave', 'courageous', ['timid', 'lazy', 'rude']], ['ancient', 'very old', ['brand new', 'modern', 'young']], ['enormous', 'gigantic', ['minute', 'narrow', 'light']], ['difficult', 'hard', ['easy', 'simple', 'soft']]];
+  const ANT = [['hot', 'cold'], ['happy', 'sad'], ['early', 'late'], ['ancient', 'modern'], ['generous', 'mean'], ['shallow', 'deep'], ['brave', 'cowardly'], ['noisy', 'silent'], ['arrive', 'depart'], ['victory', 'defeat'], ['rough', 'smooth'], ['increase', 'decrease'], ['float', 'sink'], ['first', 'last'], ['heavy', 'light']];
+  const STANDARD = [['We were late.', 'We was late.'], ['I did my homework.', 'I done my homework.'], ['They were playing.', 'They was playing.'], ['I have not got any sweets.', "I haven't got no sweets."], ['She saw the film.', 'She seen the film.'], ['Those books are mine.', 'Them books are mine.'], ['He doesn’t like peas.', 'He don’t like peas.'], ['We should have gone.', 'We should of gone.'], ['You were right.', 'You was right.'], ['I wrote a letter.', 'I writ a letter.']];
+  const VOICE = [['The dog chased the ball.', 'The ball was chased by the dog.'], ['The chef cooked the meal.', 'The meal was cooked by the chef.'], ['The wind knocked over the fence.', 'The fence was knocked over by the wind.'], ['Our class planted the trees.', 'The trees were planted by our class.'], ['A bee stung Max.', 'Max was stung by a bee.'], ['The storm damaged the roof.', 'The roof was damaged by the storm.']];
+  const RELATIVE = [['The girl _ won the race is my cousin.', 'who', ['which', 'where', 'when']], ['The bike _ I ride is blue.', 'which', ['who', 'whose', 'where']], ['That is the boy _ dog barks all night.', 'whose', ['who', 'which', 'where']], ['This is the house _ I was born.', 'where', ['which', 'who', 'whose']], ['I remember the day _ we met.', 'when', ['who', 'whose', 'which']], ['The cake _ Mum made was delicious.', 'that', ['who', 'whose', 'where']]];
+  const MODAL = [['You _ wear a helmet when you ride a bike.', 'should', 'It is a good idea.'], ['It _ rain later, so take a coat.', 'might', 'It is possible, but not certain.'], ['You _ not touch the oven: it is very hot.', 'must', 'It is very important.'], ['I _ swim when I was five.', 'could', 'I was able to.'], ['We _ go to the beach tomorrow if it is sunny.', 'will', 'It is planned.']];
+  const PROPER = [['london', 'London'], ['monday', 'Monday'], ['july', 'July'], ['the river thames', 'the River Thames'], ['france', 'France'], ['mount everest', 'Mount Everest'], ['amir', 'Amir'], ['christmas', 'Christmas'], ['eid', 'Eid'], ['wales', 'Wales']];
+
+  /* Reading: passages written for this app, each with questions marked by the skill they test. */
+  const PASSAGES = [
+    { id: 'pip', level: 'Year 1–2', title: 'Pip the Puppy', kind: 'Story', text: 'Pip was a small brown puppy with one white ear. Every morning, Pip ran to the gate to wait for the post. One day, the postman dropped a red parcel. Pip picked it up gently and carried it to the kitchen. Mum opened it. Inside was a new blue ball! Pip wagged her tail so fast that she fell over. Everyone laughed, and Pip barked happily.',
+      qs: [['What colour was Pip’s ear?', 'white', ['brown', 'red', 'blue'], 'retrieval'], ['Where did Pip wait every morning?', 'at the gate', ['in the kitchen', 'in her bed', 'by the window'], 'retrieval'], ['What was inside the parcel?', 'a blue ball', ['a red ball', 'a bone', 'a letter'], 'retrieval'], ['What does “gently” mean in the story?', 'carefully and softly', ['very quickly', 'loudly', 'angrily'], 'vocabulary'], ['Why did Pip fall over?', 'she wagged her tail very fast', ['she tripped on the parcel', 'the postman pushed her', 'she was tired'], 'inference'], ['How did Pip feel at the end?', 'happy', ['sad', 'scared', 'bored'], 'inference']] },
+    { id: 'hedgehog', level: 'Year 1–2', title: 'Hedgehogs', kind: 'Information', text: 'Hedgehogs are small animals covered in sharp spines. They come out at night to look for food, so they are called nocturnal animals. Hedgehogs eat beetles, worms and slugs. When a hedgehog is frightened, it rolls into a tight, spiky ball. In winter, when there is not much food, hedgehogs hibernate. This means they sleep for a long time in a nest of leaves.',
+      qs: [['When do hedgehogs look for food?', 'at night', ['in the morning', 'at lunchtime', 'only in winter'], 'retrieval'], ['What does “nocturnal” mean?', 'active at night', ['very spiky', 'asleep all winter', 'eats slugs'], 'vocabulary'], ['What does a frightened hedgehog do?', 'rolls into a spiky ball', ['runs up a tree', 'hides in water', 'makes a loud noise'], 'retrieval'], ['Which of these do hedgehogs eat?', 'worms', ['grass', 'fish', 'bread'], 'retrieval'], ['Why do hedgehogs hibernate in winter?', 'there is not much food', ['it is too noisy', 'their spines fall out', 'they are frightened'], 'inference'], ['What kind of text is this?', 'an information text', ['a poem', 'a story', 'a letter'], 'text type']] },
+    { id: 'lighthouse', level: 'Year 3–4', title: 'The Lighthouse Key', kind: 'Story', text: 'Nobody had climbed the lighthouse for fifty years. Its white paint had peeled away like old skin, and the door was locked with a rusty chain. So when Ada found a heavy iron key buried in the sand, her heart began to thump. She turned it over in her cold fingers. Along its handle, someone had scratched a tiny picture of a lighthouse. Ada glanced up at the tower, then back at the key. The waves hissed on the shore as if they were whispering a secret. Taking a deep breath, she walked towards the door. The chain was stiff, but the key slid into the lock as if it had been waiting for her.',
+      qs: [['How long had it been since anyone climbed the lighthouse?', 'fifty years', ['five years', 'a hundred years', 'one year'], 'retrieval'], ['Where did Ada find the key?', 'buried in the sand', ['under a rock', 'on the door', 'in her pocket'], 'retrieval'], ['“Its white paint had peeled away like old skin.” What kind of language is this?', 'a simile', ['a question', 'an instruction', 'a fact'], 'author’s language'], ['Why did Ada’s heart begin to thump?', 'she was excited and nervous about the key', ['she had been running', 'she was cold', 'she was angry'], 'inference'], ['What made Ada think the key belonged to the lighthouse?', 'a picture of a lighthouse was scratched on it', ['it was white', 'it was very old', 'the waves told her'], 'inference'], ['What does the last sentence suggest?', 'the key was meant for that lock', ['the key broke', 'Ada went home', 'the door was already open'], 'inference'], ['Which word best describes Ada?', 'curious', ['lazy', 'unkind', 'bored'], 'inference']] },
+    { id: 'bees', level: 'Year 3–4', title: 'How Bees Make Honey', kind: 'Information', text: 'Honeybees live together in a hive. Worker bees fly from flower to flower, sucking up a sweet liquid called nectar. They store the nectar in a special honey stomach and carry it back to the hive. There, they pass it to other bees, who place it into small wax cells. At first, nectar is very runny because it contains a lot of water. The bees fan their wings over the cells to dry it out. Slowly, the nectar thickens into honey. Finally, the bees seal each cell with a lid of wax to keep the honey safe until winter.',
+      qs: [['What is nectar?', 'a sweet liquid made by flowers', ['a type of wax', 'a kind of bee', 'dried honey'], 'retrieval'], ['Where do bees store nectar while flying?', 'in a honey stomach', ['in their wings', 'in their legs', 'in a flower'], 'retrieval'], ['Why do bees fan their wings over the cells?', 'to dry out the water in the nectar', ['to keep warm', 'to scare other insects', 'to clean the hive'], 'retrieval'], ['Put these in order. What happens last?', 'the bees seal the cells with wax', ['bees collect nectar', 'nectar is placed in cells', 'bees fan their wings'], 'sequence'], ['What does “thickens” mean?', 'becomes less runny', ['becomes sweeter', 'becomes colder', 'becomes smaller'], 'vocabulary'], ['Why do bees keep honey until winter?', 'there are few flowers in winter', ['honey tastes better cold', 'bees sleep in summer', 'the hive is empty in winter'], 'inference']] },
+    { id: 'train', level: 'Year 5–6', title: 'The Last Train', kind: 'Story', text: 'The station clock said 11:52. Eight minutes until the last train. Joe pressed himself against the cold brick wall and watched the empty platform. A single lamp flickered, painting the tracks in stripes of yellow and black. Somewhere behind him a door banged, and he flinched so hard that his rucksack slipped from his shoulder. He had told nobody where he was going, not even Grandad, who had always kept his secrets. Now, with the wind tugging at his sleeves, Joe wondered whether running away was the bravest thing he had ever done, or the most foolish. In the distance, two pale lights appeared and grew. The rails began to hum. Joe bent down, picked up his rucksack, and then, for a long moment, did not move at all.',
+      qs: [['How many minutes were there until the last train when the story begins?', 'eight', ['fifty-two', 'eleven', 'two'], 'retrieval'], ['Find a word that shows Joe was startled by the door banging.', 'flinched', ['pressed', 'wondered', 'tugging'], 'vocabulary'], ['“A single lamp flickered, painting the tracks…” What effect does “painting” create?', 'it makes the light seem to colour the tracks', ['it tells us someone was painting', 'it shows the lamp was broken', 'it shows it was daytime'], 'author’s language'], ['Why might Joe not have told Grandad?', 'he did not want anyone to stop him', ['Grandad was on the train', 'Grandad was asleep', 'he had forgotten'], 'inference'], ['What are the “two pale lights”?', 'the lights of the approaching train', ['car headlights', 'stars', 'torches'], 'inference'], ['Which best describes Joe’s feelings?', 'unsure and nervous', ['calm and relaxed', 'angry and loud', 'bored and sleepy'], 'inference'], ['Why does the author end with Joe not moving?', 'to leave us wondering whether he will get on', ['because the train broke down', 'to show he was asleep', 'because the story is a poem'], 'author’s choice']] },
+    { id: 'reefs', level: 'Year 5–6', title: 'Coral Reefs', kind: 'Information', text: 'Coral reefs are sometimes called the rainforests of the sea. Although they cover less than one per cent of the ocean floor, they are home to about a quarter of all the species that live in the sea. Surprisingly, corals are animals, not plants. Each coral is made of many tiny creatures called polyps, which are related to jellyfish. Polyps build hard skeletons of limestone, and over thousands of years these skeletons form enormous reefs. Many corals also share their bodies with tiny algae, which give them food and bright colours. However, when the sea becomes too warm, corals push the algae out and turn white. This is called coral bleaching. If the water stays warm for too long, the corals may die.',
+      qs: [['Why are coral reefs called the rainforests of the sea?', 'they are home to a huge variety of sea life', ['they are covered in trees', 'it rains on them', 'they are green'], 'inference'], ['About how much of sea life lives on coral reefs?', 'a quarter of all species', ['one per cent', 'half of all species', 'all of it'], 'retrieval'], ['What are polyps related to?', 'jellyfish', ['plants', 'fish', 'algae'], 'retrieval'], ['Which word in the text means “very large”?', 'enormous', ['tiny', 'hard', 'bright'], 'vocabulary'], ['What causes coral bleaching?', 'the sea becoming too warm', ['too much algae', 'polyps growing', 'cold water'], 'retrieval'], ['Why is “Surprisingly” used before “corals are animals”?', 'many people think corals are plants', ['corals are dangerous', 'corals move quickly', 'it is a question'], 'author’s choice'], ['Which statement is a fact from the text?', 'Corals build skeletons of limestone.', ['Coral reefs are the most beautiful places on Earth.', 'Everyone should visit a reef.', 'Algae are boring.'], 'fact and opinion']] },
+  ];
+
+  FMG.SPAG = { Y2, Y34, Y56, ING, ED, ER_EST, SUFFIX, PLURAL, CONTRACT, HOMO, PREFIX, TION, TAGGED, CLASS_NAME, TYPES, CONJ, IRREG, TENSE, PRONOUN, ARTICLE, APOS, SPEECH, FRONTED, SYN, ANT, STANDARD, VOICE, RELATIVE, MODAL, PROPER, PASSAGES };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Family English — KS1 and KS2 spelling, grammar, punctuation and reading questions (no screen code).
+   Items are k:<skill>:<key>, so progress is tracked per skill like the phonics lessons. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG, S = FMG.SPAG, LET = ['A', 'B', 'C', 'D'];
+  const uniq = (a) => a.filter((x, i) => x != null && x !== '' && a.indexOf(x) === i);
+  function options(rng, right, wrongs) {
+    const pool = uniq(wrongs).filter((w) => w !== right);
+    const pick = rng.shuffle(pool).slice(0, 3); if (pick.length < 3) return null;
+    const all = rng.shuffle([right].concat(pick));
+    return { options: all.map((v, i) => ({ letter: LET[i], value: v })), answerIndex: all.indexOf(right) };
+  }
+  const q = (o, extra) => (o ? Object.assign(extra, o) : null);
+  const kitQ = (rng, claim, rightV, wrongVs, prompt, why, qt) => {
+    const yes = 'Yes, Kit is right.', isRight = claim === rightV;
+    const o = isRight ? options(rng, yes, wrongVs.map((x) => `No, it should be ${x}.`)) : options(rng, `No, it should be ${rightV}.`, [yes].concat(wrongVs.filter((x) => x !== claim).map((x) => `No, it should be ${x}.`)));
+    return q(o, { qt, prompt, speak: prompt, why });
+  };
+
+  /* Believable misspellings of a longer word. */
+  const REALISH = new Set(S.Y34.concat(S.Y56, S.Y2, S.HOMO.flatMap((h) => h.set), S.ING.flat(), S.ED.flat(), S.ER_EST.flat(), S.PLURAL.flat(), S.PREFIX.flat(), S.TION.flat(), S.IRREG.flat(), S.ANT.flat(),
+    'dour flour floor four for fore poor pour pore sure shore door dear deer bare bear hear here heart hart minute minuet desert dessert principal principle stationary stationery complement compliment board bored break brake great grate whole hole steak stake past passed lessen lesson weight wait'.split(' ')).map((w) => String(w).toLowerCase()));
+  /* Only patterns that almost never make another real word: doubled or undoubled letters and swapped vowels. */
+  function missSafe(w, rng) {
+    const out = new Set();
+    for (let i = 0; i < w.length - 1; i++) if (w[i] === w[i + 1]) out.add(w.slice(0, i) + w.slice(i + 1));
+    for (let i = 1; i < w.length - 1; i++) if (!/[aeiou]/.test(w[i]) && w[i] !== w[i + 1] && w[i] !== w[i - 1]) out.add(w.slice(0, i) + w[i] + w.slice(i));
+    for (let i = 1; i < w.length - 1; i++) if (w[i] !== w[i + 1] && /[aeiou]/.test(w[i]) && /[aeiou]/.test(w[i + 1])) out.add(w.slice(0, i) + w[i + 1] + w[i] + w.slice(i + 2));
+    return rng.shuffle(Array.from(out).filter((x) => x !== w && !REALISH.has(x)));
+  }
+  function miss(w, rng) {
+    const out = new Set(), lw = w;
+    for (let i = 0; i < lw.length - 1; i++) if (lw[i] === lw[i + 1]) out.add(lw.slice(0, i) + lw.slice(i + 1));                     // necesary
+    for (let i = 1; i < lw.length - 1; i++) if (!/[aeiou]/.test(lw[i]) && lw[i] !== lw[i + 1] && lw[i] !== lw[i - 1] && /[aeiou]/.test(lw[i - 1])) out.add(lw.slice(0, i) + lw[i] + lw.slice(i)); // occassion
+    const subs = [['ie', 'ei'], ['ei', 'ie'], ['ph', 'f'], ['ough', 'uff'], ['ough', 'ow'], ['ture', 'cher'], ['tion', 'shun'], ['sion', 'tion'], ['cian', 'tion'], ['ous', 'us'], ['ious', 'ous'], ['our', 'or'], ['ce', 'se'], ['se', 'ce'], ['ise', 'ize'], ['ant', 'ent'], ['ent', 'ant'], ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able'], ['ar', 'er'], ['er', 'ar'], ['ir', 'ur'], ['ea', 'ee'], ['ai', 'ay'], ['ue', 'oo'], ['c', 'k'], ['k', 'ck'], ['qu', 'kw'], ['kn', 'n'], ['wr', 'r'], ['mb', 'm'], ['gu', 'g'], ['sc', 's'], ['y', 'i'], ['ey', 'y'], ['ate', 'ite'], ['ite', 'ate'], ['e', 'a'], ['a', 'e'], ['i', 'e'], ['o', 'u'], ['u', 'o']];
+    subs.forEach(([a, b]) => { let at = lw.indexOf(a, 1); while (at >= 0) { out.add(lw.slice(0, at) + b + lw.slice(at + a.length)); at = lw.indexOf(a, at + 1); } });
+    for (let i = 1; i < lw.length - 1; i++) if (lw[i] !== lw[i + 1] && /[aeiou]/.test(lw[i]) && /[aeiou]/.test(lw[i + 1])) out.add(lw.slice(0, i) + lw[i + 1] + lw[i] + lw.slice(i + 2));
+    return rng.shuffle(Array.from(out).filter((x) => x !== lw && x.length > 2 && !REALISH.has(x.toLowerCase())));
+  }
+
+  /* ---------- Skills ---------- */
+  const SK = [];
+  const add = (id, year, strand, name, keys, gens) => SK.push({ id, year, strand, name, keys, gens });
+  const pickGen = (sk, key, rng, band) => { for (const g of rng.shuffle(sk.gens.slice())) { const r = g(key, rng, band); if (r && r.options && r.options.length === 4) return r; } return null; };
+
+  // ---- Spelling ----
+  const suffixSkill = (id, year, name, list, sfx) => add(id, year, 'Spelling', name, list.map((x) => x[0]), [
+    (k, rng) => { const [r, w] = list.find((x) => x[0] === k); const o = options(rng, w, [r + sfx, r + r.slice(-1) + sfx, r.replace(/e$/, '') + sfx, r.replace(/y$/, 'i') + sfx, r.replace(/y$/, 'ie') + sfx, r + 'e' + sfx, w.replace(/(.)\1/, '$1')].concat(miss(w, rng)));
+      return q(o, { qt: `${id}-pick`, prompt: `Add ${sfx} to ${r}. Which spelling is right?`, speak: `Add ${sfx} to ${r}.`, big: `${r} + ${sfx}`, typable: true, accept: [w], why: `${r} + ${sfx} = ${w}.${rule(r, w)}` }); },
+    (k, rng) => { const [r, w] = list.find((x) => x[0] === k); const o = options(rng, w, miss(w, rng).concat([r + sfx, r + r.slice(-1) + sfx]));
+      return q(o, { qt: `${id}-hear`, prompt: 'Listen. Which is the right spelling?', speak: `Spell ${w}.`, hear: w, typable: true, accept: [w], why: `${w} is spelt ${w.split('').join(' ')}.${rule(r, w)}` }); },
+    (k, rng) => { const [r, w] = list.find((x) => x[0] === k); const wrongs = uniq([r + sfx, r + r.slice(-1) + sfx, r.replace(/e$/, '') + sfx, r.replace(/y$/, 'i') + sfx].concat(miss(w, rng))).filter((x) => x !== w); if (!wrongs.length) return null; const claim = rng() < 0.3 ? w : wrongs[0];
+      return kitQ(rng, claim, w, wrongs, `Kit added ${sfx} to ${r} and wrote “${claim}”. Is Kit right?`, `${r} + ${sfx} = ${w}.${rule(r, w)}`, `${id}-kit`); },
+    (k, rng) => { const [r, w] = list.find((x) => x[0] === k); const others = rng.shuffle(list.filter((x) => x[0] !== r)).slice(0, 5); const o = options(rng, r, others.map((x) => x[0]));
+      return q(o, { qt: `${id}-root`, prompt: `What is the root word of ${w}?`, speak: `What is the root word of ${w}?`, big: w, typable: true, accept: [r], why: `${w} comes from ${r}.` }); },
+  ]);
+  function rule(r, w) {
+    if (/e$/.test(r) && !w.includes(r)) return ' Drop the e before adding an ending that starts with a vowel.';
+    if (/y$/.test(r) && /i(ed|er|est|ly|ness|ful|ment)$/.test(w)) return ' Change y to i before the ending.';
+    if (w.length >= r.length + 2 && w[r.length] === r.slice(-1)) return ' Double the last letter after a short vowel sound.';
+    return ' Just add the ending.';
+  }
+  suffixSkill('ing', 'y2', 'Adding -ing', S.ING.map(([r, w]) => [r, w]), 'ing');
+  suffixSkill('ed', 'y2', 'Adding -ed (past tense)', S.ED, 'ed');
+  suffixSkill('er', 'y2', 'Adding -er (comparing)', S.ER_EST.map(([r, a]) => [r, a]), 'er');
+  suffixSkill('est', 'y2', 'Adding -est (comparing)', S.ER_EST.map(([r, , b]) => [r, b]), 'est');
+  add('suffix', 'y2', 'Spelling', 'Suffixes -ful -less -ness -ment -ly', S.SUFFIX.map((x) => x[0] + '+' + x[1]), [
+    (k, rng) => { const [r, s, w] = S.SUFFIX.find((x) => x[0] + '+' + x[1] === k); const o = options(rng, w, [r + s, r.replace(/y$/, 'i') + s, r.replace(/e$/, '') + s, r + s.replace(/l$/, 'll'), w.replace('ll', 'l')].concat(miss(w, rng)));
+      return q(o, { qt: 'suffix-pick', prompt: `Add -${s} to ${r}. Which spelling is right?`, speak: `Add ${s} to ${r}.`, big: `${r} + ${s}`, typable: true, accept: [w], why: `${r} + ${s} = ${w}.${rule(r, w)}` }); },
+    (k, rng) => { const [r, s, w] = S.SUFFIX.find((x) => x[0] + '+' + x[1] === k); const o = options(rng, s, ['ful', 'less', 'ness', 'ment', 'ly'].filter((x) => x !== s));
+      return q(o, { qt: 'suffix-which', prompt: `Which suffix makes ${r} into ${w}?`, speak: `Which suffix makes ${r} into ${w}?`, big: `${r} → ${w}`, why: `${r} + ${s} = ${w}.` }); },
+  ]);
+  add('plural', 'y2', 'Spelling', 'Plurals', S.PLURAL.map((x) => x[0]), [
+    (k, rng) => { const [one, many] = S.PLURAL.find((x) => x[0] === k); const o = options(rng, many, [one + 's', one + 'es', one.replace(/y$/, 'ies'), one.replace(/f$|fe$/, 'ves'), one + 'ies', many + 's'].filter((x) => x !== many));
+      return q(o, { qt: 'plural-pick', prompt: `One ${one}, two …?`, speak: `One ${one}, two what?`, big: `one ${one}`, typable: true, accept: [many], why: `The plural of ${one} is ${many}.` }); },
+    (k, rng) => { const [one, many] = S.PLURAL.find((x) => x[0] === k); if (one === many) return null; const o = options(rng, one, rng.shuffle(S.PLURAL.filter((x) => x[0] !== one)).slice(0, 4).map((x) => x[0]).concat([many.replace(/s$/, ''), many.replace(/es$/, '')]));
+      return q(o, { qt: 'plural-single', prompt: `What is one of these called: ${many}?`, speak: `What is the singular of ${many}?`, big: many, typable: true, accept: [one], why: `One ${one}, many ${many}.` }); },
+  ]);
+  add('contract', 'y2', 'Punctuation', 'Contractions (apostrophes)', S.CONTRACT.map((x) => x[0]), [
+    (k, rng) => { const [full, c] = S.CONTRACT.find((x) => x[0] === k); const bad = [c.replace("'", ''), c.replace(/(\w+)'(\w+)/, "$1$2'"), full.replace(' ', "'"), c.replace(/n't/, "nt'"), c.replace(/'/, '')].filter((x) => x !== c);
+      return q(options(rng, c, bad.concat(S.CONTRACT.filter((x) => x[1] !== c).map((x) => x[1]).slice(0, 3))), { qt: 'contract-pick', prompt: `How do you write “${full}” as one word with an apostrophe?`, speak: `Write ${full} as a contraction.`, big: full, typable: true, accept: [c, c.replace("'", '’')], why: `${full} → ${c}. The apostrophe shows where letters are missing.` }); },
+    (k, rng) => { const [full, c] = S.CONTRACT.find((x) => x[0] === k); return q(options(rng, full, rng.shuffle(S.CONTRACT.filter((x) => x[0] !== full)).map((x) => x[0])), { qt: 'contract-full', prompt: `What does ${c} stand for?`, speak: `What does ${c.replace("'", '')} stand for?`, big: c, why: `${c} is short for ${full}.` }); },
+  ]);
+  const homoItems = (sets) => sets.flatMap((h, i) => h.s.map((_, j) => `${S.HOMO.indexOf(h)}.${j}`));
+  const homoGen = (k, rng) => { const [i, j] = k.split('.').map(Number), h = S.HOMO[i], [sent, ans] = h.s[j]; const wr = h.set.filter((x) => x !== ans).concat(rng.shuffle(S.HOMO.filter((x) => x !== h)).flatMap((x) => x.set).slice(0, 4));
+    return q(options(rng, ans, h.set.length >= 4 ? wr : h.set.filter((x) => x !== ans).concat(wr)), { qt: 'homophone', prompt: 'Which word fits the gap?', speak: sent.replace('_', 'blank'), sentence: sent.replace('_', '____'), why: `${sent.replace('_', ans)} (${h.set.join(', ')} sound the same but mean different things.)` }); };
+  add('homo2', 'y2', 'Spelling', 'Homophones (sound the same)', homoItems(S.HOMO.slice(0, 12)), [homoGen]);
+  add('homo4', 'y34', 'Spelling', 'Harder homophones', homoItems(S.HOMO.slice(12)), [homoGen]);
+  const wordList = (id, year, name, list) => add(id, year, 'Spelling', name, list, [
+    (k, rng) => q(options(rng, k, miss(k, rng)), { qt: `${id}-hear`, prompt: 'Listen. Which is the right spelling?', speak: `Spell ${k}.`, hear: k, typable: true, accept: [k], why: `${k} is spelt ${k.split('').join(' ')}.` }),
+    (k, rng) => { const m = missSafe(k, rng); if (!m.length) return null; const others = rng.shuffle(list.filter((x) => x !== k && x.length > 3)).slice(0, 5); return q(options(rng, m[0], others), { qt: `${id}-wrong`, prompt: 'One word is spelt wrongly. Which one?', speak: 'One word is spelt wrongly. Which one?', why: `${m[0]} should be spelt ${k}.` }); },
+    (k, rng) => { const m = miss(k, rng); if (m.length < 3) return null; const claim = rng() < 0.3 ? k : m[0]; const r = kitQ(rng, claim, k, m.filter((x) => x !== claim), `Kit spelt the word you hear as “${claim}”. Is Kit right?`, `${k} is spelt ${k.split('').join(' ')}.`, `${id}-kit`); return r && Object.assign(r, { hear: k, speak: `Kit spelt ${k}. Is Kit right?` }); },
+  ]);
+  wordList('common2', 'y2', 'Year 2 tricky words', S.Y2.filter((w) => w.length > 2 && !/^M/.test(w)));
+  wordList('stat34', 'y34', 'Year 3–4 word list', S.Y34);
+  wordList('stat56', 'y56', 'Year 5–6 word list', S.Y56);
+  add('prefix', 'y34', 'Spelling', 'Prefixes un- dis- mis- im- il- ir- in-', S.PREFIX.map((x) => x[0]), [
+    (k, rng) => { const [r, w] = S.PREFIX.find((x) => x[0] === k); const o = options(rng, w, ['un', 'dis', 'mis', 'im', 'il', 'ir', 'in'].map((p) => p + r).filter((x) => x !== w));
+      return q(o, { qt: 'prefix-pick', prompt: `Which word means the opposite of ${r}?`, speak: `Which word means the opposite of ${r}?`, big: r, typable: true, accept: [w], why: `The opposite of ${r} is ${w}.` }); },
+  ]);
+  add('tion', 'y34', 'Spelling', 'Endings -tion -sion -ssion -cian', S.TION.map((x) => x[0]), [
+    (k, rng) => { const [r, w] = S.TION.find((x) => x[0] === k); const stem = w.replace(/(tion|sion|ssion|cian)$/, ''); const o = options(rng, w, ['tion', 'sion', 'ssion', 'cian'].map((e) => stem.replace(/s$/, '') + e).concat(miss(w, rng)).filter((x) => x !== w));
+      return q(o, { qt: 'tion-pick', prompt: `${r} → ? Which spelling is right?`, speak: `Change ${r} into a word ending in shun.`, big: r, typable: true, accept: [w], why: `${r} becomes ${w}.${/cian$/.test(w) ? ' -cian is used for people (musician).' : /ssion$/.test(w) ? ' Root words ending in ss or mit take -ssion.' : /sion$/.test(w) ? ' Root words ending in d, de or se often take -sion.' : ' Root words ending in t or te often take -tion.'}` }); },
+  ]);
+
+  // ---- Grammar ----
+  const TAG = S.TAGGED.map((s) => s.split(' ').map((t) => { const [w, c] = t.split('/'); return { w, c }; }));
+  const CN = S.CLASS_NAME, sentOf = (t) => t.map((x) => x.w).join(' ').replace(/ \./, '.');
+  const findClass = (id, year, classes) => add(id, year, 'Grammar', `Word classes: ${classes.map((c) => CN[c] + 's').join(', ')}`, TAG.map((_, i) => String(i)), [
+    (k, rng) => { const t = TAG[+k], c = rng.pick(classes.filter((cl) => t.some((x) => x.c === cl))); if (!c) return null; const right = rng.pick(t.filter((x) => x.c === c)).w; const wr = t.filter((x) => x.c !== c && x.c !== 'x' && !(c === 'n' && x.c === 'pn') && !(c === 'pn' && x.c === 'n')).map((x) => x.w);
+      return q(options(rng, right, wr), { qt: `${id}-find`, prompt: `Which word in this sentence is ${/^[aeiou]/.test(CN[c]) ? 'an' : 'a'} ${CN[c]}?`, speak: `Which word is ${/^[aeiou]/.test(CN[c]) ? 'an' : 'a'} ${CN[c]}?`, sentence: sentOf(t), why: `${right} is ${/^[aeiou]/.test(CN[c]) ? 'an' : 'a'} ${CN[c]}.${tip(c)}` }); },
+    (k, rng) => { const t = TAG[+k], cand = t.filter((x) => classes.includes(x.c)); if (!cand.length) return null; const x = rng.pick(cand);
+      return q(options(rng, CN[x.c], classes.map((c) => CN[c]).concat(['noun', 'verb', 'adjective', 'adverb']).filter((n) => n !== CN[x.c] && !(x.c === 'pn' && n === 'noun') && !(x.c === 'n' && n === 'proper noun'))), { qt: `${id}-what`, prompt: `In this sentence, what type of word is “${x.w}”?`, speak: `What type of word is ${x.w}?`, sentence: sentOf(t), why: `“${x.w}” is ${/^[aeiou]/.test(CN[x.c]) ? 'an' : 'a'} ${CN[x.c]} here.${tip(x.c)}` }); },
+  ]);
+  function tip(c) { return { n: ' A noun names a person, place or thing.', pn: ' A proper noun is a name, so it has a capital letter.', v: ' A verb is a doing or being word.', adj: ' An adjective describes a noun.', adv: ' An adverb tells us more about a verb (how, when or where).', pro: ' A pronoun stands in for a noun.', prep: ' A preposition shows where or when something is.', det: ' A determiner comes before a noun (the, a, an).', conj: ' A conjunction joins words or clauses.' }[c] || ''; }
+  findClass('class2', 'y2', ['n', 'v', 'adj']);
+  findClass('class4', 'y34', ['n', 'v', 'adj', 'adv', 'pro', 'prep']);
+  findClass('class6', 'y56', ['n', 'pn', 'v', 'adj', 'adv', 'pro', 'prep', 'det', 'conj']);
+  add('types', 'y2', 'Grammar', 'Statements, questions, commands, exclamations', S.TYPES.map((_, i) => String(i)), [
+    (k, rng) => { const [s, t] = S.TYPES[+k]; return q(options(rng, t, ['statement', 'question', 'command', 'exclamation'].filter((x) => x !== t)), { qt: 'types-what', prompt: 'What type of sentence is this?', speak: s, sentence: s, why: { statement: 'A statement tells you something.', question: 'A question asks something and ends with a question mark.', command: 'A command tells someone to do something. It often starts with a bossy verb.', exclamation: 'An exclamation starts with What or How, has a verb, and ends with an exclamation mark.' }[t] }); },
+    (k, rng) => { const [s, t] = S.TYPES[+k]; const wr = S.TYPES.filter((x) => x[1] !== t).map((x) => x[0]); return q(options(rng, s, rng.shuffle(wr)), { qt: 'types-find', prompt: `Which sentence is ${t === 'exclamation' || t === 'command' ? 'an ' + t : 'a ' + t}?`.replace('an command', 'a command'), speak: `Which sentence is a ${t}?`, why: `“${s}” is a ${t}.` }); },
+  ]);
+  add('conj', 'y2', 'Grammar', 'Conjunctions (joining words)', S.CONJ.map((_, i) => String(i)), [
+    (k, rng) => { const [s, a, w] = S.CONJ[+k]; return q(options(rng, a, w), { qt: 'conj-gap', prompt: 'Which conjunction fits best?', speak: s.replace('_', 'blank'), sentence: s.replace('_', '____'), why: s.replace('_', a) }); },
+  ]);
+  add('past', 'y2', 'Grammar', 'Past tense of tricky verbs', S.IRREG.map((x) => x[0]), [
+    (k, rng) => { const [v, p] = S.IRREG.find((x) => x[0] === k); return q(options(rng, p, [v + 'ed', v.replace(/e$/, '') + 'ed', v + 's', rng.pick(S.IRREG.filter((x) => x[0] !== v))[1]].filter((x) => x !== 'god' && x !== p)), { qt: 'past-pick', prompt: `Yesterday I … (${v})`, speak: `What is the past tense of ${v}?`, big: `today: ${v} → yesterday: ?`, typable: true, accept: [p], why: `The past tense of ${v} is ${p}.` }); },
+    (k, rng) => { const [v, p] = S.IRREG.find((x) => x[0] === k); const o = options(rng, p, [v + 'ed', v + 's', v + 'ing', v.replace(/e$/, '') + 'ed'].filter((x) => x !== p)); return q(o, { qt: 'past-which', prompt: `Which word is the past tense of ${v}?`, speak: `Which word is the past tense of ${v}?`, big: v, why: `The past tense of ${v} is ${p}: today I ${v}, yesterday I ${p}.` }); },
+  ]);
+  add('tense', 'y34', 'Grammar', 'Past, present and future', S.TENSE.filter((x) => /^(past|present|future)$/.test(x[1])).map((x) => x[0]), [
+    (k, rng) => { const t = S.TENSE.find((x) => x[0] === k)[1]; return q(options(rng, t, ['past', 'present', 'future', 'past progressive']), { qt: 'tense-what', prompt: 'Which tense is this sentence in?', speak: k, sentence: k, why: `“${k}” is in the ${t} tense.` }); },
+  ]);
+  add('tense6', 'y56', 'Grammar', 'Progressive and perfect tenses', S.TENSE.filter((x) => / /.test(x[1])).map((x) => x[0]), [
+    (k, rng) => { const t = S.TENSE.find((x) => x[0] === k)[1]; return q(options(rng, t, ['present progressive', 'past progressive', 'present perfect', 'past perfect', 'past', 'present']), { qt: 'tense6-what', prompt: 'Which tense is this sentence in?', speak: k, sentence: k, why: `“${k}” is in the ${t}. Progressive uses be + -ing; perfect uses have/has/had + a past form.` }); },
+  ]);
+  add('pronoun', 'y34', 'Grammar', 'Pronouns', S.PRONOUN.map((x) => x[0]), [
+    (k, rng) => { const [a, b, n, p] = S.PRONOUN.find((x) => x[0] === k); return q(options(rng, p, ['he', 'she', 'they', 'it', 'him', 'her', 'us', 'them', 'He', 'She', 'They', 'It'].filter((x) => x.toLowerCase() !== p.toLowerCase())), { qt: 'pronoun-swap', prompt: `Which pronoun can replace “${n}”?`, speak: `Which pronoun can replace ${n}?`, sentence: a, why: b }); },
+  ]);
+  add('article', 'y34', 'Grammar', 'a or an', S.ARTICLE.map((x) => x[0]), [
+    (k, rng) => { const a = S.ARTICLE.find((x) => x[0] === k)[1]; const o = options(rng, `${a} ${k}`, [`${a === 'a' ? 'an' : 'a'} ${k}`, `${a === 'a' ? 'an' : 'a'} ${k}s`, `${a} ${k}s`]);
+      return q(o, { qt: 'article', prompt: 'Which is correct?', speak: 'Which is correct?', why: `We use “an” before a vowel sound and “a” before a consonant sound: ${a} ${k}.` }); },
+  ]);
+  add('caps', 'y2', 'Punctuation', 'Capital letters for names', S.PROPER.map((x) => x[0]), [
+    (k, rng) => { const r = S.PROPER.find((x) => x[0] === k)[1]; const o = options(rng, r, [k, k.toUpperCase(), r.toLowerCase().replace(/^./, (c) => c.toUpperCase()) === r ? r.split(' ').map((w, i) => (i ? w[0].toUpperCase() + w.slice(1) : w)).join(' ') : r.toLowerCase().replace(/^./, (c) => c.toUpperCase()), k.replace(/.$/, (c) => c.toUpperCase())]);
+      return q(o, { qt: 'caps-name', prompt: 'Which is written correctly?', speak: 'Which is written correctly?', why: `Names of people, places, days, months and festivals start with a capital letter: ${r}.` }); },
+  ]);
+  add('apos', 'y34', 'Punctuation', 'Apostrophes for belonging', S.APOS.map((_, i) => String(i)), [
+    (k, rng) => { const [m, r, w] = S.APOS[+k]; return q(options(rng, r, w), { qt: 'apos-pick', prompt: `How do you write “${m}”?`, speak: `How do you write ${m}?`, why: `${r}. For one owner add ’s; for plural owners ending in s add just ’; for plurals not ending in s (children, women) add ’s.` }); },
+  ]);
+  add('speech', 'y34', 'Punctuation', 'Inverted commas (speech marks)', S.SPEECH.map((_, i) => String(i)), [
+    (k, rng) => { const [r, w] = S.SPEECH[+k]; return q(options(rng, r, w), { qt: 'speech-pick', prompt: 'Which sentence is punctuated correctly?', speak: 'Which sentence is punctuated correctly?', why: `${r} The spoken words and their punctuation go inside the inverted commas.` }); },
+  ]);
+  add('fronted', 'y34', 'Punctuation', 'Commas after fronted adverbials', S.FRONTED.map((_, i) => String(i)), [
+    (k, rng) => { const [r, w] = S.FRONTED[+k]; return q(options(rng, r, w), { qt: 'fronted-pick', prompt: 'Which sentence has the comma in the right place?', speak: 'Which sentence has the comma in the right place?', why: `${r} A comma goes after a fronted adverbial (words at the start that tell when, where or how).` }); },
+  ]);
+  add('standard', 'y34', 'Grammar', 'Standard English', S.STANDARD.map((x) => x[0]), [
+    (k, rng) => { const [r, w] = S.STANDARD.find((x) => x[0] === k); const others = rng.shuffle(S.STANDARD.filter((x) => x[0] !== r)).slice(0, 2).map((x) => x[1]); return q(options(rng, r, [w].concat(others)), { qt: 'standard-pick', prompt: 'Which sentence is written in Standard English?', speak: 'Which sentence is in Standard English?', why: `“${r}” is Standard English. “${w}” is not.` }); },
+    (k, rng) => { const [r, w] = S.STANDARD.find((x) => x[0] === k); const others = rng.shuffle(S.STANDARD.filter((x) => x[0] !== r)).slice(0, 4).map((x) => x[0]); return q(options(rng, w, others), { qt: 'standard-odd', prompt: 'Which sentence is NOT Standard English?', speak: 'Which sentence is not Standard English?', why: `“${w}” should be “${r}”.` }); },
+  ]);
+  add('syn', 'y34', 'Vocabulary', 'Synonyms (same meaning)', S.SYN.map((x) => x[0]), [
+    (k, rng) => { const [w, s, n] = S.SYN.find((x) => x[0] === k); return q(options(rng, s, n), { qt: 'syn', prompt: `Which word or phrase means the same as ${w}?`, speak: `Which means the same as ${w}?`, big: w, why: `${w} and ${s} mean the same. They are synonyms.` }); },
+  ]);
+  add('ant', 'y2', 'Vocabulary', 'Antonyms (opposites)', S.ANT.map((x) => x[0]), [
+    (k, rng) => { const [w, a] = S.ANT.find((x) => x[0] === k); return q(options(rng, a, rng.shuffle(S.ANT.filter((x) => x[0] !== w)).map((x) => x[rng.int(0, 1)])), { qt: 'ant', prompt: `What is the opposite of ${w}?`, speak: `What is the opposite of ${w}?`, big: w, typable: true, accept: [a], why: `The opposite of ${w} is ${a}. They are antonyms.` }); },
+  ]);
+  add('voice', 'y56', 'Grammar', 'Active and passive voice', S.VOICE.map((x) => x[0]), [
+    (k, rng) => { const [a, p] = S.VOICE.find((x) => x[0] === k); const o = options(rng, p, rng.shuffle(S.VOICE.filter((x) => x[0] !== a)).slice(0, 1).map((x) => x[1]).concat([a, p.replace(/ by .*\./, '.').replace('was', 'is'), p.replace(' was ', ' is ').replace(' were ', ' are ')]).filter((x) => x !== p));
+      return q(o, { qt: 'voice-passive', prompt: `Which is the passive version of: “${a}”?`, speak: `Which is the passive version of ${a}?`, why: `${p} In the passive, the thing that had something done to it comes first.` }); },
+    (k, rng) => { const [a, p] = S.VOICE.find((x) => x[0] === k); const isP = rng() < 0.5; return q(options(rng, isP ? 'passive' : 'active', [isP ? 'active' : 'passive', 'a question', 'a command']), { qt: 'voice-which', prompt: 'Is this sentence active or passive?', speak: isP ? p : a, sentence: isP ? p : a, why: isP ? 'Passive: the subject has something done to it (was … by).' : 'Active: the subject does the action.' }); },
+  ]);
+  add('relative', 'y56', 'Grammar', 'Relative pronouns', S.RELATIVE.map((_, i) => String(i)), [
+    (k, rng) => { const [s, a, w] = S.RELATIVE[+k]; return q(options(rng, a, w), { qt: 'relative-gap', prompt: 'Which relative pronoun fits?', speak: s.replace('_', 'blank'), sentence: s.replace('_', '____'), why: `${s.replace('_', a)} (who for people, which for things, whose for belonging, where for places, when for times).` }); },
+  ]);
+  add('modal', 'y56', 'Grammar', 'Modal verbs', S.MODAL.map((_, i) => String(i)), [
+    (k, rng) => { const [s, a, why] = S.MODAL[+k]; return q(options(rng, a, ['should', 'might', 'must', 'could', 'will'].filter((x) => x !== a)), { qt: 'modal-gap', prompt: `Which modal verb fits best? (${why})`, speak: s.replace('_', 'blank'), sentence: s.replace('_', '____'), why: `${s.replace('_', a)} Modal verbs show how likely or necessary something is.` }); },
+  ]);
+
+  const YEARS = [{ id: 'y2', name: 'Year 2', key: 'KS1' }, { id: 'y34', name: 'Years 3–4', key: 'Lower KS2' }, { id: 'y56', name: 'Years 5–6', key: 'Upper KS2 (SATs)' }];
+  const skill = (id) => SK.find((s) => s.id === id);
+  const itemsOf = (sk) => sk.keys.map((k) => `k:${sk.id}:${k}`);
+  function makeQ(item, rng, band) { const m = /^k:([^:]+):(.*)$/.exec(item); if (!m) return null; const sk = skill(m[1]); if (!sk) return null; const r = pickGen(sk, m[2], rng, band); return r ? Object.assign({ item, unit: sk.id }, r) : null; }
+
+  /* Reading comprehension: all questions of a passage, options shuffled. */
+  function passageQs(id, rng) {
+    const p = S.PASSAGES.find((x) => x.id === id); if (!p) return [];
+    return p.qs.map(([qq, a, w, kind], i) => Object.assign({ item: `r:${id}:${i}`, unit: `read-${id}`, qt: `read-${kind.replace(/\W+/g, '')}`, prompt: qq, speak: qq, kind2: kind, why: `${kind[0].toUpperCase() + kind.slice(1)} question. The answer is: ${a}.` }, options(rng, a, w)));
+  }
+  /* KS2-style paper: grammar and punctuation questions from Years 3–6, then spelling words read aloud (type them). */
+  function spagPaper(rng, short) {
+    const gp = SK.filter((s) => s.year !== 'y2' && s.strand !== 'Spelling'), out = [];
+    for (let k = 0; out.length < (short ? 10 : 20) && k < 400; k++) { const sk = rng.pick(gp), it = `k:${sk.id}:${rng.pick(sk.keys)}`; if (out.some((x) => x.item === it)) continue; const x = makeQ(it, rng); if (x) out.push(Object.assign(x, { section: 'Grammar and punctuation' })); }
+    const words = rng.shuffle(S.Y34.concat(S.Y56)).slice(0, short ? 10 : 20);
+    words.forEach((w) => out.push({ item: `k:${S.Y56.includes(w) ? 'stat56' : 'stat34'}:${w}`, unit: 'spelling', qt: 'paper-spell', section: 'Spelling', prompt: 'Listen, then type the word.', speak: `Spell ${w}.`, hear: w, typeOnly: true, typable: true, accept: [w], options: [{ letter: 'A', value: w }], answerIndex: 0, why: `${w} is spelt ${w.split('').join(' ')}.` }));
+    return out;
+  }
+  FMG.spag = { YEARS, SKILLS: SK, skill, itemsOf, makeQ, miss, passageQs, spagPaper, PASSAGES: S.PASSAGES };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
 /* Family English — adapted from the Family Maths store. Local storage with transactional commits, read-back verification and versioned backups. Spec §9. */
 (function (root) {
   'use strict';
@@ -1062,7 +1419,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
    a reading ladder and toddler flashcards. Same rules as Family Maths: A–D options with a Type it switch, natural voices only. */
 (function (root) {
   'use strict';
-  const FMG = root.FMG, E = FMG.english, P = E.P, esc = FMG.esc, V = FMG.voice, SND = FMG.sounds, T = FMG.trace;
+  const FMG = root.FMG, G = FMG.spag, E = FMG.english, P = E.P, esc = FMG.esc, V = FMG.voice, SND = FMG.sounds, T = FMG.trace;
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const app = document.getElementById('app');
@@ -1141,8 +1498,11 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
         <a class="tile t-ladder" href="#/ladder"><span>🪜</span><b>Reading ladder</b><small>Climb from Phase 2 to Phase 5</small></a>
         <a class="tile t-check" href="#/check"><span>📝</span><b>Phonics check</b><small>Year 1 check practice: 40 words</small></a>
         <a class="tile t-cards" href="#/cards"><span>🃏</span><b>Flashcards</b><small>Pictures and words</small></a>
+        <a class="tile t-spag" href="#/spag"><span>✍️</span><b>Spelling and grammar</b><small>Year 2 to Year 6</small></a>
+        <a class="tile t-readc" href="#/read"><span>📖</span><b>Reading comprehension</b><small>Stories and information texts</small></a>
+        <a class="tile t-paper" href="#/paper"><span>🎓</span><b>SATs-style paper</b><small>KS2 grammar, punctuation and spelling</small></a>
       </div>
-      <p class="small muted center">Coming next: spelling and grammar (KS1–KS2), reading comprehension, then English Language and Literature up to GCSE.</p>`);
+      <p class="small muted center">Coming next: more reading, writing tasks, then English Language and Literature up to GCSE.</p>`);
   });
 
   route(/^#\/phonics$/, () => {
@@ -1172,7 +1532,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     return `<div class="qcard">
       ${q.pic ? `<div class="qpic" aria-hidden="true">${q.pic}</div>` : ''}${big}
       <p class="prompt">${esc(q.prompt)}</p>
-      <div class="qtools">${q.typable ? `<div class="seg" role="radiogroup" aria-label="How to answer"><button role="radio" aria-checked="${!typing}" data-tm="0">A B C D</button><button role="radio" aria-checked="${typing}" data-tm="1">Type it</button></div>` : ''}
+      <div class="qtools">${q.typable && !q.typeOnly ? `<div class="seg" role="radiogroup" aria-label="How to answer"><button role="radio" aria-checked="${!typing}" data-tm="0">A B C D</button><button role="radio" aria-checked="${typing}" data-tm="1">Type it</button></div>` : ''}
         ${q.hear ? `<button class="btn sm ghost" id="hear">🔊 Hear it</button>` : ''}<button class="btn sm ghost" id="sayq">🗣️ Read it</button></div>
       ${typing ? `<form class="type-row" id="tf" autocomplete="off"><input id="ans" class="type-in" placeholder="Type your answer" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Your answer"><button class="btn primary">Check</button></form>`
         : `<div class="abcd ${q.kind === 'pic' ? 'pics' : ''}">${q.options.map((o, i) => `<button class="opt" data-opt="${i}"><span class="l">${o.letter}</span><span class="v">${esc(o.value)}</span></button>`).join('')}</div>`}
@@ -1185,7 +1545,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     const draw = (q) => {
       q = q || (o.qs ? o.qs[S.i] : o.next());
       if (!q) { o.onEnd && o.onEnd(S.res); return; }
-      const typing = q.typable && (S.typeMode != null ? S.typeMode : p.band === 'big' && /spell|tricky/.test(q.qt));
+      const typing = !!q.typeOnly || (q.typable && (S.typeMode != null ? S.typeMode : p.band === 'big' && /spell|tricky|hear/.test(q.qt)));
       const top = o.qs ? `<div class="qprog">${o.qs.map((x, k) => `<span class="${k < S.i ? (S.res[k] && S.res[k].ok ? 'good' : 'done') : k === S.i ? 'cur' : ''}"></span>`).join('')}</div>` : `<span class="small muted">${S.res.filter((r) => r.ok).length} right · ${S.res.length} answered</span>`;
       shell(`<div class="qtop"><span class="qmode">${esc(o.label)}</span>${top}</div>${o.above ? o.above() : ''}${qHtml(q, typing)}
         <div class="qnav"><a class="btn ghost" href="${o.back}">Stop</a><button class="btn primary big" id="next" hidden>${o.qs && S.i === o.qs.length - 1 ? 'See how I did' : 'Next ›'}</button></div>`, { back: o.back, cls: 'focus' });
@@ -1221,15 +1581,67 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     $('#again').onclick = (e) => { e.preventDefault(); render(); };
     sayIfOn(`${right} out of ${res.length}. ${right === res.length ? 'Amazing!' : 'Well done!'}`);
   }
-  route(/^#\/play\/([\w]+)$/, (target) => {
+  route(/^#\/play\/([\w-]+)$/, (target) => {
     const p = profile(), rng = FMG.rng(FMG.newSeed());
     let items, label, back;
-    if (/^u\d+$/.test(target)) { const u = E.unit(target); items = E.itemsOf(u); label = u.title; back = `#/unit/${u.id}`; }
+    if (/^k-/.test(target)) { const sk = G.skill(target.slice(2)); if (!sk) { location.hash = '#/spag'; return; } items = G.itemsOf(sk); label = sk.name; back = '#/spag'; }
+    else if (/^y-/.test(target)) { items = G.SKILLS.filter((k) => k.year === target.slice(2)).flatMap(G.itemsOf); label = `${(G.YEARS.find((y) => y.id === target.slice(2)) || {}).name} mixed`; back = '#/spag'; }
+    else if (/^u\d+$/.test(target)) { const u = E.unit(target); items = E.itemsOf(u); label = u.title; back = `#/unit/${u.id}`; }
     else if (/^p\d$/.test(target)) { items = E.stageItems(target); label = `${E.stageOf(target).name} mixed`; back = '#/phonics'; }
     else if (target === 'tricky') { items = P.UNITS.flatMap((u) => E.trickyOf(u).map((t) => `t:${u.id}:${t}`)); label = 'Tricky words'; back = '#/home'; }
     else { location.hash = '#/home'; return; }
-    const qs = E.buildSet(items, rng, { band: p.band, count: p.band === 'little' ? 8 : 10, states: statesOf(p) });
+    const states = statesOf(p), count = p.band === 'little' ? 8 : 10;
+    const rank = (i) => { const t = E.st(states, i); return t.n && !t.secure ? 0 : !t.n ? 1 : 2; };
+    const qs = /^k:/.test(items[0] || '') ? (() => { const ranked = rng.shuffle(items).sort((a, b) => rank(a) - rank(b)), out = [];
+      for (let k = 0; out.length < count && k < count * 6; k++) { const x = G.makeQ(ranked[k % ranked.length], rng, p.band); if (x) out.push(x); } return rng.shuffle(out); })()
+      : E.buildSet(items, rng, { band: p.band, count, states });
     runRound({ qs, label, back, mode: 'practice', onEnd: (res) => results(res, back, location.hash, label) });
+  });
+
+  /* ---------- Spelling and grammar (KS1–KS2) ---------- */
+  route(/^#\/spag$/, () => {
+    const p = profile(), states = statesOf(p);
+    const pct = (sk) => { const its = G.itemsOf(sk); return its.length ? Math.round((100 * its.filter((i) => E.st(states, i).secure).length) / its.length) : 0; };
+    shell(`<h1>✍️ Spelling and grammar</h1><p class="muted">Following the National Curriculum for England, from Year 2 to the Year 6 SATs. Tap a skill to practise it.</p>
+      ${G.YEARS.map((y) => `<section class="stage"><h2>${esc(y.name)} <small>${esc(y.key)}</small></h2>
+        ${['Spelling', 'Grammar', 'Punctuation', 'Vocabulary'].map((st) => { const sks = G.SKILLS.filter((k) => k.year === y.id && k.strand === st); return sks.length ? `<h3 class="strand">${st}</h3><div class="units">${sks.map((k) => `<a class="unit" href="#/play/k-${k.id}"><b>${esc(k.name)}</b><small class="muted">${k.keys.length} items</small>${bar(pct(k))}</a>`).join('')}</div>` : ''; }).join('')}
+        <div class="row"><a class="btn ghost sm" href="#/play/y-${y.id}">Mixed practice: ${esc(y.name)}</a></div></section>`).join('')}`, { back: '#/home', backText: 'Home' });
+  });
+
+  /* ---------- Reading comprehension ---------- */
+  const examsOf2 = (p) => ((store.get().exams || {})[p.id] || { results: [] }).results;
+  const record = (p, rec) => saved(store.commit((d) => { d.exams = d.exams || {}; const m = d.exams[p.id] = d.exams[p.id] || { results: [] }; m.results = (m.results || []).concat(Object.assign({ id: FMG.uid('x'), day: FMG.today(), at: Date.now() }, rec)).slice(-200); }));
+  route(/^#\/read$/, () => {
+    const p = profile(), res = examsOf2(p).filter((r) => r.kind === 'read');
+    const best = (id) => res.filter((r) => r.stage === id).reduce((m, r) => Math.max(m, r.right), -1);
+    const levels = Array.from(new Set(G.PASSAGES.map((x) => x.level)));
+    shell(`<h1>📖 Reading comprehension</h1><p class="muted">Read the text (or listen to it), then answer the questions. The text stays on the screen: good readers look back at it.</p>
+      ${levels.map((l) => `<section class="stage"><h2>${esc(l)}</h2><div class="units">${G.PASSAGES.filter((x) => x.level === l).map((x) => `<a class="unit" href="#/read/${x.id}"><b>${esc(x.title)}</b><small class="muted">${esc(x.kind)} · ${x.qs.length} questions${best(x.id) >= 0 ? ` · best ${best(x.id)}/${x.qs.length}` : ''}</small></a>`).join('')}</div></section>`).join('')}`, { back: '#/home', backText: 'Home' });
+  });
+  route(/^#\/read\/(\w+)$/, (id) => {
+    const p = profile(), ps = G.PASSAGES.find((x) => x.id === id); if (!ps) { location.hash = '#/read'; return; }
+    const qs = G.passageQs(id, FMG.rng(FMG.newSeed()));
+    runRound({ qs, label: `📖 ${ps.title}`, back: '#/read', mode: 'read',
+      above: () => `<details class="passage" open><summary><b>${esc(ps.title)}</b> <span class="small muted">${esc(ps.kind)} · tap to hide or show</span></summary><p>${esc(ps.text)}</p><button class="btn sm ghost" data-say="${esc(ps.title + '. ' + ps.text)}">🔊 Read it to me</button></details>`,
+      bind: () => $$('[data-say]').forEach((b) => (b.onclick = (e) => { e.preventDefault(); say(b.dataset.say); })),
+      onEnd: (res) => { const right = res.filter((r) => r.ok).length; record(p, { kind: 'read', stage: id, right, n: res.length }); results(res, '#/read', `#/read/${id}`, ps.title); } });
+  });
+
+  /* ---------- KS2 SATs-style grammar, punctuation and spelling paper ---------- */
+  route(/^#\/paper$/, () => {
+    const p = profile(), past = examsOf2(p).filter((r) => r.kind === 'paper').slice(-5).reverse();
+    shell(`<h1>🎓 SATs-style paper</h1>
+      <p>In May of Year 6, children in England sit a grammar, punctuation and spelling test. <b>Paper 1</b> has short grammar and punctuation questions; <b>Paper 2</b> is 20 spellings read aloud.</p>
+      <p class="muted">This practice paper has grammar and punctuation questions, then spellings: listen and type each word. It is practice in the same style, not a real past paper.</p>
+      <div class="row"><a class="btn primary big" href="#/paper/full">Full practice (40 questions)</a><a class="btn ghost" href="#/paper/short">Short practice (20)</a></div>
+      ${past.length ? `<h2 class="h2">Past tries</h2><ul class="review">${past.map((r) => `<li>${esc(r.day)}: grammar and punctuation <b>${r.gp}/${r.gpn}</b>, spelling <b>${r.sp}/${r.spn}</b></li>`).join('')}</ul>` : ''}`, { back: '#/home', backText: 'Home' });
+  });
+  route(/^#\/paper\/(full|short)$/, (len) => {
+    const p = profile(), qs = G.spagPaper(FMG.rng(FMG.newSeed()), len === 'short');
+    runRound({ qs, label: '🎓 Practice paper', back: '#/paper', mode: 'paper',
+      onEnd: (res) => { const gpR = res.filter((r) => r.q.section !== 'Spelling'), spR = res.filter((r) => r.q.section === 'Spelling');
+        const rec = { kind: 'paper', gp: gpR.filter((r) => r.ok).length, gpn: gpR.length, sp: spR.filter((r) => r.ok).length, spn: spR.length };
+        record(p, rec); results(res, '#/paper', `#/paper/${len}`, `Grammar and punctuation ${rec.gp}/${rec.gpn} · Spelling ${rec.sp}/${rec.spn}`); } });
   });
 
   /* ---------- Phase tests ---------- */
