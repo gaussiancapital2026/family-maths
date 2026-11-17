@@ -93,6 +93,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
 .savebar{display:none;background:var(--bad-bg);color:var(--bad);padding:.5rem 1rem;text-align:center}.savebar.show{display:block}
 @media (max-width:520px){.qbig{font-size:2.4rem}.opt{font-size:1.25rem}.abcd.pics .opt{font-size:2.5rem}.chk-word{font-size:3rem}}
 [hidden]{display:none!important}
+.badge.g-distinction{background:#d9a400}.badge.g-merit{background:#0a6fd6}.badge.g-pass{background:var(--good)}.badge.g-notyet{background:var(--muted)}
 
 </style>
 </head>
@@ -242,27 +243,27 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
 
   /* Units. stage: p2 (Reception autumn), p3 (Reception spring), p4 (Reception summer), p5 (Year 1). */
   const UNITS = [
-    { id: 'u01', stage: 'p2', title: 's a t p', gr: ['s', 'a', 't', 'p'], words: 'sat pat tap at sap pats taps' },
-    { id: 'u02', stage: 'p2', title: 'i n m d', gr: ['i', 'n', 'm', 'd'], words: 'it in pin tin pit sit nip tip man mat map pan pad dad dim mad sad' },
+    { id: 'u01', stage: 'p2', title: 's a t p', gr: ['s', 'a', 't', 'p'], words: 'sat pat tap at sap pats taps spat' },
+    { id: 'u02', stage: 'p2', title: 'i n m d', gr: ['i', 'n', 'm', 'd'], words: 'it in pin tin pit sit nip tip man mat map pan pad dad dim mad sad tan nap dip sip pip dam' },
     { id: 'u03', stage: 'p2', title: 'g o c k', gr: ['g', 'o', 'c', 'k'], words: 'got dog dig pig cot cat cap can cod kit kid pod nod on not top pot mop dot', tricky: 'is I the' },
-    { id: 'u04', stage: 'p2', title: 'ck e u r', gr: ['ck', 'e', 'u', 'r'], words: 'sock duck kick pick neck peck get net pen ten red rat run sun cup mud nut tug rug up' },
+    { id: 'u04', stage: 'p2', title: 'ck e u r', gr: ['ck', 'e', 'u', 'r'], words: 'sock duck kick pick neck peck get net pen ten red rat run sun cup mud nut tug rug up pet rip rot cut' },
     { id: 'u05', stage: 'p2', title: 'h b f l', gr: ['h', 'b', 'f', 'l'], words: 'hat hot hen hug hum bag bed bat bin bus big bun fan fig fit fun fog lip leg log lid lot' },
     { id: 'u06', stage: 'p2', title: 'ff ll ss j', gr: ['ff', 'll', 'ss', 'j'], words: 'off huff puff cuff bell doll hill fill well tell kiss miss boss mess less jam jet jog jug', tricky: 'put pull full as and has his her' },
     { id: 'u07', stage: 'p2', title: 'v w x y', gr: ['v', 'w', 'x', 'y'], words: 'van vet wet web win wig box fox six mix yes yet yap yell', tricky: 'go no to into she push' },
     { id: 'u08', stage: 'p2', title: 'z zz qu ch', gr: ['z', 'zz', 'qu', 'ch'], words: 'zip zap buzz fizz quiz quack quick quit chip chop chin much rich chat', tricky: 'he of we me be' },
     { id: 'u09', stage: 'p2', title: 'sh th ng nk', gr: ['sh', 'th', 'ng', 'nk'], words: 'ship shop shed fish dish cash rush this that them then thin moth ring sing king long song bang pink sink wink bank tank think junk' },
-    { id: 'u10', stage: 'p2', title: 'Words ending in s', gr: [], words: 'cats dogs pigs hats beds hens bugs pots', focus: 'plural' },
+    { id: 'u10', stage: 'p2', title: 'Words ending in s', gr: [], words: 'cats dogs pigs hats beds hens bugs pots cups pens bats nuts rugs pans maps tins', focus: 'plural' },
     { id: 'u11', stage: 'p3', title: 'ai ee igh oa', gr: ['ai', 'ee', 'igh', 'oa'], words: 'rain tail mail pain wait sail feet seed bee sheep week deep high night light fight might sigh goat boat coat road soap toad', tricky: 'was you they' },
     { id: 'u12', stage: 'p3', title: 'oo oo ar or', gr: ['oo', 'oo*', 'ar', 'or'], words: 'moon soon food zoo roof cool book look cook foot wood good car bar park dark jar farm cart fork horn corn born sort torn', tricky: 'my by all' },
-    { id: 'u13', stage: 'p3', title: 'ur ow oi ear', gr: ['ur', 'ow', 'oi', 'ear'], words: 'turn hurt burn fur surf church cow how now town down owl coin oil boil soil join ear hear near dear beard', tricky: 'are sure pure' },
-    { id: 'u14', stage: 'p3', title: 'air er, double letters', gr: ['air', 'er'], words: 'hair fair pair chair her hammer letter ladder supper dinner' },
-    { id: 'u15', stage: 'p4', title: 'Words like tent and milk', gr: [], words: 'tent hand milk lamp jump belt help gift pond bend lost tusk', focus: 'cvcc', tricky: 'said so have like some come' },
-    { id: 'u16', stage: 'p4', title: 'Words like frog and crab', gr: [], words: 'frog crab drum flag spot stop swim trip plan clap snap grin', focus: 'ccvc', tricky: 'love do were here little says' },
-    { id: 'u17', stage: 'p4', title: 'Longer words', gr: [], words: 'train sweets bright spoon start storm shark crown toast green', focus: 'long', tricky: 'there when what one out today' },
+    { id: 'u13', stage: 'p3', title: 'ur ow oi ear', gr: ['ur', 'ow', 'oi', 'ear'], words: 'turn hurt burn fur surf church cow how now town down owl coin oil boil soil join ear hear near dear beard curl howl foil', tricky: 'are sure pure' },
+    { id: 'u14', stage: 'p3', title: 'air er, double letters', gr: ['air', 'er'], words: 'hair fair pair chair her hammer letter ladder supper dinner butter summer zipper rubber pepper' },
+    { id: 'u15', stage: 'p4', title: 'Words like tent and milk', gr: [], words: 'tent hand milk lamp jump belt help gift pond bend lost tusk desk soft lift pump gulp wind mend fond', focus: 'cvcc', tricky: 'said so have like some come' },
+    { id: 'u16', stage: 'p4', title: 'Words like frog and crab', gr: [], words: 'frog crab drum flag spot stop swim trip plan clap snap grin flat glad step skip trap drop slug plum', focus: 'ccvc', tricky: 'love do were here little says' },
+    { id: 'u17', stage: 'p4', title: 'Longer words', gr: [], words: 'train sweets bright spoon start storm shark crown toast green trail sport smart', focus: 'long', tricky: 'there when what one out today' },
     { id: 'u18', stage: 'p5', title: 'ay ou ie ea', gr: ['ay', 'ou', 'ie', 'ea'], words: 'day play say tray out loud cloud shout mouth pie tie lie sea eat tea leaf bean', tricky: 'their people oh your' },
     { id: 'u19', stage: 'p5', title: 'oy ir ue aw', gr: ['oy', 'ir', 'ue', 'aw'], words: 'boy toy joy bird girl shirt first blue glue clue true saw paw claw draw yawn straw', tricky: 'Mr Mrs ask could would should' },
     { id: 'u20', stage: 'p5', title: 'wh ph ew oe au ey', gr: ['wh', 'ph', 'ew', 'oe', 'au', 'ey'], words: 'wheel which whip dolphin graph new few chew grew blew stew toe launch key monkey donkey', tricky: 'our house mouse water want' },
-    { id: 'u21', stage: 'p5', title: 'a-e e-e i-e o-e u-e', gr: ['a-e', 'e-e', 'i-e', 'o-e', 'u-e'], words: 'cake made late gate snake these bike time line kite slide smile five bone home rope nose rose phone cube tube flute', tricky: 'any many again who whole where two' },
+    { id: 'u21', stage: 'p5', title: 'a-e e-e i-e o-e u-e', gr: ['a-e', 'e-e', 'i-e', 'o-e', 'u-e'], words: 'cake made late gate snake these bike time line kite slide smile five bone home rope nose rose phone cube tube flute game name same shape lake hide ride pine hole note mule', tricky: 'any many again who whole where two' },
     { id: 'u22', stage: 'p5', title: 'More tricky words', gr: [], words: '', focus: 'tricky', tricky: 'school call different thought through friend work once laugh because eye' },
   ];
 
@@ -380,8 +381,11 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
   const unitOfItem = (it) => { const p = it.split(':'); if (p[0] === 's') return unit(P.SENTENCES[+p[1]].u); if (p[0] === 'a') return stageUnits(p[1]).slice(-1)[0]; return unit(p[1]); };
 
   /* ---------- Helpers ---------- */
+  /* Spellings of the same sound: never offer one as a wrong answer for another. */
+  const SAME = [['c', 'k', 'ck', 'q'], ['f', 'ff', 'ph'], ['l', 'll'], ['s', 'ss', 'c'], ['z', 'zz', 's'], ['ai', 'ay', 'a-e', 'a'], ['ee', 'ea', 'ey', 'e-e', 'y'], ['igh', 'ie', 'i-e', 'y'], ['oa', 'oe', 'o-e', 'o'], ['oo', 'ew', 'ue', 'u-e', 'oo*'], ['or', 'aw', 'au', 'ar'], ['ur', 'ir', 'er'], ['ow', 'ou'], ['oi', 'oy'], ['w', 'wh'], ['m', 'mm'], ['d', 'dd'], ['t', 'tt'], ['p', 'pp'], ['n', 'nn'], ['b', 'bb'], ['g', 'gg'], ['r', 'rr'], ['ch', 'tch'], ['x', 'ks', 'cs'], ['qu', 'kw']];
+  const sameSound = (a, b) => a !== b && SAME.some((g) => g.includes(a) && g.includes(b));
   function options(rng, right, wrongs, extra) {
-    const pool = []; wrongs.forEach((w) => { if (w != null && w !== right && !pool.includes(w)) pool.push(w); });
+    const pool = []; wrongs.forEach((w) => { if (w != null && w !== right && !pool.includes(w) && !sameSound(String(right), String(w))) pool.push(w); });
     const pick = rng.shuffle(pool).slice(0, 3);
     if (pick.length < 3) return null;
     const all = rng.shuffle([right].concat(pick));
@@ -581,6 +585,127 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
       const wr = [mix(1, 2), mix(2, 3), mix(ws.length - 1, ws.length - 2), mix(0, 1)].map(fmt).filter((x) => x !== s);
       const o = options(rng, s, wr); return o && Object.assign({ qt: 'order', prompt: 'Which sentence makes sense?', speak: 'Read them carefully. Which sentence makes sense?', why: `The words are in the right order in: ${s}` }, o); },
   };
+  /* ---------- Formats: each fact about a word can be asked seven ways ---------- */
+  const nums = (v, lo, hi) => { const n = +v, out = []; for (let k = lo; k <= hi; k++) if (k !== n) out.push(String(k)); return out; };
+  const nonSplit = (uid) => graphemesUpTo(uid).filter((x) => !x.includes('-')).map(show).filter((x, i, a) => a.indexOf(x) === i);
+  const AT = {
+    first: { ok: (s) => s.length >= 2 && !s[0].includes('-'), val: (s) => show(s[0]), pool: (u, v) => nonSplit(u.id).filter((x) => x !== v).reverse(), q: (w) => `What is the first sound in ${w}?`, heard: 'Listen. What is the first sound in the word?', pic: 'Say the name of the picture. What is its first sound?', st: (w, v) => `${w} starts with ${v}`, rev: (v) => `Which word starts with ${v}?`, nrev: (v) => `Which word does NOT start with ${v}?`, why: (w, v, s) => `${w} starts with ${v}: ${segStr(s)}.`, type: true },
+    last: { ok: (s) => s.length >= 2 && !s[s.length - 1].includes('-'), val: (s) => show(s[s.length - 1]), pool: (u, v) => nonSplit(u.id).filter((x) => x !== v).reverse(), q: (w) => `What is the last sound in ${w}?`, heard: 'Listen. What is the last sound in the word?', pic: 'Say the name of the picture. What is its last sound?', st: (w, v) => `${w} ends with ${v}`, rev: (v) => `Which word ends with ${v}?`, nrev: (v) => `Which word does NOT end with ${v}?`, why: (w, v, s) => `${w} ends with ${v}: ${segStr(s)}.`, type: true },
+    middle: { ok: (s) => s.length === 3 && !s[1].includes('-'), val: (s) => show(s[1]), pool: (u, v) => nonSplit(u.id).filter((x) => x !== v && /[aeiouy]/.test(x)).concat(nonSplit(u.id)).reverse(), q: (w) => `What is the middle sound in ${w}?`, heard: 'Listen. What is the middle sound in the word?', pic: 'Say the name of the picture. What is its middle sound?', st: (w, v) => `${w} has ${v} in the middle`, rev: (v) => `Which word has ${v} in the middle?`, nrev: (v) => `Which word does NOT have ${v} in the middle?`, why: (w, v, s) => `${w}: ${segStr(s)}. ${v} is in the middle.`, type: true },
+    sounds: { ok: (s, w) => s.length >= 2 && s.length <= 6 && !/x|qu|nk/.test(w), val: (s) => String(s.length), pool: (u, v) => nums(v, 1, 7), q: (w) => `How many sounds are in ${w}?`, heard: 'Listen. How many sounds are in the word?', pic: 'Say the name of the picture. How many sounds are in it?', st: (w, v) => `${w} has ${v} sounds`, rev: (v) => `Which word has ${v} sounds?`, nrev: (v) => `Which word does NOT have ${v} sounds?`, why: (w, v, s) => `${w} has ${v} sounds: ${segStr(s)}.`, type: true },
+    letters: { ok: (s, w) => w.length >= 2 && w.length <= 8, val: (s, w) => String(w.length), pool: (u, v) => nums(v, 2, 9), q: (w) => `How many letters are in ${w}?`, heard: null, pic: null, st: (w, v) => `${w} has ${v} letters`, rev: (v) => `Which word has ${v} letters?`, nrev: (v) => `Which word does NOT have ${v} letters?`, why: (w, v, s) => `${w} has ${v} letters: ${w.split('').join(' ')}. (It has ${s.length} sounds.)`, type: true },
+    beats: { ok: (s, w, u) => sylls(w, u.id) >= 1 && sylls(w, u.id) <= 4, val: (s, w, u) => String(sylls(w, u.id)), pool: (u, v) => nums(v, 1, 4), q: (w) => `How many beats (syllables) are in ${w}?`, heard: 'Listen and clap. How many beats are in the word?', pic: 'Say the name of the picture and clap it. How many beats?', st: (w, v) => `${w} has ${v} beat${v === '1' ? '' : 's'}`, rev: (v) => `Which word has ${v} beat${v === '1' ? '' : 's'}?`, nrev: (v) => `Which word does NOT have ${v} beat${v === '1' ? '' : 's'}?`, why: (w, v) => `${w} has ${v} beat${v === '1' ? '' : 's'}.`, type: true },
+    vowel: { ok: (s) => s.filter((g) => /[aeiou]/.test(g)).length === 1, val: (s) => show(s.find((g) => /[aeiou]/.test(g))), pool: (u, v) => graphemesUpTo(u.id).filter((g) => /[aeiou]/.test(g)).map(show).filter((x, i, a) => x !== v && a.indexOf(x) === i).reverse(), q: (w) => `Which vowel sound is in ${w}?`, heard: 'Listen. Which vowel sound is in the word?', pic: 'Say the name of the picture. Which vowel sound is in it?', st: (w, v) => `${w} has the vowel sound ${v}`, rev: (v) => `Which word has the vowel sound ${v}?`, nrev: (v) => `Which word does NOT have the vowel sound ${v}?`, why: (w, v, s) => `${w}: ${segStr(s)}. The vowel sound is ${v}.`, type: true },
+  };
+  const FMTS = ['show', 'heard', 'pic', 'rev', 'nrev', 'true', 'kit'];
+  function attrQ(a, f, u, w, rng) {
+    const A = AT[a], s = split(w, u.id); if (!A.ok(s, w, u)) return null;
+    const v = A.val(s, w, u), why = A.why(w, v, s), pool = A.pool(u, v).filter((x) => x !== v && !sameSound(v, x)).filter((x, i, a) => a.indexOf(x) === i);
+    const valOf = (x) => { const t = split(x.w, x.u); return A.ok(t, x.w, unit(x.u)) ? A.val(t, x.w, unit(x.u)) : null; };
+    const ws = () => wordsUpTo(u.id).filter((x) => x.w !== w && valOf(x) != null);
+    if (f === 'show' || f === 'heard' || f === 'pic') {
+      if (f === 'heard' && !A.heard) return null; if (f === 'pic' && (!A.pic || !pic(w))) return null;
+      const o = options(rng, v, pool.slice(0, 12)); if (!o) return null;
+      return Object.assign({ qt: `${a}-${f}`, prompt: f === 'show' ? A.q(w) : f === 'heard' ? A.heard : A.pic, speak: f === 'pic' ? A.pic : A.q(w), big: f === 'show' ? w : null, hear: f === 'heard' ? w : null, pic: f === 'pic' || (f === 'show' && rng() < 0.5) ? pic(w) : null, typable: A.type, accept: [v], why }, o);
+    }
+    if (f === 'rev') { const no = ws().filter((x) => valOf(x) !== v).map((x) => x.w); const o = options(rng, w, rng.shuffle(no)); return o && Object.assign({ qt: `${a}-rev`, prompt: A.rev(v), speak: A.rev(v), why }, o); }
+    if (f === 'nrev') { const yes = ws().filter((x) => valOf(x) === v).map((x) => x.w); if (yes.length < 3) return null; const no = ws().filter((x) => valOf(x) !== v); if (!no.length) return null; const r = rng.pick(no);
+      const o = options(rng, r.w, rng.shuffle(yes)); return o && Object.assign({ qt: `${a}-nrev`, prompt: A.nrev(v), speak: A.nrev(v), why: A.why(r.w, valOf(r), split(r.w, r.u)).replace(/\.$/, `, not ${v}.`) }, o); }
+    if (f === 'true') { const o = options(rng, `${A.st(w, v)}.`, pool.slice(0, 8).map((x) => `${A.st(w, x)}.`)); return o && Object.assign({ qt: `${a}-true`, prompt: `Which is true about ${w}?`, speak: `Which is true about ${w}?`, big: w, hear: w, why }, o); }
+    if (f === 'kit') {
+      const right = rng() < 0.3, claim = right ? v : rng.pick(pool.slice(0, 6)); if (claim == null) return null;
+      const yes = 'Yes, Kit is right.', others = pool.filter((x) => x !== claim).slice(0, 6).map((x) => `No: ${A.st(w, x)}.`);
+      const o = right ? options(rng, yes, others) : options(rng, `No: ${A.st(w, v)}.`, [yes].concat(others));
+      return o && Object.assign({ qt: `${a}-kit`, prompt: `Kit says “${A.st(w, claim)}.” Is Kit right?`, speak: `Kit says ${A.st(w, claim)}. Is Kit right?`, big: w, why }, o);
+    }
+    return null;
+  }
+  const XA = {}; Object.keys(AT).forEach((a) => FMTS.forEach((f) => { XA[`${a}_${f}`] = (u, w, rng) => attrQ(a, f, u, w, rng); }));
+  /* Rhymes, asked more ways */
+  const rhymeQ = (f) => (u, w, rng) => {
+    const ws = wordsUpTo(u.id, 1).map((x) => x.w), rh = ws.filter((x) => x !== w && rime(x) === rime(w)), no = ws.filter((x) => rime(x) !== rime(w));
+    if (!rh.length || no.length < 3) return null; const r = rng.pick(rh), why = `${w} and ${r} both end in “${rime(w)}”.`;
+    if (f === 'heard') { const o = options(rng, r, rng.shuffle(no)); return o && { qt: 'rhyme-heard', prompt: 'Listen. Which word rhymes with the word you hear?', speak: `Which word rhymes with ${w}?`, hear: w, why, ...o }; }
+    if (f === 'pic') { if (!pic(w)) return null; const o = options(rng, r, rng.shuffle(no)); return o && { qt: 'rhyme-pic', prompt: 'Say the name of the picture. Which word rhymes with it?', speak: 'Which word rhymes with the picture?', pic: pic(w), why, ...o }; }
+    if (f === 'true') { const o = options(rng, `${w} rhymes with ${r}.`, rng.shuffle(no).map((x) => `${w} rhymes with ${x}.`)); return o && { qt: 'rhyme-true', prompt: 'Which is true?', speak: 'Which is true?', why, ...o }; }
+    if (f === 'kit') { const right = rng() < 0.35, c = right ? r : rng.pick(no); const yes = 'Yes, Kit is right.', nos = rng.shuffle(no.filter((x) => x !== c)).slice(0, 4).map((x) => `No: ${w} rhymes with ${x}.`);
+      const o = right ? options(rng, yes, nos) : options(rng, `No: ${w} rhymes with ${r}.`, [yes].concat(nos)); return o && { qt: 'rhyme-kit', prompt: `Kit says “${w} rhymes with ${c}.” Is Kit right?`, speak: `Kit says ${w} rhymes with ${c}. Is Kit right?`, why, ...o }; }
+    return null;
+  };
+  ['heard', 'pic', 'true', 'kit'].forEach((f) => { XA[`rhyme_${f}`] = rhymeQ(f); });
+  /* Spelling, asked more ways */
+  XA.spell_kit = (u, w, rng) => { const ms = misspell(w, u.id, rng); if (ms.length < 3) return null; const right = rng() < 0.3, c = right ? w : ms[0];
+    const yes = 'Yes, Kit is right.', nos = ms.filter((x) => x !== c).slice(0, 4).map((x) => `No, it is spelt ${x}.`);
+    const o = right ? options(rng, yes, nos) : options(rng, `No, it is spelt ${w}.`, [yes].concat(nos));
+    return o && { qt: 'spell-kit', prompt: `Kit wrote “${c}”. Is that the right spelling of the word you hear?`, speak: `Kit wrote a word. Is it the right spelling of ${w}?`, hear: w, pic: pic(w), why: `${w} is spelt ${segStr(split(w, u.id))}.`, ...o }; };
+  XA.spell_wrong = (u, w, rng) => { const ws = wordsUpTo(u.id).map((x) => x.w).filter((x) => x !== w); if (ws.length < 3) return null; const ms = misspell(w, u.id, rng); if (!ms.length) return null;
+    const o = options(rng, ms[0], rng.shuffle(ws)); return o && { qt: 'spell-wrong', prompt: 'One of these words is spelt wrongly. Which one?', speak: 'One of these words is spelt wrongly. Which one?', why: `${ms[0]} should be spelt ${w}.`, ...o }; };
+  XA.read_heard = (u, w, rng) => { const sim = wordsUpTo(u.id, 1).map((x) => x.w).filter((x) => x !== w && (x[0] === w[0] || x.slice(-1) === w.slice(-1))); const o = options(rng, w, rng.shuffle(sim).concat(misspell(w, u.id, rng)));
+    return o && { qt: 'read-heard', prompt: 'Listen. Which word did you hear?', speak: `Which word is ${w}?`, hear: w, why: `You heard ${w}: ${segStr(split(w, u.id))}.`, ...o }; };
+  /* Tricky words, more ways */
+  Object.assign(XT, {
+    tletters(u, t, rng) { if (t.length < 2) return null; const v = String(t.length); const o = options(rng, v, nums(v, 1, 9)); return o && { qt: 'tletters', prompt: `How many letters are in the tricky word ${t}?`, speak: `How many letters are in ${t}?`, big: t, typable: true, accept: [v], why: `${t}: ${t.split('').join(' ')}. That is ${v} letters.`, ...o }; },
+    tfirstl(u, t, rng) { const c = t[0].toLowerCase(); const o = options(rng, c, (LOOK[c] || 'abcdefg').split('').concat(rng.shuffle(ABC.split('')))); return o && { qt: 'tfirstl', prompt: 'Listen. Which letter does the tricky word start with?', speak: `Which letter does ${t} start with?`, hear: t, typable: true, accept: [c], why: `${t} starts with ${c}.`, ...o }; },
+    tkit(u, t, rng) { const ms = trickyWrong(t, rng); if (ms.length < 3) return null; const right = rng() < 0.3, c = right ? t : ms[0]; const yes = 'Yes, Kit is right.', nos = ms.filter((x) => x !== c).slice(0, 4).map((x) => `No, it is spelt ${x}.`);
+      const o = right ? options(rng, yes, nos) : options(rng, `No, it is spelt ${t}.`, [yes].concat(nos)); return o && { qt: 'tkit', prompt: `Kit wrote “${c}”. Is that the right spelling of the word you hear?`, speak: `Kit wrote a word. Is it the right spelling of ${t}?`, hear: t, why: `${t} is spelt ${t.split('').join(' ')}.`, ...o }; },
+    twrong(u, t, rng) { const ms = trickyWrong(t, rng); if (!ms.length) return null; const others = P.UNITS.flatMap(trickyOf).filter((x) => x !== t); const o = options(rng, ms[0], rng.shuffle(others));
+      return o && { qt: 'twrong', prompt: 'One of these tricky words is spelt wrongly. Which one?', speak: 'One of these tricky words is spelt wrongly. Which one?', why: `${ms[0]} should be spelt ${t}.`, ...o }; },
+  });
+  /* Sentences, more ways */
+  Object.assign(XS, {
+    words(i, rng) { const s = P.SENTENCES[i].s, n = s.replace(/[.!?]/g, '').split(' ').length; const o = options(rng, String(n), nums(n, 2, 11)); return o && { qt: 'swords', prompt: 'How many words are in this sentence?', speak: 'How many words are in this sentence?', sentence: s, typable: true, accept: [String(n)], why: `${s} has ${n} words.`, ...o }; },
+    heard(i, rng) { const S0 = P.SENTENCES[i], ws = S0.s.replace(/[.!?]$/, '').split(' '), stage = unit(S0.u).stage, pool = stageUnits(stage).flatMap(wordsOf);
+      const alts = []; ws.forEach((w, k) => { if (k && REAL.has(w.toLowerCase()) && w.length >= 3) { const r = pool.filter((x) => x !== w.toLowerCase() && x.length === w.length); if (r.length) { const c = ws.slice(); c[k] = rng.pick(r); alts.push(c.join(' ') + S0.s.slice(-1)); } } });
+      const o = options(rng, S0.s, rng.shuffle(alts)); return o && { qt: 'sheard', prompt: 'Listen. Which sentence did you hear?', speak: S0.s, hear: S0.s, why: `You heard: ${S0.s}`, ...o }; },
+    end(i, rng) { const S0 = P.SENTENCES[i]; const o = options(rng, 'a full stop .', ['a question mark ?', 'a comma ,', 'nothing']); return o && { qt: 'send', prompt: 'What goes at the end of this sentence?', speak: 'What goes at the end of this sentence?', sentence: S0.s.replace(/[.!?]$/, ''), why: 'A sentence that tells us something ends with a full stop.', ...o }; },
+  });
+  Object.assign(XW, XA);
+  /* ---------- Sound changes, more checks ---------- */
+  const swapAt = (pos) => (u, w, rng) => {
+    const s = split(w, u.id), i = pos === 'last' ? s.length - 1 : 1; if (s.length < 3 || (pos === 'mid' && s.length !== 3)) return null;
+    const others = wordsUpTo(u.id, 1).filter((x) => { const t = split(x.w, x.u); return x.w !== w && t.length === s.length && t.every((g, k) => (k === i ? g !== s[i] : g === s[k])); });
+    if (!others.length) return null; const t = rng.pick(others).w, ng = split(t, u.id)[i]; if (ng.includes('-') || s[i].includes('-')) return null;
+    const o = options(rng, t, misspell(t, u.id, rng).concat(rng.shuffle(wordsUpTo(u.id).map((x) => x.w).filter((x) => x.length === t.length && x !== w))));
+    return o && { qt: `swap-${pos}`, prompt: `Change the ${pos === 'last' ? 'last' : 'middle'} sound of ${w} to ${show(ng)}. What is the new word?`, speak: `Change the ${pos === 'last' ? 'last' : 'middle'} sound of ${w}. What is the new word?`, big: w, typable: true, accept: [t], why: `${segStr(s)} becomes ${segStr(split(t, u.id))}: ${t}.`, ...o };
+  };
+  Object.assign(XW, {
+    swap_last: swapAt('last'), swap_mid: swapAt('mid'),
+    addsound(u, w, rng) { const s = split(w, u.id); if (s.length < 3) return null; const rest = s.slice(1).join(''); if (!REAL.has(rest) || rest.length < 2) return null;
+      const o = options(rng, w, misspell(w, u.id, rng).concat(wordsUpTo(u.id).map((x) => x.w).filter((x) => x.endsWith(rest) && x !== w)));
+      return o && { qt: 'addsound', prompt: `Put ${show(s[0])} in front of ${rest}. What word do you make?`, speak: `Put ${P.G[s[0]] ? P.G[s[0]][2] : s[0]} in front of ${rest}. What word do you make?`, big: `${show(s[0])} + ${rest}`, typable: true, accept: [w], why: `${show(s[0])} + ${rest} = ${w}.`, ...o }; },
+    takeaway(u, w, rng) { const s = split(w, u.id); if (s.length < 3) return null; const rest = s.slice(1).join(''); if (!REAL.has(rest) || rest.length < 2) return null;
+      const o = options(rng, rest, rng.shuffle(wordsUpTo(u.id).map((x) => x.w).filter((x) => x !== rest && x !== w && Math.abs(x.length - rest.length) <= 1)));
+      return o && { qt: 'takeaway', prompt: `Say ${w} without the ${show(s[0])}. What word is left?`, speak: `Say ${w} without the first sound. What word is left?`, big: w, typable: true, accept: [rest], why: `${w} without ${show(s[0])} is ${rest}.`, ...o }; },
+    seg_kit(u, w, rng) { const s = split(w, u.id); if (s.length < 2) return null; const right = segStr(s); const wrongs = [w.split('').join(' – '), segStr([s[0] + s[1]].concat(s.slice(2))), segStr(s.slice(0, -1))].filter((x) => x !== right);
+      if (!wrongs.length) return null; const isRight = rng() < 0.3, claim = isRight ? right : rng.pick(wrongs); const yes = 'Yes, Kit is right.';
+      const o = isRight ? options(rng, yes, wrongs.concat(segStr(s.slice().reverse())).map((x) => `No: ${x}`)) : options(rng, `No: ${right}`, [yes].concat(wrongs.filter((x) => x !== claim).map((x) => `No: ${x}`), `No: ${segStr(s.slice().reverse())}`));
+      return o && { qt: 'seg-kit', prompt: `Kit says the sounds in ${w} are ${claim}. Is Kit right?`, speak: `Kit split ${w} into sounds. Is Kit right?`, big: w, pic: pic(w), why: `${w} has ${s.length} sounds: ${right}.`, ...o }; },
+  });
+  Object.assign(XG, {
+    gap_heard(u, g, rng) { const ex = P.G[g][0]; let shown; if (g.includes('-')) { const m = /^(.*)([aeiou])([^aeiou])e$/.exec(ex); if (!m) return null; shown = `${m[1]}_${m[3]}_`; } else { const at = ex.indexOf(show(g)); if (at < 0) return null; shown = ex.slice(0, at) + '_'.repeat(show(g).length) + ex.slice(at + show(g).length); }
+      const o = options(rng, show(g), near(u.id, g).filter((x) => x.includes('-') === g.includes('-')).map(show)); return o && { qt: 'gap-heard', prompt: 'Listen to the word. Which letters are missing?', speak: `${ex}. Which letters are missing?`, hear: ex, big: shown, typable: true, accept: [show(g)], why: `${ex} is spelt ${ex}.`, ...o }; },
+    has_true(u, g, rng) { const ws = wordsUpTo(u.id), yes = ws.filter((x) => split(x.w, x.u).includes(g)), no = ws.filter((x) => !x.w.includes(show(g).replace('-e', '')) && !split(x.w, x.u).some((y) => sameLetters(y, g) || sameSound(y, g)));
+      if (!yes.length || no.length < 3) return null; const r = rng.pick(yes).w; const o = options(rng, `${r} has ${show(g)} in it.`, rng.shuffle(no).map((x) => `${x.w} has ${show(g)} in it.`));
+      return o && { qt: 'has-true', prompt: 'Which is true?', speak: `Which is true? Look for ${show(g)}.`, big: show(g), why: `${r}: ${segStr(split(r, u.id))}.`, ...o }; },
+    has_kit(u, g, rng) { const ws = wordsUpTo(u.id), yes = ws.filter((x) => split(x.w, x.u).includes(g)), no = ws.filter((x) => !x.w.includes(show(g).replace('-e', '')) && !split(x.w, x.u).some((y) => sameLetters(y, g) || sameSound(y, g)));
+      if (!yes.length || no.length < 3) return null; const right = rng() < 0.4, w = right ? rng.pick(yes).w : rng.pick(no).w; const yesA = `Yes: ${w} has ${show(g)}.`, noA = `No: ${w} does not have ${show(g)}.`;
+      const o = options(rng, right ? yesA : noA, [right ? noA : yesA, `Yes: ${w} has ${show(g)} twice.`, `No: ${w} has no sounds.`]);
+      return o && { qt: 'has-kit', prompt: `Kit says “${w} has ${show(g)} in it.” Is Kit right?`, speak: `Kit says ${w} has the sound ${P.G[g][2]}. Is Kit right?`, big: w, why: `${w}: ${segStr(split(w, u.id))}.`, ...o }; },
+  });
+  Object.assign(XT, {
+    tlast(u, t, rng) { const c = t[t.length - 1].toLowerCase(); const o = options(rng, c, (LOOK[c] || 'abcdefg').split('').concat(rng.shuffle(ABC.split('')))); return o && { qt: 'tlast', prompt: 'Listen. Which letter does the tricky word end with?', speak: `Which letter does ${t} end with?`, hear: t, typable: true, accept: [c], why: `${t} ends with ${c}.`, ...o }; },
+    tabc(u, t, rng) { const others = rng.shuffle(P.UNITS.flatMap(trickyOf).filter((x) => x !== t && x[0].toLowerCase() !== t[0].toLowerCase())).slice(0, 3); if (others.length < 3) return null; const four = others.concat(t); const first = four.slice().sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))[0];
+      const o = options(rng, first, four.filter((x) => x !== first)); return o && { qt: 'tabc', prompt: 'Which word comes first in ABC (alphabetical) order?', speak: 'Which word comes first in alphabetical order?', why: `${first} starts with ${first[0].toLowerCase()}, which comes first in the alphabet.`, ...o }; },
+    ttrue(u, t, rng) { if (t.length < 2) return null; const n = t.length; const o = options(rng, `${t} has ${n} letters.`, nums(n, 1, 8).map((k) => `${t} has ${k} letters.`)); return o && { qt: 'ttrue', prompt: 'Which is true?', speak: 'Which is true?', big: t, why: `${t}: ${t.split('').join(' ')}.`, ...o }; },
+    tsent(u, t, rng) { const S0 = P.SENTENCES.find((x) => x.s.split(/[ .’']/).some((w) => w === t)); if (!S0) return null; const others = rng.shuffle(P.UNITS.flatMap(trickyOf).filter((x) => x !== t && !S0.s.split(' ').includes(x)));
+      const o = options(rng, t, others); return o && { qt: 'tsent', prompt: 'Listen. Which tricky word is missing from the sentence?', speak: S0.s, hear: S0.s, sentence: S0.s.split(' ').map((w) => (w.replace(/[.,]/g, '') === t ? '____' + (/[.]$/.test(w) ? '.' : '') : w)).join(' '), why: `The sentence is: ${S0.s}`, ...o }; },
+  });
+  Object.assign(XS, {
+    caps_kit(i, rng) { const s = P.SENTENCES[i].s; const bad = s[0].toLowerCase() + s.slice(1).replace(/[.]$/, ''); const right = rng() < 0.3, c = right ? s : bad; const yes = 'Yes, Kit wrote it the right way.';
+      const o = right ? options(rng, yes, ['No: it needs a capital letter at the start.', 'No: it needs a full stop at the end.', 'No: it needs a capital letter and a full stop.']) : options(rng, 'No: it needs a capital letter and a full stop.', [yes, 'No: it only needs a full stop.', 'No: every word needs a capital letter.']);
+      return o && { qt: 'caps-kit', prompt: `Kit wrote: “${c}” Is it written the right way?`, speak: 'Kit wrote a sentence. Is it written the right way?', why: 'A sentence starts with a capital letter and ends with a full stop.', ...o }; },
+  });
+
   /* Pick from the extra shapes some of the time, keeping the original shapes too. */
   function extra(table, args, rng, n0, band) {
     const ks = Object.keys(table); if (rng.int(0, ks.length + n0 - 1) >= ks.length) return null;
@@ -636,6 +761,19 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     return { pass: 32, words: sec(al1, real1).concat(sec(al2, real2)) };
   }
 
+  /* ---------- Phase tests: questions spread across every lesson of a phase; Pass 60%, Merit 75%, Distinction 90% ---------- */
+  const GRADES = [{ id: 'distinction', name: 'Distinction', min: 90, e: '🏆' }, { id: 'merit', name: 'Merit', min: 75, e: '🥇' }, { id: 'pass', name: 'Pass', min: 60, e: '✅' }, { id: 'notyet', name: 'Not yet', min: 0, e: '🌱' }];
+  const grade = (right, n) => { const pct = n ? Math.round((100 * right) / n) : 0; return Object.assign({ pct }, GRADES.find((g) => pct >= g.min)); };
+  function phaseTest(sid, rng, band) {
+    const us = rng.shuffle(stageUnits(sid).filter((u) => itemsOf(u).length)), count = band === 'little' ? 10 : 15, out = [], used = new Set(), kinds = {};
+    for (let k = 0; out.length < count && k < count * 20; k++) {
+      const u = us[k % us.length], it = rng.pick(itemsOf(u)); if (used.has(it)) continue;
+      const q = makeQuestion(it, rng, band); if (!q || q.options.length !== 4 || (kinds[q.qt] || 0) >= 2) continue;
+      used.add(it); kinds[q.qt] = (kinds[q.qt] || 0) + 1; out.push(q);
+    }
+    return out;
+  }
+
   /* ---------- Reading ladder: climb the phases ---------- */
   const UP = 3, DOWN = 2;
   function ladderStep(stt, ok) {
@@ -650,7 +788,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     return null;
   }
 
-  FMG.english = { VERSION, P, show, unit, stageOf, split, known, wordsOf, trickyOf, itemsOf, stageUnits, stageItems, unitOfItem, makeQuestion, matchTyped, misspell, trickyWrong,
+  FMG.english = { VERSION, sameSound, GRADES, grade, phaseTest, P, show, unit, stageOf, split, known, wordsOf, trickyOf, itemsOf, stageUnits, stageItems, unitOfItem, makeQuestion, matchTyped, misspell, trickyWrong,
     itemStates, st, unitProgress, buildSet, screeningCheck, UP, DOWN, ladderStep, ladderQuestion, REAL };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -1012,7 +1150,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     shell(`<h1>🔤 Phonics</h1><p class="muted">In the order most English schools teach it (Little Wandle). Tap a lesson to learn its sounds, read its words and practise.</p>
       ${P.STAGES.map((s) => `<section class="stage"><h2>${esc(s.name)} <small>${esc(s.when)}</small></h2><p class="small muted">${esc(s.desc)}</p>
         <div class="units">${E.stageUnits(s.id).map((u) => { const pr = E.unitProgress(u, states); return `<a class="unit ${pr.star ? 'star' : ''}" href="#/unit/${u.id}"><b>${esc(u.title)}</b>${pr.star ? '<span class="st">⭐</span>' : ''}${bar(pr.pct)}</a>`; }).join('')}</div>
-        <div class="row"><a class="btn ghost sm" href="#/play/${s.id}">Mixed practice: ${esc(s.name)}</a></div></section>`).join('')}`, { back: '#/home', backText: 'Home' });
+        <div class="row"><a class="btn ghost sm" href="#/play/${s.id}">Mixed practice: ${esc(s.name)}</a><a class="btn primary sm" href="#/test/${s.id}">📝 ${esc(s.name)} test</a>${bestBadge(p, s.id)}</div></section>`).join('')}`, { back: '#/home', backText: 'Home' });
   });
 
   route(/^#\/unit\/(u\d+)$/, (id) => {
@@ -1092,6 +1230,19 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     else { location.hash = '#/home'; return; }
     const qs = E.buildSet(items, rng, { band: p.band, count: p.band === 'little' ? 8 : 10, states: statesOf(p) });
     runRound({ qs, label, back, mode: 'practice', onEnd: (res) => results(res, back, location.hash, label) });
+  });
+
+  /* ---------- Phase tests ---------- */
+  const examsOf = (p) => ((store.get().exams || {})[p.id] || { results: [] }).results;
+  function bestBadge(p, sid) { const b = examsOf(p).filter((r) => r.kind === 'phase' && r.stage === sid).reduce((m, r) => (!m || r.pct > m.pct ? r : m), null); if (!b) return ''; const g = E.GRADES.find((x) => x.id === b.grade); return `<span class="badge g-${b.grade}">${g.e} ${esc(g.name)} · ${b.pct}%</span>`; }
+  route(/^#\/test\/(p\d)$/, (sid) => {
+    const p = profile(), st = E.stageOf(sid); if (!st) { location.hash = '#/phonics'; return; }
+    const qs = E.phaseTest(sid, FMG.rng(FMG.newSeed()), p.band);
+    runRound({ qs, label: `📝 ${st.name} test`, back: '#/phonics', mode: 'test', onEnd: (res) => {
+      const right = res.filter((r) => r.ok).length, g = E.grade(right, res.length);
+      saved(store.commit((d) => { d.exams = d.exams || {}; const m = d.exams[p.id] = d.exams[p.id] || { results: [] }; m.results = (m.results || []).concat({ id: FMG.uid('x'), kind: 'phase', stage: sid, right, n: res.length, pct: g.pct, grade: g.id, day: FMG.today(), at: Date.now() }).slice(-200); }));
+      results(res, '#/phonics', `#/test/${sid}`, `${st.name} test: ${g.e} ${g.name} (${g.pct}%). Pass is 60%, Merit 75%, Distinction 90%.`);
+    } });
   });
 
   /* ---------- Reading ladder ---------- */
