@@ -4683,7 +4683,7 @@ body.reduce-motion .cel-layer { display: none; }`;
     const inside = !!(opts.trail || opts.back);
     app.innerHTML = fixLinks(`
       <header class="topbar">
-        ${inside ? (opts.trail ? `<a class="iconbtn labelled home-btn" href="${p ? '#/home' : '#/'}" aria-label="Home"><span aria-hidden="true">🏠</span><span class="lbl">Home</span></a>` : `<a class="iconbtn labelled" href="${opts.back}" aria-label="Back">${ic.back}<span class="lbl">Back</span></a>${p ? `<a class="iconbtn labelled home-btn" href="#/home" aria-label="Home"><span aria-hidden="true">🏠</span><span class="lbl">Home</span></a>` : ''}`) : `<a class="brand" href="#/home" aria-label="Home">${logo()}<span>Family Deen</span></a>`}
+        ${inside ? (opts.trail ? `<a class="iconbtn labelled home-btn" href="${p ? '#/home' : '#/'}" aria-label="Home"><span aria-hidden="true">🏠</span><span class="lbl">Home</span></a>` : `<a class="iconbtn labelled" href="${opts.back}" aria-label="Back">${ic.back}<span class="lbl">Back</span></a>${p ? `<a class="iconbtn labelled home-btn" href="#/home" aria-label="Home"><span aria-hidden="true">🏠</span><span class="lbl">Home</span></a>` : ''}`) : `<a class="brand" href="#/home" aria-label="Home">${logo()}<span>Islamic Studies</span></a>`}
         <div class="topbar-title"></div>
         <div class="topbar-right">
           ${p && !inside ? `<a class="iconbtn labelled" href="#/stars" aria-label="My stars" title="My stars">${ic.star}<span class="lbl">My stars</span></a>` : ''}
