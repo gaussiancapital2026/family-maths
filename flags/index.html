@@ -4733,6 +4733,7 @@ body.reduce-motion .cel-layer { display: none; }`;
 <style>.fam-home{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;padding:.5rem .8rem;border-radius:999px;
 background:rgba(20,20,40,.82);color:#fff;font:600 14px/1 -apple-system,system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.25)}
 @media print{.fam-home{display:none}}</style>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('../sw.js',{scope:'../'}).catch(function(){});</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reloaded=false;navigator.serviceWorker.addEventListener('controllerchange',function(){if(reloaded)return;reloaded=true;location.reload();});
+navigator.serviceWorker.register('../sw.js',{scope:'../'}).then(function(r){r.update();document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')r.update();});}).catch(function(){});})();</script>
 </body>
 </html>
