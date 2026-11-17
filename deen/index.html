@@ -1570,6 +1570,31 @@ details.journey.target { box-shadow: inset 0 0 0 2px var(--primary), var(--shado
 .nm-more { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: .55rem; }
 .nm-more > p { margin: 0; line-height: 1.55; }
 
+/* ---------- Exams ---------- */
+.ex-sec { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem 1.1rem; margin: 1rem 0; }
+.ex-sec h2 { margin: 0 0 .6rem; font-size: 1.2rem; }
+.ex-actions { flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: .6rem; }
+.ex-rows { list-style: none; margin: 0; padding: 0; }
+.ex-row { display: flex; align-items: center; gap: .6rem; padding: .5rem 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.ex-row .ex-name { flex: 1; min-width: 10rem; font-weight: 650; }
+.ex-row.off .ex-name { text-decoration: line-through; color: var(--muted); font-weight: 500; }
+.ex-grade { font-size: .78rem; font-weight: 750; padding: .15rem .55rem; border-radius: 99px; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+.ex-grade.g-distinction { background: #fdf0c4; color: #7a5600; }
+.ex-grade.g-merit { background: #e3f1ff; color: #0b4f8a; }
+.ex-grade.g-pass { background: var(--good-bg); color: var(--good); }
+:root[data-theme="dark"] .ex-grade.g-distinction { background: #4a3a08; color: #ffd866; }
+:root[data-theme="dark"] .ex-grade.g-merit { background: #10304f; color: #8cc8ff; }
+.ex-rungs { display: flex; flex-wrap: wrap; gap: .35rem; margin: .4rem 0; }
+.ex-rung { border: 2px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 99px; padding: .3rem .7rem; font: inherit; font-size: .8rem; cursor: pointer; }
+.ex-rung.cur { border-color: var(--primary); background: var(--primary); color: #fff; font-weight: 750; }
+.ex-rung[disabled] { text-decoration: line-through; opacity: .45; cursor: not-allowed; }
+.ex-level { margin: .2rem 0 .6rem; }
+.ex-badge { display: inline-block; background: var(--primary); color: #fff; font-weight: 750; font-size: .78rem; padding: .15rem .55rem; border-radius: 99px; }
+.ex-moved { background: var(--good-bg); border-radius: var(--radius); padding: .5rem .8rem; margin: .3rem 0; }
+.ex-score { font-size: 1.3rem; }
+.ex-review li { margin: .6rem 0; }
+.abcd-opt.picked, .abcd-opt.picked[disabled] { border-color: var(--primary); background: var(--primary-soft, var(--surface-2)); opacity: 1; }
+
 </style>
 </head>
 <body>
@@ -2586,6 +2611,114 @@ details.journey.target { box-shadow: inset 0 0 0 2px var(--primary), var(--shado
 
 </script>
   <script>
+/* Family Deen Game — exams (no screen code, so tests can load it).
+   Madrasa-style stage tests (Pass / Merit / Distinction), a whole-section exam, and a ladder per section that climbs its stages.
+   Questions come only from the lessons already in the game: nothing new is ruled or taught here. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG, D = FMG.deen;
+
+  const GRADES = [
+    { id: 'distinction', name: 'Distinction', min: 90, e: '🏆' },
+    { id: 'merit', name: 'Merit', min: 75, e: '🥇' },
+    { id: 'pass', name: 'Pass', min: 60, e: '✅' },
+    { id: 'notyet', name: 'Not yet', min: 0, e: '🌱' },
+  ];
+  const grade = (right, n) => { const pct = n ? Math.round((right / n) * 100) : 0; return Object.assign({ pct }, GRADES.find((g) => pct >= g.min)); };
+  const gradeRank = (id) => GRADES.length - 1 - GRADES.findIndex((g) => g.id === id); // notyet 0 … distinction 3
+
+  const slug = (name) => String(name || '').replace(/^\d+\s*·\s*/, '').normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'stage';
+  const canDo = (u, band) => D.bandRank(u.band || 'little') <= D.bandRank(band || 'expert');
+
+  /* Every stage of a section, in teaching order. A stage is open to a learner when at least one of its lessons is at their level. */
+  function stages(sec, p) {
+    const band = (p && p.band) || 'expert';
+    return D.groupsOf(sec, p).map((g, i) => {
+      const units = g.units.filter((u) => canDo(u, band));
+      const items = units.flatMap((u) => D.itemsOf(u, band));
+      return { sec, i, id: slug(g.name), name: g.name, units, all: g.units, items, open: items.length >= 4 };
+    });
+  }
+  const stageOf = (sec, id, p) => stages(sec, p).find((s) => s.id === id) || null;
+
+  /* Build a test: spread across the stage's lessons, a mix of question kinds, no item twice. */
+  function buildTest(units, rng, o = {}) {
+    const band = o.band || 'explorer', count = o.count || 15;
+    const byUnit = rng.shuffle(units.slice()).map((u) => ({ u, items: rng.shuffle(D.itemsOf(u, band).slice()) })).filter((x) => x.items.length);
+    const out = [], used = new Set(), kinds = {};
+    const capKind = Math.max(3, Math.ceil(count / 3));
+    for (let pass = 0; pass < 2 && out.length < count; pass++) {
+      let guard = 0, k = 0;
+      while (out.length < count && guard < count * 12 && byUnit.length) {
+        guard++;
+        const x = byUnit[k++ % byUnit.length], item = x.items.find((i) => !used.has(i));
+        if (!item) continue;
+        used.add(item);
+        const q = D.makeQuestion(item, rng, band);
+        if (!q || !q.options || q.options.length !== 4 || !q.prompt) continue;
+        if (pass === 0 && (kinds[q.qt] || 0) >= capKind) { used.delete(item); x.items.push(x.items.splice(x.items.indexOf(item), 1)[0]); continue; }
+        kinds[q.qt] = (kinds[q.qt] || 0) + 1;
+        out.push(q);
+      }
+    }
+    return rng.shuffle(out);
+  }
+  const testSize = (band, whole) => (whole ? (band === 'little' ? 12 : 20) : band === 'little' ? 10 : 15);
+  function stageTest(sec, id, p, rng) {
+    const band = (p && p.band) || 'explorer';
+    if (id === 'all') { const ss = stages(sec, p).filter((s) => s.open); return { title: 'Whole-section exam', qs: buildTest(ss.flatMap((s) => s.units), rng, { band, count: testSize(band, true) }) }; }
+    const s = stageOf(sec, id, p); if (!s || !s.open) return null;
+    return { title: s.name, stage: s, qs: buildTest(s.units, rng, { band, count: testSize(band) }) };
+  }
+
+  /* ---------- Ladder: 3 right in a row climbs a stage, 2 wrong in a row steps down ---------- */
+  const UP = 3, DOWN = 2;
+  function ladderStart(sec, p, saved) {
+    const ss = stages(sec, p), open = ss.filter((s) => s.open);
+    if (!open.length) return null;
+    let r = saved && ss[saved.r] && ss[saved.r].open ? saved.r : open[0].i;
+    return { r, streak: 0, miss: 0 };
+  }
+  function ladderStep(st, ok, ss) {
+    const n = Object.assign({}, st); let moved = 0;
+    if (ok) { n.streak++; n.miss = 0; } else { n.miss++; n.streak = 0; }
+    const openIdx = ss.filter((s) => s.open).map((s) => s.i);
+    const pos = openIdx.indexOf(n.r);
+    if (n.streak >= UP && pos < openIdx.length - 1) { n.r = openIdx[pos + 1]; n.streak = 0; moved = 1; }
+    else if (n.miss >= DOWN && pos > 0) { n.r = openIdx[pos - 1]; n.miss = 0; moved = -1; }
+    return { st: n, moved };
+  }
+  function ladderJump(st, i, ss) { return ss[i] && ss[i].open ? { r: i, streak: 0, miss: 0 } : st; }
+  function ladderQuestion(ss, st, rng, band, avoid) {
+    const s = ss[st.r]; if (!s) return null;
+    for (let k = 0; k < 20; k++) {
+      const item = rng.pick(s.items);
+      if (avoid && avoid.has(item) && k < 15) continue;
+      const q = D.makeQuestion(item, rng, band);
+      if (q && q.options && q.options.length === 4) return q;
+    }
+    return null;
+  }
+
+  /* ---------- Saved results (db.exams[pid] = { results: [...], ladder: { sec: state } }) ---------- */
+  const mine = (db, pid) => (db.exams || {})[pid] || { results: [], ladder: {} };
+  function best(db, pid, sec, id) {
+    return mine(db, pid).results.filter((r) => r.sec === sec && r.stage === id).reduce((b, r) => (!b || r.pct > b.pct ? r : b), null);
+  }
+  function record(d, pid, res) {
+    d.exams = d.exams || {}; const m = d.exams[pid] = d.exams[pid] || { results: [], ladder: {} };
+    m.results = (m.results || []).concat(res).slice(-300);
+  }
+  function saveLadder(d, pid, sec, st) {
+    d.exams = d.exams || {}; const m = d.exams[pid] = d.exams[pid] || { results: [], ladder: {} };
+    m.ladder = Object.assign({}, m.ladder, { [sec]: { r: st.r } });
+  }
+
+  FMG.deenExams = { GRADES, grade, gradeRank, slug, stages, stageOf, buildTest, testSize, stageTest, UP, DOWN, ladderStart, ladderStep, ladderJump, ladderQuestion, mine, best, record, saveLadder };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
 /* Family Deen Game — adapted from the Family Maths Game store. Local storage with transactional commits, read-back verification and versioned backups. Spec §9. */
 (function (root) {
   'use strict';
@@ -2594,7 +2727,7 @@ details.journey.target { box-shadow: inset 0 0 0 2px var(--primary), var(--shado
   const SCHEMA = 1;
   const FORMAT = 'family-deen-game-backup';
 
-  function emptyDb() { return { schema: SCHEMA, profiles: [], attempts: [], settings: { parentGate: true }, seen: {}, signoffs: {}, createdAt: Date.now() }; }
+  function emptyDb() { return { schema: SCHEMA, profiles: [], attempts: [], settings: { parentGate: true }, seen: {}, signoffs: {}, exams: {}, createdAt: Date.now() }; }
 
   function createStore(backend) {
     if (!backend) { try { backend = root.localStorage || null; } catch (e) { backend = null; } }
@@ -2643,7 +2776,7 @@ details.journey.target { box-shadow: inset 0 0 0 2px var(--primary), var(--shado
         format: FORMAT, formatVersion: 1, schema: db.schema, exportedAt: new Date().toISOString(),
         policy: 'deen-v1',
         content: FMG.deen && FMG.deen.VERSION,
-        profiles: db.profiles, attempts: db.attempts, settings: db.settings, seen: db.seen || {}, signoffs: db.signoffs || {},
+        profiles: db.profiles, attempts: db.attempts, settings: db.settings, seen: db.seen || {}, signoffs: db.signoffs || {}, exams: db.exams || {},
       };
     }
 
@@ -2676,7 +2809,9 @@ details.journey.target { box-shadow: inset 0 0 0 2px var(--primary), var(--shado
       const p = previewImport(obj);
       if (!p.ok) return { ok: false, error: p.errors.join(' ') };
       return commit((d) => {
-        if (mode === 'replace') { d.profiles = obj.profiles; d.attempts = dedupe(obj.attempts); d.seen = obj.seen || {}; d.signoffs = obj.signoffs || {}; return; }
+        if (mode === 'replace') { d.profiles = obj.profiles; d.attempts = dedupe(obj.attempts); d.seen = obj.seen || {}; d.signoffs = obj.signoffs || {}; d.exams = obj.exams || {}; return; }
+        d.exams = d.exams || {}; Object.entries(obj.exams || {}).forEach(([pid, m]) => { const mine = d.exams[pid] || { results: [], ladder: {} }, have = new Set((mine.results || []).map((r) => r.id));
+          d.exams[pid] = { results: (mine.results || []).concat((m.results || []).filter((r) => !have.has(r.id))), ladder: Object.assign({}, m.ladder || {}, mine.ladder || {}) }; });
         d.signoffs = d.signoffs || {}; Object.entries(obj.signoffs || {}).forEach(([pid, m]) => { d.signoffs[pid] = Object.assign({}, m, d.signoffs[pid] || {}); });
         d.seen = d.seen || {}; Object.entries(obj.seen || {}).forEach(([pid, m]) => { d.seen[pid] = Object.assign({}, m, d.seen[pid] || {}); });
         const pids = new Set(d.profiles.map((x) => x.id));
@@ -4181,6 +4316,172 @@ body.reduce-motion .cel-layer { display: none; }`;
 
 </script>
   <script>
+/* Family Deen Game — exam screens. Loads before app.js and registers its routes when app.js boots. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG;
+  (FMG.appReady = FMG.appReady || []).push((A) => {
+    const D = FMG.deen, E = FMG.deenExams, esc = FMG.esc;
+    const $ = (s, el = document) => el.querySelector(s);
+    const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+    const { route, shell, C, store, profile, saved } = A;
+    const crumbs = (more) => [C.home(), { t: 'Exams', href: '#/exams' }].concat(more || []);
+    const secOf = (id) => D.SECTIONS.find((s) => s.id === id);
+    const badge = (r) => (r ? `<span class="ex-grade g-${r.id || r.grade}">${(E.GRADES.find((g) => g.id === (r.grade || r.id)) || {}).e || ''} ${esc((E.GRADES.find((g) => g.id === (r.grade || r.id)) || {}).name || '')} · ${r.pct}%</span>` : '<span class="ex-grade none">Not taken</span>');
+    const bandName = (b) => D.band(b).name;
+
+    /* ---------------- Hub ---------------- */
+    route(/^#\/exams$/, () => {
+      const p = profile(), db = store.get();
+      const cards = D.SECTIONS.map((sec) => {
+        const ss = E.stages(sec.id, p), open = ss.filter((s) => s.open);
+        const lad = (E.mine(db, p.id).ladder || {})[sec.id];
+        const rows = ss.map((s) => {
+          const b = E.best(db, p.id, sec.id, s.id);
+          return s.open
+            ? `<li class="ex-row"><span class="ex-name">${esc(s.name)}</span>${badge(b && { grade: b.grade, pct: b.pct })}<a class="btn sm ${b ? 'ghost' : 'primary'}" href="#/exams/test/${sec.id}/${s.id}">${b ? 'Try again' : 'Take test'}</a></li>`
+            : `<li class="ex-row off" aria-disabled="true"><span class="ex-name">${esc(s.name)}</span><span class="small muted">For older learners</span></li>`;
+        }).join('');
+        const wb = E.best(db, p.id, sec.id, 'all');
+        return `<section class="ex-sec ex-${sec.id}">
+          <h2><span aria-hidden="true">${sec.emoji}</span> ${esc(sec.name)}</h2>
+          <div class="row ex-actions">
+            ${open.length ? `<a class="btn primary" href="#/exams/ladder/${sec.id}">🪜 Exam ladder${lad && ss[lad.r] ? ` <span class="small">(${esc(ss[lad.r].name.replace(/^\d+\s*·\s*/, ''))})</span>` : ''}</a>
+            <a class="btn ghost" href="#/exams/test/${sec.id}/all">Whole-section exam</a>${wb ? badge({ grade: wb.grade, pct: wb.pct }) : ''}` : '<span class="muted small">Opens when you are older.</span>'}
+          </div>
+          <ol class="ex-rows">${rows}</ol></section>`;
+      }).join('');
+      shell(`<h1>📝 Exams</h1>
+        <p class="muted">Tests like the ones at madrasa, one for each stage. No hints and no timer. <b>Pass</b> is 60%, <b>Merit</b> 75%, <b>Distinction</b> 90%. Every answer also counts towards your stars.</p>
+        <p class="small muted">The <b>exam ladder</b> starts at a stage and climbs: ${E.UP} right in a row takes you up a stage, ${E.DOWN} wrong in a row takes you back one. Tests are set for ${esc(bandName(p.band))} level.</p>
+        ${cards}`, { trail: [C.home(), { t: 'Exams' }], cls: 'wide' });
+    });
+
+    /* ---------------- One question (shared by tests and the ladder) ---------------- */
+    function ask(q, o) {
+      const p = profile(), b = A.pband();
+      const typing = q.typable && (o.S.typeMode != null ? o.S.typeMode : b !== 'little');
+      A.dropKeys();
+      FMG.app.ctx = { screen: 'question', prompt: q.prompt, answered: false, answer: A.answerText(q) };
+      shell(`<div class="qwrap">
+          <div class="qtop"><span class="qmode">${o.label}</span>${o.top}</div>
+          ${o.above || ''}
+          <div class="qcard">
+            ${A.questionBody(q)}
+            <div class="ans-switch">${q.typable ? `<div class="seg" role="radiogroup" aria-label="How to answer"><button role="radio" aria-checked="${!typing}" data-tm="0">A B C D</button><button role="radio" aria-checked="${typing}" data-tm="1">Type it</button></div>` : ''}
+              <button class="btn sm ghost" id="sayq">${A.ic.speaker} Read it</button></div>
+            ${typing ? `<form class="type-row" id="tf" autocomplete="off"><input id="ans" class="type-in" placeholder="Type your answer" aria-label="Your answer" autocapitalize="off" spellcheck="false"><button class="btn primary">Check</button></form>` : A.abcdHtml(q)}
+            <div id="fb" aria-live="polite"></div>
+          </div>
+          <div class="lesson-nav"><a class="btn ghost" href="${o.back}">Stop</a><button class="btn primary big" id="next" hidden>${o.last ? 'See results' : 'Next →'}</button></div>
+        </div>`, { trail: o.trail, cls: 'focus' });
+      $$('[data-tm]').forEach((x) => (x.onclick = () => { o.S.typeMode = x.dataset.tm === '1'; ask(q, o); }));
+      $('#sayq').onclick = () => A.say(q.speak || q.prompt, $('.qcard .prompt'));
+      if (A.little()) A.speakIfOn(q.speak || q.prompt, $('.qcard .prompt'));
+      const done = (ok, given, idx) => {
+        A.dropKeys();
+        const att = { id: FMG.uid('a'), profileId: p.id, c: q.item, unit: q.unit, qt: q.qt, ok, sup: false, mode: o.mode, day: FMG.today(), at: Date.now(), sess: o.S.sess, given: String(given || '').slice(0, 60), typed: typing };
+        saved(store.upsertAttempt(att));
+        FMG.app.ctx = Object.assign({}, FMG.app.ctx, { answered: true });
+        o.after(ok, idx, given);
+        const nx = $('#next'); nx.hidden = false; nx.focus();
+        const enter = (e) => { if (e.key === 'Enter' && document.activeElement !== nx) { e.preventDefault(); nx.click(); } };
+        setTimeout(() => document.addEventListener('keydown', enter), 50);
+        A.setKeys(() => document.removeEventListener('keydown', enter));
+        nx.onclick = () => { A.dropKeys(); o.next(); };
+      };
+      if (typing) {
+        const f = $('#tf'), inp = $('#ans'); inp.focus();
+        f.onsubmit = (e) => { e.preventDefault(); const v = inp.value.trim(); if (!v) return; inp.disabled = true; $('button', f).disabled = true; done(D.matchTyped(v, q), v, -1); };
+      } else A.bindChoices(q, (ok, idx) => done(ok, q.options[idx].value, idx));
+    }
+    const rightText = (q) => { const ro = q.options[q.answerIndex], right = A.answerText(q); return ro.ar ? A.ar(ro.ar) + (right !== ro.ar ? ` (${esc(right)})` : '') : esc(right); };
+
+    /* ---------------- Stage test / whole-section exam ---------------- */
+    route(/^#\/exams\/test\/([\w-]+)\/([\w-]+)$/, (sid, stid) => {
+      const p = profile(), sec = secOf(sid); if (!sec) { A.go('#/exams'); return; }
+      const t = E.stageTest(sid, stid, p, FMG.rng(FMG.newSeed()));
+      if (!t || !t.qs.length) { A.go('#/exams'); return; }
+      const S = { qs: t.qs, i: 0, res: [], sess: FMG.uid('s'), typeMode: null };
+      const title = stid === 'all' ? `${sec.name}: whole-section exam` : `${sec.name}: ${t.title}`;
+      const trail = crumbs([{ t: title }]);
+      let ended = false;
+      A.setExitGuard(() => (ended || !S.res.length ? null : { title: 'Leave this exam?', msg: 'Your answers so far count towards your stars, but this exam will not get a grade.', stay: 'Keep going', leave: 'Leave exam' }));
+      const draw = () => {
+        const q = S.qs[S.i];
+        ask(q, {
+          S, mode: 'exam', label: `Exam · ${S.i + 1} of ${S.qs.length}`, back: '#/exams', trail, last: S.i === S.qs.length - 1,
+          top: `<div class="qprog">${S.qs.map((x, k) => `<span class="${k < S.i ? 'done' : k === S.i ? 'cur' : ''}"></span>`).join('')}</div>`,
+          after: (ok, idx) => {
+            S.res.push({ q, ok });
+            if (idx >= 0) $$('[data-opt]').forEach((b) => { b.disabled = true; if (+b.dataset.opt === idx) b.classList.add('picked'); });
+            $('#fb').innerHTML = '<p class="small muted center">Answer saved. You will see how you did at the end.</p>';
+          },
+          next: () => { S.i++; if (S.i >= S.qs.length) end(); else draw(); },
+        });
+      };
+      const end = () => {
+        ended = true; FMG.app.ctx = { screen: 'browse' };
+        const right = S.res.filter((r) => r.ok).length, g = E.grade(right, S.res.length);
+        const res = { id: FMG.uid('x'), sec: sid, stage: stid, title: t.title, right, n: S.res.length, pct: g.pct, grade: g.id, day: FMG.today(), at: Date.now(), band: p.band };
+        const prev = E.best(store.get(), p.id, sid, stid);
+        saved(store.commit((d) => E.record(d, p.id, res)));
+        const wrong = S.res.filter((r) => !r.ok);
+        const better = prev && E.gradeRank(g.id) > E.gradeRank(prev.grade);
+        shell(`<div class="end center">
+            <div class="end-e">${g.e}</div>
+            <h1>${esc(g.name)}${g.id === 'notyet' ? '' : '!'}</h1>
+            <p class="ex-score"><b>${right} out of ${S.res.length}</b> · ${g.pct}%</p>
+            <p class="muted">${g.id === 'distinction' ? 'Masha’Allah, an excellent result.' : g.id === 'merit' ? 'Masha’Allah, a very good result.' : g.id === 'pass' ? 'Well done, you passed. Look at the answers below to aim for Merit next time.' : 'Not passed yet. Go over the lessons, then try again. Every try helps.'}${better ? ' That is better than your last best.' : ''}</p>
+          </div>
+          ${wrong.length ? `<h2 class="h2">Answers to look at again (${wrong.length})</h2><ol class="ex-review">${wrong.map((r) => `<li><p>${esc(r.q.prompt)}${r.q.ar ? ` ${A.ar(r.q.ar)}` : ''}</p><p>The answer is <b>${rightText(r.q)}</b>.</p>${r.q.why ? `<p class="small muted">${esc(r.q.why)}</p>` : ''}</li>`).join('')}</ol>` : '<p class="center"><b>🌟 Every answer right!</b></p>'}
+          <div class="row center"><a class="btn primary" href="#/exams/test/${sid}/${stid}">Try another test</a><a class="btn ghost" href="#/exams">Back to exams</a></div>`, { trail, cls: 'focus' });
+        if (A.little()) A.speakIfOn(`${g.name}. ${right} out of ${S.res.length}.`);
+      };
+      draw();
+    });
+
+    /* ---------------- Exam ladder for a section ---------------- */
+    route(/^#\/exams\/ladder\/([\w-]+)$/, (sid) => {
+      const p = profile(), b = A.pband(), sec = secOf(sid); if (!sec) { A.go('#/exams'); return; }
+      const ss = E.stages(sid, p);
+      let st = E.ladderStart(sid, p, (E.mine(store.get(), p.id).ladder || {})[sid]);
+      if (!st) { A.go('#/exams'); return; }
+      const rng = FMG.rng(FMG.newSeed());
+      const S = { sess: FMG.uid('s'), typeMode: null, right: 0, n: 0 }, recent = new Set();
+      const trail = crumbs([{ t: `${sec.name} ladder` }]);
+      const open = ss.filter((s) => s.open);
+      const keep = () => saved(store.commit((d) => E.saveLadder(d, p.id, sid, st)));
+      const bar = () => `<div class="ex-rungs" role="group" aria-label="Stages">${ss.map((s) => `<button class="ex-rung ${s.i === st.r ? 'cur' : ''}" data-rung="${s.i}" ${s.open ? '' : 'disabled aria-disabled="true" title="For older learners"'}>${esc(s.name.replace(/^\d+\s*·\s*/, ''))}</button>`).join('')}</div>
+        <p class="ex-level"><span class="ex-badge">Stage ${open.findIndex((s) => s.i === st.r) + 1} of ${open.length}</span> <b>${esc(ss[st.r].name)}</b> <span class="small muted">· ${st.streak ? `${E.UP - st.streak} more right to climb` : `${E.UP} right in a row to climb`}</span></p>`;
+      const draw = (msg) => {
+        const q = E.ladderQuestion(ss, st, rng, b, recent);
+        if (!q) { A.go('#/exams'); return; }
+        recent.add(q.item); if (recent.size > 12) recent.delete(recent.values().next().value);
+        ask(q, {
+          S, mode: 'ladder', label: '🪜 Exam ladder', back: '#/exams', trail,
+          top: `<span class="qcount">${S.right} right · ${S.n} answered</span>`,
+          above: (msg ? `<p class="ex-moved">${msg}</p>` : '') + bar(),
+          after: (ok, idx) => {
+            S.n++; if (ok) S.right++;
+            if (idx >= 0) A.markOptions(q, idx);
+            const was = st.r, r = E.ladderStep(st, ok, ss); st = r.st; keep();
+            S.moved = r.moved ? (r.moved > 0 ? `⬆️ Up to <b>${esc(ss[st.r].name)}</b>! Masha’Allah.` : `⬇️ Back to <b>${esc(ss[st.r].name)}</b> for a little practice.`) : '';
+            $('#fb').innerHTML = `<div class="fb ${ok ? 'good' : ''}"><b>${ok ? '✓ Right!' : 'Not quite.'}</b> ${ok ? '' : `The answer is <b>${rightText(q)}</b>.`}${q.why ? `<p class="fb-more">${esc(q.why)}</p>` : ''}</div>`;
+            if (!ok) A.speakIfOn(`Not quite. The answer is ${A.answerText(q)}.`);
+            void was;
+          },
+          next: () => draw(S.moved),
+        });
+        $$('[data-rung]').forEach((x) => (x.onclick = () => { st = E.ladderJump(st, +x.dataset.rung, ss); keep(); draw(); }));
+      };
+      draw();
+    });
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
 /* Family Deen — app shell and screens. Built on the Family Maths / Family Flags foundation
    (profiles, themes, buddy + voice, Ask sidebar, local saving, parent area, A–D options with "Type it"). */
 (function (root) {
@@ -4538,7 +4839,8 @@ body.reduce-motion .cel-layer { display: none; }`;
       { href: '#/sec/duas', e: '🤲', n: 'Duas', d: 'For every part of the day', id: 'duas' },
       { href: '#/sec/names', e: '✨', n: '99 Names of Allah', d: 'What each name means', id: 'names' },
       { href: '#/mushaf', e: '🎧', n: 'Read the Qur’an', d: 'All 114 surahs', id: 'mushaf' },
-      { href: '#/qirat', e: '🎙️', n: 'Qirat', d: 'The great reciters', id: 'qirat' }];
+      { href: '#/qirat', e: '🎙️', n: 'Qirat', d: 'The great reciters', id: 'qirat' },
+      { href: '#/exams', e: '📝', n: 'Exams', d: 'Stage tests and ladders', id: 'exams' }];
     shell(`
       <section class="today-hero">
         <h1>${greet}</h1>
@@ -5453,6 +5755,10 @@ body.reduce-motion .cel-layer { display: none; }`;
 
   /* ================= Boot ================= */
   FMG.app = { store, profile, saved, ctx: { screen: 'browse' }, go, render };
+  /* Extra screens (exams) register here; their files load before this one and queue a setup function. */
+  Object.assign(FMG.app, { route, shell, C, statesOf, pband, little, say, speakIfOn, abcdHtml, questionBody, bindChoices, markOptions, answerText, ar, ic, sndBtn, bindSound, todayDone,
+    setExitGuard: (f) => { exitGuard = f; }, dropKeys: () => { if (leaveGuard) { const g = leaveGuard; leaveGuard = null; g(); } }, setKeys: (f) => { leaveGuard = f; } });
+  (FMG.appReady || []).forEach((f) => f(FMG.app));
   render();
 })(typeof window !== 'undefined' ? window : globalThis);
 
