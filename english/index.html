@@ -223,7 +223,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
 
   /* Pictures for words children read. Only words with a clear picture are used for picture questions. */
   const PIC = {
-    tap: '🚰', pin: '📌', tin: '🥫', man: '👨', map: '🗺️', pan: '🍳', sad: '😢', dog: '🐶', pig: '🐷', cat: '🐱',
+    tap: '🚰', pin: '📌', tin: '🥫', man: '👨', map: '🗺️', pan: '🍳', dog: '🐶', pig: '🐷', cat: '🐱',
     cap: '🧢', pot: '🍯', mop: '🧹', sock: '🧦', duck: '🦆', neck: '🦒', net: '🥅', pen: '🖊️', ten: '🔟', rat: '🐀', run: '🏃',
     sun: '☀️', cup: '☕', nut: '🥜', rug: '🧶', hat: '🎩', hen: '🐔', bag: '👜', bed: '🛏️', bat: '🦇', bin: '🗑️', bus: '🚌', fan: '🪭', leg: '🦵', log: '🪵',
     bell: '🔔', doll: '🪆', hill: '⛰️', kiss: '💋', jet: '✈️', jug: '🫗', van: '🚐', web: '🕸️', box: '📦', fox: '🦊', six: '6️⃣', zip: '🤐',
@@ -513,13 +513,89 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
     return mk({ item: `a:${sid}:${i}`, unit: stageUnits(sid).slice(-1)[0].id, qt: 'alien', prompt: realQ ? 'Which one is a real word?' : 'Which one is an alien word (a made-up word)?', speak: realQ ? 'Which one is a real word?' : 'Which one is an alien word?',
       why: realQ ? `${right} is a real word. The others can be read with phonics, but they are made up.` : `${right} is made up: you can read it, but it is not a real word.` }, o);
   }
+  /* ---------- More question shapes (deeper practice) ---------- */
+  const ABC = 'abcdefghijklmnopqrstuvwxyz';
+  const LOOK = { b: 'dpqh', d: 'bpqa', p: 'qbdg', q: 'pgdb', n: 'muhr', m: 'nwu', u: 'nvo', h: 'nbk', a: 'odec', e: 'coa', i: 'ljt', l: 'itj', t: 'fil', f: 'tkl', g: 'qyj', j: 'igy', y: 'gvj', v: 'wuy', w: 'vmu', c: 'eoa', o: 'cae', s: 'zcx', z: 'sxn', k: 'hxr', r: 'nkv', x: 'kzv' };
+  const sylls = (w, uid) => split(w, uid).filter((g) => /[aeiou]/.test(g) || (g === 'y' && w.length > 2 && w.endsWith('y'))).length;
+  const wordsUpTo = (uid, extra = 0) => allWords().filter((x) => uIndex[x.u] <= uIndex[uid] + extra);
+  const segStr = (gs) => gs.map((g) => (g.includes('-') ? g[0] + '…e' : show(g))).join(' – ');
+  const picWords = (uid) => wordsUpTo(uid, 1).filter((x) => P.PIC[x.w]);
+  const XG = {
+    capital(u, g, rng) { if (g.length !== 1) return null; const o = options(rng, g.toUpperCase(), (LOOK[g] || 'abc').split('').map((x) => x.toUpperCase()).concat(rng.shuffle(ABC.split('')).slice(0, 4).map((x) => x.toUpperCase())));
+      return o && Object.assign({ qt: 'capital', prompt: `Which is the capital letter for ${g}?`, speak: `Which is the capital letter for ${g}?`, big: g, why: `Small ${g} and capital ${g.toUpperCase()} make the same sound. Names and sentences start with a capital letter.`, typable: false }, o); },
+    small(u, g, rng) { if (g.length !== 1) return null; const o = options(rng, g, (LOOK[g] || 'abc').split('')); return o && Object.assign({ qt: 'small', prompt: `Which is the small letter for ${g.toUpperCase()}?`, speak: `Which is the small letter for capital ${g}?`, big: g.toUpperCase(), why: `Capital ${g.toUpperCase()} is written ${g} as a small letter.` }, o); },
+    lookalike(u, g, rng) { if (g.length !== 1 || !LOOK[g]) return null; const o = options(rng, g, LOOK[g].split('')); return o && Object.assign({ qt: 'lookalike', prompt: `Find the letter ${g}.`, speak: `Find the letter that says ${P.G[g][2]}, as in ${P.G[g][0]}.`, hear: P.G[g][0], why: `${g} is the letter in ${P.G[g][0]}. Look carefully: some letters look alike.` }, o); },
+    abc(u, g, rng, band) { if (g.length !== 1 || band === 'little' || g === 'z') return null; const nx = ABC[ABC.indexOf(g) + 1]; const o = options(rng, nx, ABC.split('').filter((x) => x !== nx && x !== g).sort(() => rng() - 0.5).slice(0, 5));
+      return o && Object.assign({ qt: 'abc', prompt: `Which letter comes after ${g} in the alphabet?`, speak: `Which letter comes after ${g} in the alphabet?`, big: `${g} → ?`, why: `In the alphabet, ${g} is followed by ${nx}.` }, o); },
+    gpic(u, g, rng) { const yes = picWords(u.id).filter((x) => split(x.w, x.u).includes(g)), no = picWords(u.id).filter((x) => !x.w.includes(show(g).replace('-e', '')) && !split(x.w, x.u).some((y) => sameLetters(y, g)));
+      if (!yes.length || no.length < 3) return null; const r = rng.pick(yes).w; const wr = rng.shuffle(no).map((x) => P.PIC[x.w]).filter((e) => e !== P.PIC[r]);
+      const o = options(rng, P.PIC[r], wr); return o && Object.assign({ qt: 'gpic', kind: 'pic', prompt: `Which picture has the sound ${show(g)} in its word?`, speak: `Which picture has the sound ${P.G[g][2]} in it?`, big: show(g), why: `${r} has ${show(g)}: ${segStr(split(r, u.id))}.` }, o); },
+    gstart(u, g, rng) { const ws = wordsUpTo(u.id).filter((x) => split(x.w, x.u)[0] === g); if (!ws.length) return null; const w = rng.pick(ws).w;
+      const o = options(rng, show(g), near(u.id, g).filter((x) => !x.includes('-')).map(show)); return o && Object.assign({ qt: 'gstart', prompt: 'Listen. Which sound does the word start with?', speak: `Which sound does ${w} start with?`, hear: w, why: `${w} starts with ${show(g)}.`, typable: true, accept: [show(g)] }, o); },
+    gend(u, g, rng) { const ws = wordsUpTo(u.id).filter((x) => { const s = split(x.w, x.u); return s[s.length - 1] === g && s.length > 1; }); if (!ws.length) return null; const w = rng.pick(ws).w;
+      const o = options(rng, show(g), near(u.id, g).filter((x) => !x.includes('-')).map(show)); return o && Object.assign({ qt: 'gend', prompt: 'Listen. Which sound is at the end of the word?', speak: `Which sound is at the end of ${w}?`, hear: w, why: `${w} ends with ${show(g)}: ${segStr(split(w, u.id))}.`, typable: true, accept: [show(g)] }, o); },
+    gmid(u, g, rng) { const ws = wordsUpTo(u.id).filter((x) => { const s = split(x.w, x.u); return s.length === 3 && s[1] === g; }); if (!ws.length) return null; const w = rng.pick(ws).w;
+      const o = options(rng, show(g), near(u.id, g).map(show).filter((x) => x !== show(g))); return o && Object.assign({ qt: 'gmid', prompt: 'Listen. Which sound is in the middle of the word?', speak: `Which sound is in the middle of ${w}?`, hear: w, pic: pic(w), why: `${w}: ${segStr(split(w, u.id))}. The middle sound is ${show(g)}.`, typable: true, accept: [show(g)] }, o); },
+    godd(u, g, rng) { const ws = wordsUpTo(u.id), yes = ws.filter((x) => split(x.w, x.u).includes(g)), no = ws.filter((x) => !x.w.includes(show(g).replace('-e', '')));
+      if (yes.length < 3 || !no.length) return null; const r = rng.pick(no).w; const o = options(rng, r, rng.shuffle(yes).map((x) => x.w)); return o && Object.assign({ qt: 'godd', prompt: `Which word does NOT have ${show(g)} in it?`, speak: `Which word does not have the sound ${P.G[g][2]}?`, big: show(g), why: `${r} has no ${show(g)}. The other words all have it.` }, o); },
+  };
+  const XW = {
+    last(u, w, rng) { const s = split(w, u.id), l = s[s.length - 1]; if (s.length < 2 || l.includes('-')) return null; const o = options(rng, show(l), graphemesUpTo(u.id).map(show).filter((x) => !x.includes('-')).reverse().slice(0, 14));
+      return o && Object.assign({ qt: 'last', prompt: `What is the last sound in ${w}?`, speak: `What is the last sound in ${w}?`, big: w, pic: pic(w), typable: true, accept: [show(l)], why: `${w}: ${segStr(s)}. It ends with ${show(l)}.` }, o); },
+    missing(u, w, rng) { const s = split(w, u.id); if (s.length < 2) return null; const i = rng.int(0, s.length - 1), g = s[i]; if (g.includes('-')) return null;
+      const shown = s.map((x, k) => (k === i ? '_'.repeat(show(x).length) : x.includes('-') ? x[0] : show(x))).join('') + (s.some((x) => x.includes('-')) ? 'e' : '');
+      const o = options(rng, show(g), near(u.id, g).filter((x) => !x.includes('-')).map(show).concat((ALT[g] || []).filter((x) => !x.includes('-')))); return o && Object.assign({ qt: 'missing', prompt: 'Which letters are missing?', speak: `${w}. Which letters are missing?`, hear: w, pic: pic(w), big: shown, typable: true, accept: [show(g)], why: `${w} is spelt ${segStr(s)}.` }, o); },
+    blend(u, w, rng) { const s = split(w, u.id); if (s.length < 2) return null; const sim = wordsUpTo(u.id, 1).map((x) => x.w).filter((x) => x !== w && (x[0] === w[0] || x.slice(-1) === w.slice(-1) || x.length === w.length));
+      const o = options(rng, w, sim.sort(() => rng() - 0.5).slice(0, 10)); return o && Object.assign({ qt: 'blend', prompt: 'Say the sounds, then blend them. Which word is it?', speak: 'Say the sounds, then blend them together. Which word is it?', big: segStr(s), why: `${segStr(s)} blends to make ${w}.` }, o); },
+    segment(u, w, rng) { const s = split(w, u.id); if (s.length < 2 || s.length > 6) return null; const right = segStr(s), letters = w.split('').join(' – ');
+      const wr = [letters, segStr([s[0] + s[1]].concat(s.slice(2))), segStr(s.slice(0, -2).concat(s[s.length - 2] + s[s.length - 1])), segStr(s.slice().reverse()), segStr(s.slice(0, -1))].map((x) => x.replace(/-e(?!…)/g, '')).filter((x) => x !== right);
+      const o = options(rng, right, wr); return o && Object.assign({ qt: 'segment', prompt: `Which shows the sounds in ${w}?`, speak: `Which shows the sounds in ${w}?`, pic: pic(w), why: `${w} has ${s.length} sounds: ${right}. Letters that make one sound stay together.` }, o); },
+    swap(u, w, rng) { const s = split(w, u.id); const others = wordsUpTo(u.id, 1).filter((x) => { const t = split(x.w, x.u); return x.w !== w && t.length === s.length && t.slice(1).join() === s.slice(1).join(); });
+      if (!others.length) return null; const t = rng.pick(others).w, ns = split(t, u.id)[0]; const o = options(rng, t, misspell(t, u.id, rng).concat(wordsUpTo(u.id).map((x) => x.w).filter((x) => x.length === t.length)).filter((x) => x !== w));
+      return o && Object.assign({ qt: 'swap', prompt: `Change the first sound of ${w} to ${show(ns)}. What is the new word?`, speak: `Change the first sound of ${w} to ${P.G[ns] ? P.G[ns][2] : ns}. What is the new word?`, big: `${w} → ${show(ns)}…`, typable: true, accept: [t], why: `${w} becomes ${t}: only the first sound changes.` }, o); },
+    syll(u, w, rng) { const n = sylls(w, u.id); if (n < 1 || n > 4 || w.length < 3) return null; if (n === 1 && rng() < 0.6) return null;
+      const o = options(rng, String(n), ['1', '2', '3', '4'].filter((x) => x !== String(n))); return o && Object.assign({ qt: 'syll', prompt: `Clap the word ${w}. How many beats (syllables)?`, speak: `Clap the word ${w}. How many beats?`, big: w, hear: w, typable: true, accept: [String(n)], why: `${w} has ${n} beat${n > 1 ? 's' : ''}.` }, o); },
+    plural(u, w, rng) { if (u.focus !== 'plural') return null; const one = w.replace(/s$/, ''); const o = options(rng, w, [one, one + 'z', one + 'es', one + one.slice(-1) + 's']);
+      return o && Object.assign({ qt: 'plural', prompt: `One ${one}, two …?`, speak: `One ${one}, two what?`, pic: pic(w) ? `${pic(w)} ${pic(w)}` : null, typable: true, accept: [w], why: `More than one ${one}: add s to make ${w}.` }, o); },
+    picspell(u, w, rng) { if (!pic(w)) return null; const o = options(rng, w, misspell(w, u.id, rng)); return o && Object.assign({ qt: 'picspell', prompt: 'Which is the right spelling for the picture?', speak: 'Which is the right spelling for the picture?', pic: pic(w), typable: true, accept: [w], why: `${pic(w)} is spelt ${segStr(split(w, u.id))}.` }, o); },
+    rhymeodd(u, w, rng) { const ws = wordsUpTo(u.id, 1).map((x) => x.w), rh = ws.filter((x) => x !== w && rime(x) === rime(w)); if (rh.length < 2) return null; const odd = ws.filter((x) => rime(x) !== rime(w));
+      const r = rng.pick(odd); const o = options(rng, r, rng.shuffle(rh).slice(0, 2).concat(w)); return o && Object.assign({ qt: 'rhymeodd', prompt: 'Which word does NOT rhyme with the others?', speak: 'Which word does not rhyme?', why: `${r} does not end in “${rime(w)}”.` }, o); },
+  };
+  const XT = {
+    tgap(u, t, rng) { if (t.length < 3) return null; const i = rng.int(1, t.length - 1), c = t[i].toLowerCase(); if (!/[a-z]/.test(c)) return null;
+      const o = options(rng, c, (/[aeiou]/.test(c) ? 'aeiouy' : 'bcdfghklmnprstwy').split('').filter((x) => x !== c)); return o && Object.assign({ qt: 'tgap', prompt: `Which letter is missing from the tricky word?`, speak: `Which letter is missing from ${t}?`, hear: t, big: t.slice(0, i) + '_' + t.slice(i + 1), typable: true, accept: [c], why: `${t} is spelt ${t.split('').join(' ')}.` }, o); },
+    tfind(u, t, rng) { const others = P.UNITS.flatMap(trickyOf).filter((x) => x !== t); const o = options(rng, t, rng.shuffle(others).filter((x) => x[0].toLowerCase() === t[0].toLowerCase() || Math.abs(x.length - t.length) <= 1).concat(rng.shuffle(others)));
+      return o && Object.assign({ qt: 'tfind', prompt: 'Read them all. Which one says the word you hear?', speak: `Which one says ${t}?`, hear: t, why: `That word is ${t}.` }, o); },
+  };
+  const XS = {
+    fill(i, rng) { const s = P.SENTENCES[i], ws = s.s.replace(/[.!?]$/, '').split(' '), cand = ws.map((w, k) => [w, k]).filter(([w]) => REAL.has(w.toLowerCase()) && w.length >= 3 && P.UNITS.some((u) => wordsOf(u).includes(w.toLowerCase())));
+      if (!cand.length) return null; const [w, k] = rng.pick(cand); const pool = stageUnits(unit(s.u).stage).flatMap(wordsOf).filter((x) => x !== w.toLowerCase() && Math.abs(x.length - w.length) <= 1);
+      const o = options(rng, w.toLowerCase(), rng.shuffle(pool)); const shown = ws.map((x, j) => (j === k ? '____' : x)).join(' ') + '.';
+      return o && Object.assign({ qt: 'fill', prompt: 'Listen to the sentence. Which word is missing?', speak: `Listen. ${s.s} Which word is missing?`, hear: s.s, sentence: shown, why: `The sentence is: ${s.s}` }, o); },
+    caps(i, rng) { const s = P.SENTENCES[i].s, ws = s.split(' '); if (ws.length < 4) return null; const k = rng.int(1, ws.length - 1);
+      const wr = [s[0].toLowerCase() + s.slice(1), s.replace(/[.!?]$/, ''), ws.map((w, j) => (j === k && !/^[A-Z]/.test(w) ? w[0].toUpperCase() + w.slice(1) : w)).join(' ')].filter((x) => x !== s);
+      wr.push(s[0].toLowerCase() + s.slice(1).replace(/[.!?]$/, ''));
+      const o = options(rng, s, wr); return o && Object.assign({ qt: 'caps', prompt: 'Which sentence is written the right way?', speak: 'Which sentence is written the right way?', why: 'A sentence starts with a capital letter and ends with a full stop. Other words only get a capital letter if they are names (and the word I).' }, o); },
+    order(i, rng) { const s = P.SENTENCES[i].s, ws = s.replace(/[.!?]$/, '').split(' '); if (ws.length < 5) return null; const end = s.slice(-1);
+      const mix = (a, b) => { const c = ws.slice(); [c[a], c[b]] = [c[b], c[a]]; return c; }; const fmt = (c) => { const t = c.join(' '); return t + end; };
+      const wr = [mix(1, 2), mix(2, 3), mix(ws.length - 1, ws.length - 2), mix(0, 1)].map(fmt).filter((x) => x !== s);
+      const o = options(rng, s, wr); return o && Object.assign({ qt: 'order', prompt: 'Which sentence makes sense?', speak: 'Read them carefully. Which sentence makes sense?', why: `The words are in the right order in: ${s}` }, o); },
+  };
+  /* Pick from the extra shapes some of the time, keeping the original shapes too. */
+  function extra(table, args, rng, n0, band) {
+    const ks = Object.keys(table); if (rng.int(0, ks.length + n0 - 1) >= ks.length) return null;
+    for (const k of rng.shuffle(ks).slice(0, 3)) { const q = table[k](...args, rng, band); if (q && q.options && q.options.length === 4) return q; }
+    return null;
+  }
+
   function makeQuestion(item, rng, band) {
     const p = item.split(':');
     try {
-      if (p[0] === 'g') return qGrapheme(unit(p[1]), p[2], rng, band);
-      if (p[0] === 'w') return qWord(unit(p[1]), p[2], rng, band);
-      if (p[0] === 't') return qTricky(unit(p[1]), p[2], rng);
-      if (p[0] === 's') return qSentence(+p[1], rng);
+      const base = (q, it, u) => (q ? Object.assign({ item: it, unit: u }, q) : null);
+      if (p[0] === 'g') { const u = unit(p[1]); return base(extra(XG, [u, p[2]], rng, 3, band), item, u.id) || qGrapheme(u, p[2], rng, band); }
+      if (p[0] === 'w') { const u = unit(p[1]); const q = base(extra(XW, [u, p[2]], rng, 6, band), item, u.id); return q ? Object.assign(q, { word: p[2] }) : qWord(u, p[2], rng, band); }
+      if (p[0] === 't') { const u = unit(p[1]); return base(extra(XT, [u, p[2]], rng, 1, band), item, u.id) || qTricky(u, p[2], rng); }
+      if (p[0] === 's') { const s0 = P.SENTENCES[+p[1]]; return base(extra(XS, [+p[1]], rng, 1, band), item, s0.u) || qSentence(+p[1], rng); }
       if (p[0] === 'a') return qAlien(p[1], +p[2], rng);
     } catch (e) { return null; }
     return null;
@@ -959,7 +1035,7 @@ h1{font-size:1.8rem;line-height:1.2;margin:.4rem 0}.h2{font-size:1.2rem;margin:1
       ${q.pic ? `<div class="qpic" aria-hidden="true">${q.pic}</div>` : ''}${big}
       <p class="prompt">${esc(q.prompt)}</p>
       <div class="qtools">${q.typable ? `<div class="seg" role="radiogroup" aria-label="How to answer"><button role="radio" aria-checked="${!typing}" data-tm="0">A B C D</button><button role="radio" aria-checked="${typing}" data-tm="1">Type it</button></div>` : ''}
-        ${q.hear ? `<button class="btn sm ghost" id="hear">🔊 Hear the word</button>` : ''}<button class="btn sm ghost" id="sayq">🗣️ Read it</button></div>
+        ${q.hear ? `<button class="btn sm ghost" id="hear">🔊 Hear it</button>` : ''}<button class="btn sm ghost" id="sayq">🗣️ Read it</button></div>
       ${typing ? `<form class="type-row" id="tf" autocomplete="off"><input id="ans" class="type-in" placeholder="Type your answer" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Your answer"><button class="btn primary">Check</button></form>`
         : `<div class="abcd ${q.kind === 'pic' ? 'pics' : ''}">${q.options.map((o, i) => `<button class="opt" data-opt="${i}"><span class="l">${o.letter}</span><span class="v">${esc(o.value)}</span></button>`).join('')}</div>`}
       <div id="fb" aria-live="polite"></div></div>`;
