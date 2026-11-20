@@ -1338,6 +1338,14 @@ body.zoom-open { overflow: hidden; }
 .sw-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--sea-hi); }
 .sw-dot.s1 { background: #e85d9b; } .sw-dot.s2 { background: #d4b000; } .sw-dot.s3 { background: #3cb371; }
 
+/* The other three options shown after an answer */
+.fb-others { margin: .7rem 0 .2rem; }
+.fb-others-h { font-size: .85rem; font-weight: 700; color: var(--muted); margin-bottom: .35rem; }
+.fb-others-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+.fb-other { display: flex; flex-direction: column; align-items: center; gap: .25rem; text-decoration: none; color: inherit; text-align: center; font-size: .85rem; line-height: 1.2; }
+.fb-other .flagimg { width: 100%; max-width: 96px; }
+.cta-card.guess .cta-title { white-space: nowrap; }
+
 </style>
 </head>
 <body>
@@ -3962,6 +3970,7 @@ body.reduce-motion .cel-layer { display: none; }`;
           <p class="muted">${stamped ? `You have <b>${stamped}</b> of ${F.CORE.length} passport stamps.` : 'Every flag you learn earns a stamp in your passport, and colours in your world map.'}</p>
           <div class="cta-row">
             <a class="cta-card" href="#/col/${next.id}"><div><div class="eyebrow">${stamped || Object.values(states).some((s) => s.overall !== 'new') ? 'Continue your journey' : 'Start here'}</div><div class="cta-title">${esc(next.name)}</div><div class="muted small">${nextNew ? `${nextNew} new flags to meet` : 'Practise to earn the stamps'}</div></div><span class="cta-go" aria-hidden="true">${ic.arrow}</span></a>
+            <a class="cta-card guess" href="#/guess"><div><div class="eyebrow">Just flags</div><div class="cta-title">🚩 Guess the flag</div><div class="muted small">See a flag, name the country. Keep going as long as you like.</div></div></a>
             ${due.length ? `<a class="cta-card review" href="#/play/review/due"><div><div class="eyebrow">Review time</div><div class="cta-title">${Math.min(due.length, 10)} flags to visit again</div><div class="muted small">Keeps them in your memory</div></div><span class="cta-go" aria-hidden="true">↻</span></a>` : ''}
           </div>
         </div>
@@ -3975,6 +3984,7 @@ body.reduce-motion .cel-layer { display: none; }`;
       ${tab === 'oceans' ? oceansSection(p) : ''}
       ${tab === 'families' ? `<p class="muted">Some flags are nearly twins! Learn how to tell them apart.</p><div class="col-grid">${F.FAMILIES.map((c) => colCard(c, states)).join('')}</div>` : ''}
       ${tab === 'challenge' ? `<div class="col-grid">
+          <a class="col-card ch" href="#/guess"><div class="ch-e">🚩</div><div class="col-name">Guess the flag</div><div class="col-desc">Only flags: see a flag, name the country. All the world, or one region.</div></a>
           <a class="col-card ch" href="#/play/endless/world"><div class="ch-e">🌍</div><div class="col-name">World challenge</div><div class="col-desc">Every flag, mixed up. No timer — stop whenever you like.</div></a>
           ${F.REGION_ORDER.map((r) => `<a class="col-card ch" href="#/play/check/region-${r}"><div class="ch-e">${F.REGION_META[r].emoji}</div><div class="col-name">${r} check</div><div class="col-desc">10 questions on ${r}’s flags you have met.</div></a>`).join('')}
           ${F.bandRank(pband()) >= 1 ? '<a class="col-card ch" href="#/play/practice/lookalikes"><div class="ch-e">🔍</div><div class="col-name">Flag detective</div><div class="col-desc">Only look-alike flags. Spot the tiny differences!</div></a>' : ''}
@@ -3986,6 +3996,16 @@ body.reduce-motion .cel-layer { display: none; }`;
     if (little()) speakIfOn(greet.replace(/<[^>]+>/g, ''));
   });
   function bindMapClicks() { $$('.pm [data-c]').forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); go(`#/country/${el.dataset.c}`); })); }
+
+  route(/^#\/guess$/, () => {
+    shell(`<h1>🚩 Guess the flag</h1>
+      <p class="muted">Just flags. Each question shows a flag; pick the country. After every answer you also see the flags of the other three countries, so you learn four flags at a time. Keep going as long as you like.</p>
+      <div class="col-grid">
+        <a class="col-card ch" href="#/play/endless/guess"><div class="ch-e">🌍</div><div class="col-name">The whole world</div><div class="col-desc">${F.CORE.length} flags, all mixed up</div></a>
+        ${F.REGION_ORDER.map((r) => { const n = F.CORE.filter((c) => c.region === r).length; return n >= 4 ? `<a class="col-card ch" href="#/play/endless/guess-${r}"><div class="ch-e">${F.REGION_META[r].emoji}</div><div class="col-name">${r}</div><div class="col-desc">${n} flags</div></a>` : ''; }).join('')}
+      </div>`, { back: '#/home', cls: 'wide' });
+    if (little()) speakIfOn('Guess the flag! Pick the whole world, or one part of it.');
+  });
 
   /* ================= Screen: a collection ================= */
   route(/^#\/col\/([\w-]+)$/, (id) => {
@@ -4312,6 +4332,8 @@ body.reduce-motion .cel-layer { display: none; }`;
     if (WAT() && /^waterone-/.test(target)) { const w = wById(target.slice(9)); return w ? { name: w.name, ids: [w.id], water: true, one: true, back: `#/water/${w.id}` } : null; }
     if (WAT() && target === 'waters-all') return { name: 'All the waters', ids: WAT().ALL.map((w) => w.id), water: true, back: '#/oceans' };
     if (target === 'world') return { name: 'World challenge', ids: F.CORE.map((c) => c.id) };
+    if (target === 'guess') return { name: 'Guess the flag', ids: F.CORE.map((c) => c.id), qt: 'flag2name' };
+    if (/^guess-/.test(target)) { const r = target.slice(6); const ids = F.CORE.filter((c) => c.region === r).map((c) => c.id); return ids.length >= 4 ? { name: `Guess the flag: ${r}`, ids, qt: 'flag2name', back: '#/guess' } : null; }
     if (target === 'lookalikes') return { name: 'Flag detective', ids: F.FAMILIES.flatMap((f) => f.ids), qt: 'lookalike' };
     if (target === 'culture-world') return { name: 'Culture quiz', ids: metIds.length >= 4 ? metIds : F.STARTER, strand: 'culture' };
     if (/^region-/.test(target)) { const r = target.slice(7); const met = F.CORE.filter((c) => c.region === r && states[c.id].overall !== 'new').map((c) => c.id); return { name: `${r} check`, ids: met.length >= 4 ? met : F.CORE.filter((c) => c.region === r).slice(0, 12).map((c) => c.id) }; }
@@ -4386,6 +4408,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         const pickedWrong = !ok && q.kind !== 'text' && q.kind !== 'colour' && byId[given] ? byId[given] : null;
         $('#fb').innerHTML = `<div class="fb ${ok ? 'good' : ''}">${ok ? `🎉 <b>${esc(praise)}</b> ${esc(right)}.${streakPill(S.row)}` : `${rng.pick(['Good try!', 'So close!', 'Nice try!', 'Keep exploring!'])} The answer is <b>${esc(right)}</b>.`}
             ${fbShow(q, ok, pickedWrong)}
+            ${otherOptions(q)}
             ${extra ? `<p class="fb-more">${esc(extra)}</p>` : ''}
             ${!ok && F.bandRank(b) < 2 ? '<p class="small muted">It will come back again soon so you can try it again.</p>' : ''}</div>`;
         if (!ok) speakIfOn(`Good try! The answer is ${right}.`);
@@ -4442,6 +4465,15 @@ body.reduce-motion .cel-layer { display: none; }`;
     };
     drawQ();
   });
+  /* The other three choices, each with its flag and name, so every question teaches four flags. */
+  function otherOptions(q) {
+    if (q.water || !q.options || !q.options.every((o) => byId[o.value])) return '';
+    const right = q.options[q.answerIndex].value;
+    const others = q.options.filter((o) => o.value !== right).map((o) => byId[o.value]);
+    if (!others.length) return '';
+    const head = q.kind === 'flag' || q.qt === 'flag2name' ? 'The other flags were' : 'The other answers were';
+    return `<div class="fb-others"><div class="fb-others-h">${head}:</div><div class="fb-others-row">${others.map((c) => `<a class="fb-other" href="#/country/${c.id}" target="_self">${MAP.flag(c, { alt: c.name })}<span>${esc(c.name)}</span></a>`).join('')}</div></div>`;
+  }
   function fbShow(q, ok, pickedWrong) {
     const v = q.options[q.answerIndex].value;
     if (q.kind === 'water' || q.kind === 'waterMap') return `<div class="fb-show"><span class="fb-map">${MAP.waterMap(v, { zoom: wById(v).kind !== 'ocean', full: v === 'southern' || v === 'weddell-sea', label: wById(v).name })}</span></div>`;
