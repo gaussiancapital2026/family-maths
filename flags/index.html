@@ -1445,6 +1445,24 @@ body.zoom-open { overflow: hidden; }
 .qtop { flex-wrap: wrap; row-gap: .4rem; }
 .qmode { white-space: normal; min-width: 0; flex: 1 1 12rem; }
 
+/* lessons: look-alike flags side by side (visuals.js "compare") */
+.fl-compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: .7rem .6rem; width: 100%; max-width: 560px; margin: 0 auto; }
+.fl-cmp { margin: 0; display: flex; flex-direction: column; align-items: center; gap: .3rem; text-align: center; min-width: 0; }
+.fl-cmp .flagimg { width: 100%; max-width: 150px; height: auto; border-radius: 4px; box-shadow: 0 0 0 1px var(--flag-edge, var(--line)); }
+.fl-cmp figcaption { display: flex; flex-direction: column; gap: .15rem; }
+.fl-cmp b { font-family: var(--font-round); font-size: 1rem; line-height: 1.15; }
+.fl-cmp span { font-size: .8rem; color: var(--muted); line-height: 1.25; overflow-wrap: anywhere; }
+.und-alt .fl-compare, .lsn-vis .fl-compare { max-width: 100%; }
+
+/* Phones: the lesson nav (Back · I don't understand · read aloud · Next) is wider than the screen, so it wraps, as in
+   Family English: the main buttons on one row, "I don't understand" full width under them. Nothing is pushed off the screen. */
+@media (max-width: 560px) {
+  .lsn-nav { flex-wrap: wrap; row-gap: .45rem; }
+  .lsn-nav .btn { flex: 0 1 auto; }
+  .lsn-nav .btn.big { flex: 1 1 auto; justify-content: center; }
+  .lsn-nav .btn.und-btn { order: 9; flex: 1 1 100%; min-height: 42px; }
+}
+
 </style>
 </head>
 <body>
@@ -2363,10 +2381,9 @@ body.zoom-open { overflow: hidden; }
 
 </script>
   <script>
-/* Lessons. Phase 1: every released Flags skill gets its Learn lesson from its own generators (big idea → watch it build →
-   your turn → try it → method card), built by the lesson engine in app.js from skills-fl.js lessonQ. Hand-written
-   lessons for every skill are Phase 2 (they will go in lessons-fl.js as FMG.lessonsEn-style plans, which app.js already
-   plays first when present). LESSONS is for old-style step lessons; OBJECTIVES is filled by skills-fl.js. */
+/* Lessons. Every released Flags skill has a hand-written Learn lesson in lessons-fl.js (FMG.lessonsFl, Phase 2), which the
+   lesson engine in app.js plays first; the automatic lesson built from the skill's own generators (skills-fl.js lessonQ)
+   is the fallback and gives "Another example". LESSONS is for old-style step lessons; OBJECTIVES is filled by skills-fl.js. */
 (function (root) {
   'use strict';
   const FMG = root.FMG;
@@ -3320,7 +3337,9 @@ window.FFG=window.FFG||{};FFG.waterGeo={"W":720,"H":324,"scale":0.5,"bodies":{"p
    Types: flag (a big flag) · name (a country's name, no flag) · flagname (a small flag with its name) · text (big words) ·
    map (the world or a close-up, one country coloured) · shape (a country's outline) · water (an ocean or sea coloured) ·
    oceans (all five) · route (two flags with a boat between) · emoji (a picture and a word) · swatches (colour chips) ·
-   pattern (a flag pattern drawn plainly) · part (a flag on a pole with one part highlighted) · hello (a greeting).
+   pattern (a flag pattern drawn plainly) · part (a flag on a pole with one part highlighted) · hello (a greeting) ·
+   compare (two to four flags side by side, each with its name and an optional short note: look-alikes in lessons).
+   A map can also show the equator (map with equator: true).
    A question's own picture never shows its answer; a lesson step's picture may. Flags are pictures only: nothing reads them aloud. */
 (function (root) {
   'use strict';
@@ -3365,6 +3384,16 @@ window.FFG=window.FFG||{};FFG.waterGeo={"W":720,"H":324,"scale":0.5,"bodies":{"p
     return `<svg class="fl-part" viewBox="0 0 160 140" role="img" aria-label="A flag on a flagpole${part ? ' with one part coloured in' : ''}">${s.join('')}<text x="${x0 - 4}" y="134" font-size="9" fill="currentColor" opacity=".7">flagpole</text></svg>`;
   }
 
+  /* The equator (latitude 0) on a locator map: the map's y = (84 − latitude) × 2, so the equator is y = 168. */
+  function withEquator(svg) {
+    const m = svg.match(/viewBox="([-\d.]+) ([-\d.]+) ([\d.]+) ([\d.]+)"/);
+    if (!m) return svg;
+    const x = +m[1], w = +m[3], h = +m[4], s = h / 284;
+    const line = `<line class="wm-eq" x1="${x - 10}" y1="168" x2="${x + w + 10}" y2="168" stroke="var(--bad, #d6336c)" stroke-width="${(2.2 * s).toFixed(2)}" stroke-dasharray="${(7 * s).toFixed(2)} ${(5 * s).toFixed(2)}"/>`
+      + `<text x="${(x + w * 0.02).toFixed(1)}" y="${(168 - 4 * s).toFixed(1)}" font-size="${(15 * s).toFixed(1)}" font-weight="700" fill="var(--bad, #d6336c)">Equator</text>`;
+    return svg.replace(/<\/svg>\s*$/, `${line}</svg>`);
+  }
+
   function render(v) {
     if (!v) return '';
     const M = MAP();
@@ -3373,7 +3402,8 @@ window.FFG=window.FFG||{};FFG.waterGeo={"W":720,"H":324,"scale":0.5,"bodies":{"p
       case 'name': { const c = C(v.id); return c ? `<div class="fl-name">${v.flag ? M.flag(c, { alt: '' }) : ''}<b>${esc(c.name)}</b></div>` : ''; }
       case 'flagname': { const c = C(v.id); return c ? `<div class="fl-flagname">${M.flag(c, { alt: `Flag of ${c.name}` })}<b>${esc(c.name)}</b></div>` : ''; }
       case 'text': return `<div class="fl-name"><b>${esc(v.text)}</b></div>`;
-      case 'map': return `<div class="fl-map">${M.locator(v.id, { zoom: !!v.zoom, label: 'Map with one country coloured in' })}</div>`;
+      case 'map': { const svg = M.locator(v.id, { zoom: !!v.zoom, label: v.equator ? 'Map with one country coloured in and the equator drawn as a dashed line' : 'Map with one country coloured in' }); return `<div class="fl-map">${v.equator ? withEquator(svg) : svg}</div>`; }
+      case 'compare': return `<div class="fl-compare">${(v.ids || []).map((x, i) => { const c = C(x); const note = (v.notes || [])[i]; return c ? `<figure class="fl-cmp">${M.flag(c, { alt: `Flag of ${c.name}` })}<figcaption><b>${esc(c.name)}</b>${note ? `<span>${esc(note)}</span>` : ''}</figcaption></figure>` : ''; }).join('')}</div>`;
       case 'shape': return `<div class="fl-shape">${M.shape(v.id, { label: 'The outline of a country' })}</div>`;
       case 'water': return `<div class="fl-map">${M.waterMap(v.id, { zoom: !!v.zoom, full: !!v.full, label: v.label || '', alt: v.label ? `The ${v.label} on the map` : 'Map with one ocean or sea coloured in' })}</div>`;
       case 'oceans': return W() ? `<div class="fl-map">${M.oceansMap(W().OCEANS, { alt: 'The five oceans', labels: v.labels !== false })}</div>` : '';
@@ -3390,7 +3420,7 @@ window.FFG=window.FFG||{};FFG.waterGeo={"W":720,"H":324,"scale":0.5,"bodies":{"p
   const ICONS = { uk: '🇬🇧', globe: '🌍', palette: '🎨', star: '⭐', twins: '👯', pencil: '✏️', continents: '🗺️', capital: '🏛️', crown: '👑', scale: '⚖️', wave: '🌊', pin: '📍', compass: '🧭', latlong: '🌐', clock: '🕰️', mountain: '⛰️', weather: '🌦️', hello: '👋', food: '🍲', landmark: '🏰' };
   const icon = (name) => `<span class="emo" aria-hidden="true">${ICONS[name] || '🌍'}</span>`;
 
-  FMG.viz = { render, icon, patternSvg, partSvg, TYPES: ['flag', 'name', 'flagname', 'text', 'map', 'shape', 'water', 'oceans', 'route', 'emoji', 'hello', 'swatches', 'pattern', 'part'] };
+  FMG.viz = { render, icon, patternSvg, partSvg, TYPES: ['flag', 'name', 'flagname', 'text', 'map', 'shape', 'water', 'oceans', 'route', 'emoji', 'hello', 'swatches', 'pattern', 'part', 'compare'] };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -4735,7 +4765,1414 @@ window.FFG=window.FFG||{};FFG.waterGeo={"W":720,"H":324,"scale":0.5,"bodies":{"p
   }
 
   const endlessExtra = (skillId) => { const reg = Object.keys(regionSkill).find((k) => regionSkill[k] === skillId); return reg ? CHAL['guess-' + reg] : skillId === 'fl-world' || skillId === 'fl-starter' ? CHAL.guess : null; };
-  FMG.flagSkills = { endlessExtra, CHAL, oneCountry, oneWater, regionSkill, f2n, n2f, cands, tiers, famOf, lookOf, contOf, SUBN, fromWater, REG, noArabic, waterSkillOf: { 'w-oceans': 'oc-oceans', 'w-famous': 'oc-famous', 'w-atlantic': 'oc-more', 'w-pacific': 'oc-more', 'w-far': 'oc-more' } };
+  FMG.flagSkills = { endlessExtra, CHAL, oneCountry, oneWater, regionSkill, f2n, n2f, cands, tiers, famOf, lookOf, contOf, SUBN, fromWater, REG, noArabic, waterSkillOf: { 'w-oceans': 'oc-oceans', 'w-famous': 'oc-famous', 'w-atlantic': 'oc-more', 'w-pacific': 'oc-more', 'w-far': 'oc-more' },
+    // the skills' own tables, shared with the hand-written lessons (lessons-fl.js) and tests/lessons-test.js
+    PAT_NAME, PAT_SHORT, PARTS, SYM_NAME, symsOf, hasCol, BASIC, meanOf, diffOf, looks, CLUE, keyOf, unique, UK_CROSS, UK_LABEL, NATIONS, UK_FACTS, nbOf, coastal, LAND_IDS, langOfHello, similar, CONTINENTS };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <!-- Hand-written Learn lessons for every released skill (Phase 2); the Learn engine falls back to automatic lessons -->
+  <script>
+/* Family Flags — hand-written Learn lessons, one for every released skill (docs/flags-design.md §4 "Learn").
+   Loaded after skills-flags.js and before app.js. The Learn engine (app.js) plays a lesson from here when there is one, and
+   falls back to the automatic lesson built from the skill's own generator (skills-fl.js lessonQ) when there is not.
+   Modelled on Family English's lessons-en.js.
+
+   A lesson:
+     big      the big idea: one or two child-friendly sentences, pitched at the skill's stage
+     why      why it matters
+     ex       two chosen worked examples (never random). ex[0] is "Watch it build", ex[1] is "Your turn" (same method,
+              a similar example; the child does the last step). Each walk has 3–5 steps with pictures; the last states the answer.
+     tries    "Try it": one ordinary question and one transfer (the same idea in a new format: a map, flag pictures…)
+     explain  "I don't understand": 3 different ways { kind: hook | story (a memory hook or story), picture, say | do, text, visual? }
+     method   the method card: 3–5 short steps
+     mistakes 1–3 { wrong, fix } pairs that really happen (look-alikes use the data's own `diff`)
+   An example: { q, speak?, visual, walk: [{ do, math, why, see, say }], options + answer (+ ids: the country or water behind
+     each option) — or cids/wids + ans (country or water ids; the names become the options) —, kind ('flag' | 'map' | 'shape' |
+     'watermap' | 'colour': picture options), type: 'choice' | 'text' (typed, A–D still there), match/matchIds/accept, why, check }.
+   `check` names the fact in the app's own data that makes the answer right; tests/lessons-test.js checks every one.
+   Accuracy: every fact comes from countries.js / flags.js / waters (quoted through the helpers below, so the words match the data),
+   or is a well-established fact; numbers say "about"; traditional flag meanings say "is often said to stand for", as the data does.
+   No pictures of people, culture is described as examples (not rules), and disputed places are not used as examples. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG, esc = FMG.esc;
+  const F = FMG.flags, WT = FMG.waters, FS = FMG.flagSkills;
+  const LES = {};
+  const add = (id, o) => { LES[id] = Object.assign({ id }, o); };
+
+  /* ---------- data helpers (the words come straight from the app's data) ---------- */
+  const C = (id) => F.byId[id];
+  const nm = (id) => C(id).name;
+  const cap = (id) => C(id).capital;
+  const hook = (id) => C(id).flag.hook;
+  const diff = (id) => FS.diffOf(id);
+  const mean = (id) => C(id).flag.meaning;
+  const first = (s) => { const m = String(s || '').match(/^.*?[.!?](\s|$)/); return (m ? m[0] : String(s || '')).trim(); };
+  const cols = (id) => C(id).flag.colours.slice();
+  const wn = (w) => WT.byId[w].name;
+  const wx = (w) => WT.byId[w];
+  const list = (a) => (a.length <= 1 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+  const b = (s) => `<b>${esc(s)}</b>`;
+  const km2 = (id) => `about ${(C(id).area / 1e6).toFixed(1)} million km²`;
+  const ppl = (id) => { const n = C(id).pop; return n >= 1e9 ? `about ${(n / 1e9).toFixed(1).replace(/\.0$/, '')} billion people` : n >= 1e6 ? `about ${n >= 1e7 ? Math.round(n / 1e6) : (n / 1e6).toFixed(1).replace(/\.0$/, '')} million people` : n >= 1e3 ? `about ${Math.round(n / 1e3).toLocaleString('en-GB')},000 people` : `about ${n} people`; };
+  const clue = (id, kind) => FS.CLUE[kind](C(id))[0];
+  const lm = (id) => C(id).landmark;
+
+  /* ---------- a worked step and the pictures (types in visuals.js) ---------- */
+  const W = (d, m, y, see, say) => ({ do: d, math: m, why: y, see: see || null, say: say || null });
+  const flag = (id) => ({ type: 'flag', id });
+  const fn = (id) => ({ type: 'flagname', id });
+  const name = (id, withFlag) => ({ type: 'name', id, flag: !!withFlag });
+  const map = (id, o) => Object.assign({ type: 'map', id }, o || {});
+  const world = (o) => Object.assign({ type: 'map', world: true }, o || {});
+  const shape = (id) => ({ type: 'shape', id });
+  const cmp = (ids, notes) => ({ type: 'compare', ids, notes: notes || [] });
+  const sw = (colours) => ({ type: 'swatches', colours });
+  const pat = (p) => ({ type: 'pattern', pattern: p });
+  const part = (p) => ({ type: 'part', part: p });
+  const emo = (e, text) => ({ type: 'emoji', e, text });
+  const txt = (t) => ({ type: 'text', text: t });
+  const water = (id, o) => Object.assign({ type: 'water', id }, o || {});
+  const oceans = (labels) => ({ type: 'oceans', labels: labels !== false });
+  const hello = (word, say) => ({ type: 'hello', word, say });
+
+  /* The four oceans' and seas' options, and the methods several lessons share. */
+  const FLAG_METHOD = ['Look at the colours first', 'Then the pattern: stripes (lying flat or standing up?), a cross, a triangle or a circle', 'Find the special thing: a symbol, a star or a picture', 'Think which part of the world it is from'];
+  const LOOK_METHOD = ['Find what is the same, so you can ignore it', 'Hunt for the one difference: stripe order, a shade, a symbol, the shape', 'Say the clue out loud before you choose', 'Check that clue on every choice'];
+  const CAP_METHOD = ['Picture where the country is', 'Say the country and its capital together, like a pair', 'Watch out for the biggest or most famous city: it is not always the capital', 'Learn the pairs both ways round'];
+  const SEA_METHOD = ['Picture the world map with the oceans and seas coloured in', 'Use the land around the water: which continents or countries are on its coast?', 'Seas, gulfs, bays and straits belong to the ocean they open into', 'Use the water’s nickname or the meaning of its name as a hook'];
+  const CULTURE_METHOD = ['Read the clue carefully: its words often hint at a language or a place', 'Think which part of the world it comes from', 'Cross out countries from other parts of the world', 'Remember it as part of that country’s story'];
+  const CULTURE_MISTAKE = { wrong: 'Thinking everyone in a country eats, wears or does the same thing', fix: 'These are examples of everyday life and traditions. People in every country are different and enjoy all sorts of things.' };
+  const UKL = FS.UK_LABEL;
+  const UKOPT = { options: [UKL.ENG, UKL.SCT, UKL.WLS, UKL.GBR], ids: ['ENG', 'SCT', 'WLS', 'GBR'] };
+
+  /* ================================================================================================
+     A. FLAGS
+     ================================================================================================ */
+
+  add('fl-uk', {
+    big: 'The UK has four nations. England’s flag is a red cross on white, Scotland’s is a white X on blue, and Wales has a red dragon. The Union Flag puts the saints’ crosses together for the whole UK.',
+    why: 'You will see these flags at football and rugby matches, on buildings and at celebrations all over the UK.',
+    ex: [
+      Object.assign({ q: 'Whose flag is this?', visual: flag('ENG'), answer: UKL.ENG,
+        walk: [W('Look at the colours', 'Red and white.', 'Start with the colours: they are the first clue.', sw(['white', 'red'])),
+          W('Look at the shape', 'A big red plus sign: a cross that goes straight up and straight across.', 'A cross like a plus sign is different from an X.', pat('cross')),
+          W('Name the cross', 'It is the Cross of St George.', esc(mean('ENG'))),
+          W('Answer', `A red cross on white is the flag of ${b('England')}.`, `Memory hook: ${esc(hook('ENG'))}`, fn('ENG'))],
+        why: 'England’s flag is the red Cross of St George.', check: { k: 'flag', id: 'ENG' } }, UKOPT),
+      Object.assign({ q: 'Whose flag is this?', visual: flag('SCT'), answer: UKL.SCT,
+        walk: [W('Look at the colours', 'Blue and white.', 'Only two colours.', sw(['blue', 'white'])),
+          W('Look at the shape', 'A big white X from corner to corner. A cross shaped like an X is called a saltire.', 'Say it: an X, not a plus.', pat('saltire')),
+          W('Name the cross', 'It is the Saltire of St Andrew.', 'St Andrew is a saint, and his cross is shaped like an X.'),
+          W('Answer', `A white X on blue is the flag of ${b('Scotland')}.`, `Memory hook: ${esc(hook('SCT'))}`, fn('SCT'))],
+        why: 'Scotland’s flag is the white Saltire of St Andrew.', check: { k: 'flag', id: 'SCT' } }, UKOPT),
+    ],
+    tries: [
+      { q: 'Which is the flag of Wales?', visual: txt('Wales'), cids: ['WLS', 'ENG', 'SCT', 'GBR'], ans: 'WLS', kind: 'flag', why: 'Wales has a red dragon on white and green.', check: { k: 'flag', id: 'WLS' } },
+      { q: 'What is on the flag of the whole United Kingdom?', transfer: true, visual: txt('The United Kingdom'), options: [FS.UK_CROSS.GBR, FS.UK_CROSS.ENG, FS.UK_CROSS.SCT, FS.UK_CROSS.WLS], answer: FS.UK_CROSS.GBR, ids: ['GBR', 'ENG', 'SCT', 'WLS'], why: mean('GBR'), check: { k: 'ukcross', id: 'GBR' } },
+    ],
+    explain: [
+      { kind: 'story', text: 'Long ago, England, Scotland and Ireland each had a patron saint with a cross: St George (a red plus), St Andrew (a white X) and St Patrick (a red X). When they joined together, their crosses were put on top of each other to make the Union Flag. Wales has its own flag, with a red dragon.' },
+      { kind: 'picture', text: 'The red plus of England and the white X of Scotland are both inside the Union Flag.', visual: cmp(['ENG', 'SCT', 'GBR'], ['a red plus', 'a white X', 'the crosses together']) },
+      { kind: 'do', text: 'Draw in the air with your finger: a plus sign for England, then a big X for Scotland. Now draw them on top of each other: that is how the Union Flag is made. Then flap your arms like wings for the Welsh dragon!' },
+    ],
+    method: ['Look at the colours', 'Look at the shape: a plus, an X, or a dragon?', 'Red plus on white: England. White X on blue: Scotland. Red dragon: Wales', 'All the crosses together on blue: the Union Flag of the whole UK'],
+    mistakes: [{ wrong: 'Thinking the dragon of Wales is on the Union Flag', fix: 'The Union Flag has the crosses of St George, St Andrew and St Patrick. Wales is not shown on it.' },
+      { wrong: 'Mixing up England and Georgia', fix: esc(diff('ENG')) }],
+  });
+
+  add('fl-starter', {
+    big: 'Every flag has a clue. Look at its colours, then its pattern, then one special thing, like a leaf, a sun or a star.',
+    why: 'Famous flags are everywhere: at the World Cup, the Olympics and in books about the world.',
+    ex: [
+      { q: 'Which country has this flag?', visual: flag('CAN'), cids: ['CAN', 'JPN', 'BRA', 'DEU'], ans: 'CAN',
+        walk: [W('Look at the colours', 'Red and white.', 'Lots of flags are red and white, so we need more clues.', sw(['red', 'white'])),
+          W('Look at the pattern', 'Red, white, red, standing up. The white part in the middle is the widest.', 'Stripes that stand up go from the top of the flag to the bottom.'),
+          W('Find the special thing', 'A big red maple leaf in the middle.', esc(mean('CAN'))),
+          W('Answer', `Red and white with a maple leaf: ${b('Canada')}.`, `Memory hook: ${esc(hook('CAN'))}`, fn('CAN'))],
+        why: hook('CAN'), check: { k: 'flag', id: 'CAN' } },
+      { q: 'Which country has this flag?', visual: flag('JPN'), cids: ['JPN', 'CAN', 'IND', 'ITA'], ans: 'JPN',
+        walk: [W('Look at the colours', 'White and red.', 'Only two colours: that makes it easy to remember.', sw(['white', 'red'])),
+          W('Look at the pattern', 'A plain white flag with no stripes at all.', 'A flag with one shape on a plain background is simple to spot.'),
+          W('Find the special thing', 'One red circle in the middle.', esc(first(mean('JPN')))),
+          W('Answer', `A red sun on white: ${b('Japan')}.`, `Memory hook: ${esc(hook('JPN'))}`, fn('JPN'))],
+        why: hook('JPN'), check: { k: 'flag', id: 'JPN' } },
+    ],
+    tries: [
+      { q: 'Which country has this flag?', visual: flag('BRA'), cids: ['BRA', 'IND', 'USA', 'ITA'], ans: 'BRA', type: 'text', match: 'country', matchIds: ['BRA'], why: hook('BRA'), check: { k: 'flag', id: 'BRA' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('IND'), cids: ['IND', 'JPN', 'USA', 'DEU'], ans: 'IND', kind: 'flag', why: `It is India: ${hook('IND')}`, check: { k: 'flag', id: 'IND' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Give every flag a picture in your head. Canada: a red maple leaf. Japan: a red sun. Brazil: a starry blue globe inside a yellow diamond. That picture is the clue that makes the flag yours.' },
+      { kind: 'picture', text: 'Three famous flags, three different special things.', visual: cmp(['CAN', 'JPN', 'BRA'], ['a maple leaf', 'a red sun', 'a starry globe']) },
+      { kind: 'say', text: 'Say the clues out loud as you look: “colours… pattern… special thing!” Point at each part of the flag as you say it.' },
+    ],
+    method: FLAG_METHOD,
+    mistakes: [{ wrong: 'Guessing from one colour: lots of flags are red and white', fix: 'Check the pattern and the special thing too: Canada has a maple leaf, Japan has a red sun.' },
+      { wrong: 'Mixing up Ireland and Italy', fix: esc(diff('IRL')) }],
+  });
+
+  add('fl-europe', {
+    big: 'Many of Europe’s flags are made from simple stripes and crosses. Check whether the stripes lie flat or stand up, and look for a Nordic cross pushed towards the flagpole.',
+    why: 'Europe is our nearest continent: you will meet its flags on holidays and in football tournaments such as the Euros.',
+    ex: [
+      { q: 'Which country does this flag belong to?', visual: flag('SWE'), cids: ['SWE', 'DEU', 'ITA', 'POL'], ans: 'SWE',
+        walk: [W('Look at the colours', 'Blue and yellow.', 'Only two colours.', sw(['blue', 'yellow'])),
+          W('Look at the pattern', 'A cross that is pushed towards the flagpole: a Nordic cross.', 'Nordic crosses are found on the flags of northern Europe, such as Denmark, Norway and Iceland.', pat('nordic-cross')),
+          W('Think where it is', 'It is a flag from Northern Europe.', 'Countries close together often have flags that look a little alike.', map('SWE')),
+          W('Answer', `A yellow Nordic cross on blue: ${b('Sweden')}.`, esc(mean('SWE')), fn('SWE'))],
+        why: hook('SWE'), check: { k: 'flag', id: 'SWE' } },
+      { q: 'Which country does this flag belong to?', visual: flag('DEU'), cids: ['DEU', 'BEL', 'ESP', 'SWE'], ans: 'DEU',
+        walk: [W('Look at the colours', 'Black, red and gold.', 'Gold is a deep yellow.', sw(['black', 'red', 'gold'])),
+          W('Look at the pattern', 'Three stripes lying flat, with black on top.', 'Lying flat or standing up? That one question tells this flag apart from Belgium’s.', pat('horizontal-stripes')),
+          W('Think where it is', 'It is a flag from Western Europe.', 'Cross out the flags from other parts of Europe.', map('DEU')),
+          W('Answer', `Black, red and gold lying flat: ${b('Germany')}.`, esc(mean('DEU')), fn('DEU'))],
+        why: hook('DEU'), check: { k: 'flag', id: 'DEU' } },
+    ],
+    tries: [
+      { q: 'Which country does this flag belong to?', visual: flag('POL'), cids: ['POL', 'ESP', 'SWE', 'ITA'], ans: 'POL', type: 'text', match: 'country', matchIds: ['POL'], why: hook('POL'), check: { k: 'flag', id: 'POL' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('ITA', { zoom: true }), cids: ['ITA', 'FRA', 'DEU', 'SWE'], ans: 'ITA', kind: 'flag', why: `It is Italy: ${hook('ITA')}`, check: { k: 'flag', id: 'ITA' } },
+    ],
+    explain: [
+      { kind: 'hook', text: `Turn each flag into a picture. Germany: ${esc(hook('DEU'))} Sweden: ${esc(hook('SWE'))} Italy: ${esc(hook('ITA'))}` },
+      { kind: 'picture', text: 'The same three colours can make two different flags: it depends which way the stripes go.', visual: cmp(['FRA', 'NLD'], ['stripes stand up', 'stripes lie flat']) },
+      { kind: 'do', text: 'Hold your arm out flat for stripes lying down, then point it straight up for stripes standing up. Do it for each flag before you choose.' },
+    ],
+    method: ['Name the colours', 'Stripes: lying flat or standing up? Which colour is at the top, or by the pole?', 'A cross: in the middle, or pushed towards the pole (a Nordic cross)?', 'Look for a symbol, then think where in Europe it is'],
+    mistakes: [{ wrong: 'Mixing up France and the Netherlands', fix: esc(diff('FRA')) }, { wrong: 'Mixing up Poland and Monaco', fix: esc(diff('POL')) }],
+  });
+
+  add('fl-asia', {
+    big: 'Asia’s flags are full of symbols: suns, moons, stars and wheels. Find the symbol first, then check the colours around it.',
+    why: 'Asia is the biggest continent, and more people live there than anywhere else, so you will see its flags everywhere.',
+    ex: [
+      { q: 'Which country does this flag belong to?', visual: flag('IND'), cids: ['IND', 'PAK', 'CHN', 'JPN'], ans: 'IND',
+        walk: [W('Look at the colours', 'Orange (called saffron), white and green, with a little blue.', 'Name every colour, even the small ones.', sw(['orange', 'white', 'green', 'blue'])),
+          W('Look at the pattern', 'Three stripes lying flat.', 'Stripes are the background; now find the symbol.', pat('horizontal-stripes')),
+          W('Find the symbol', 'A blue wheel with 24 spokes in the white stripe.', esc(mean('IND'))),
+          W('Answer', `Saffron, white and green with a blue wheel: ${b('India')}.`, `Memory hook: ${esc(hook('IND'))}`, fn('IND'))],
+        why: hook('IND'), check: { k: 'flag', id: 'IND' } },
+      { q: 'Which country does this flag belong to?', visual: flag('TUR'), cids: ['TUR', 'PAK', 'CHN', 'JPN'], ans: 'TUR',
+        walk: [W('Find the symbol', 'A white crescent moon and a star.', 'A crescent and a star are on several flags, so the symbol alone is not enough.'),
+          W('Check the colours around it', 'The background is bright red, with no stripes.', 'Pakistan’s crescent and star are on dark green, with a white stripe.', cmp(['PAK'], ['green, with a white stripe'])),
+          W('Think where it is', 'It is a flag from where Europe meets Asia.', 'Use the part of the world to make sure.', map('TUR')),
+          W('Answer', `A white crescent and star on red: ${b('Türkiye')}.`, esc(mean('TUR')), fn('TUR'))],
+        why: hook('TUR'), check: { k: 'flag', id: 'TUR' } },
+    ],
+    tries: [
+      { q: 'Which country does this flag belong to?', visual: flag('CHN'), cids: ['CHN', 'VNM', 'JPN', 'IND'], ans: 'CHN', type: 'text', match: 'country', matchIds: ['CHN'], why: hook('CHN'), check: { k: 'flag', id: 'CHN' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('KOR', { zoom: true }), cids: ['KOR', 'JPN', 'CHN', 'IND'], ans: 'KOR', kind: 'flag', why: `It is South Korea: ${hook('KOR')}`, check: { k: 'flag', id: 'KOR' } },
+    ],
+    explain: [
+      { kind: 'hook', text: `Give each flag its symbol as a nickname. China: ${esc(hook('CHN'))} South Korea: ${esc(hook('KOR'))} India: ${esc(hook('IND'))}` },
+      { kind: 'picture', text: 'Same red sun, different background: that is why you check the colours around the symbol.', visual: cmp(['JPN', 'BGD'], ['red sun on white', 'red sun on green']) },
+      { kind: 'say', text: 'Point to the symbol and say its name out loud: “sun”, “moon”, “star” or “wheel”. Then say the background: “on red”, “on white”, “on green”.' },
+    ],
+    method: ['Find the symbol: a sun, a moon, a star or a wheel?', 'Look at the colours around it', 'Check the corners as well as the middle', 'Think where in Asia it is'],
+    mistakes: [{ wrong: 'Mixing up China and Vietnam', fix: esc(diff('CHN')) }, { wrong: 'Mixing up Japan and Bangladesh', fix: esc(diff('JPN')) }],
+  });
+
+  add('fl-africa', {
+    big: 'Many African flags use green, yellow and red, and many use black, so the colours alone are rarely enough. The order of the stripes and the symbol tell them apart.',
+    why: 'Africa has 54 countries, more than any other continent, so knowing what makes each flag different really matters.',
+    ex: [
+      { q: 'Which country does this flag belong to?', visual: flag('KEN'), cids: ['KEN', 'SSD', 'NGA', 'ZAF'], ans: 'KEN',
+        walk: [W('Look at the colours', 'Black, red, green and white.', 'Four colours: do not miss the thin white lines.', sw(cols('KEN'))),
+          W('Look at the pattern', 'Black, red and green stripes lying flat, with thin white lines between them.', 'Lines that separate colours are called fimbriation.'),
+          W('Find the symbol', 'A red-and-white shield with two spears in the middle.', esc(mean('KEN'))),
+          W('Answer', `A shield and two spears: ${b('Kenya')}.`, esc(diff('KEN')), fn('KEN'))],
+        why: hook('KEN'), check: { k: 'flag', id: 'KEN' } },
+      { q: 'Which country does this flag belong to?', visual: flag('ZAF'), cids: ['ZAF', 'KEN', 'NGA', 'GHA'], ans: 'ZAF',
+        walk: [W('Look at the colours', `Six colours: ${esc(list(cols('ZAF')))}.`, 'Very few flags have six colours: that is already a strong clue.', sw(cols('ZAF'))),
+          W('Look at the pattern', 'A green band shaped like a Y lying on its side.', 'Hardly any flags have a Y shape.'),
+          W('Think about the meaning', 'The Y is often said to show different paths coming together as one.', esc(mean('ZAF'))),
+          W('Answer', `A green Y lying on its side: ${b('South Africa')}.`, `Memory hook: ${esc(hook('ZAF'))}`, fn('ZAF'))],
+        why: hook('ZAF'), check: { k: 'flag', id: 'ZAF' } },
+    ],
+    tries: [
+      { q: 'Which country does this flag belong to?', visual: flag('NGA'), cids: ['NGA', 'KEN', 'EGY', 'GHA'], ans: 'NGA', type: 'text', match: 'country', matchIds: ['NGA'], why: hook('NGA'), check: { k: 'flag', id: 'NGA' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('EGY', { zoom: true }), cids: ['EGY', 'KEN', 'NGA', 'ZAF'], ans: 'EGY', kind: 'flag', why: `It is Egypt: ${hook('EGY')}`, check: { k: 'flag', id: 'EGY' } },
+    ],
+    explain: [
+      { kind: 'hook', text: `Give each flag one picture and the shared colours stop being confusing. Ghana: ${esc(hook('GHA'))} Kenya: ${esc(hook('KEN'))} Egypt: ${esc(hook('EGY'))}` },
+      { kind: 'picture', text: 'Same three colours, three different flags: read the order from the pole, and look for a star.', visual: cmp(['MLI', 'GIN', 'SEN'], ['green by the pole', 'red by the pole', 'a green star']) },
+      { kind: 'say', text: 'Read the stripes out loud from the flagpole outwards: “green, yellow, red” is Mali; “red, yellow, green” is Guinea. Saying the order helps you remember it.' },
+    ],
+    method: ['Name the colours, but do not stop there', 'Read the stripes in order, from the pole or from the top', 'Look for a symbol: a star, a shield, an eagle', 'Think which part of Africa it is from'],
+    mistakes: [{ wrong: 'Mixing up Mali and Guinea', fix: esc(diff('MLI')) }, { wrong: 'Mixing up Chad and Romania', fix: esc(diff('TCD')) }],
+  });
+
+  add('fl-americas', {
+    big: 'Many flags in the Americas have stars, suns or a badge in the middle, and several share colours with their neighbours. Count the stars and look closely at the middle.',
+    why: 'The Americas reach from the icy Arctic almost to Antarctica: learning their flags is a tour of two whole continents.',
+    ex: [
+      { q: 'Which country does this flag belong to?', visual: flag('USA'), cids: ['USA', 'CAN', 'BRA', 'MEX'], ans: 'USA',
+        walk: [W('Look at the colours', 'Red, white and blue.', 'Many flags use these three colours, so keep looking.', sw(['red', 'white', 'blue'])),
+          W('Look at the pattern', 'Red and white stripes, with a blue box in the top corner by the pole (a canton).', 'A box in the top corner is a strong clue.', pat('canton')),
+          W('Count the stars', 'Fifty small white stars in the blue box.', esc(mean('USA'))),
+          W('Answer', `Stars and stripes: ${b('the United States')}.`, `Memory hook: ${esc(hook('USA'))}`, fn('USA'))],
+        why: hook('USA'), check: { k: 'flag', id: 'USA' } },
+      { q: 'Which country does this flag belong to?', visual: flag('BRA'), cids: ['BRA', 'ARG', 'MEX', 'USA'], ans: 'BRA',
+        walk: [W('Look at the colours', 'Green, yellow, blue and white.', 'Name all four.', sw(cols('BRA'))),
+          W('Look at the pattern', 'A big yellow diamond on a green background.', 'A diamond shape is very unusual on a flag.'),
+          W('Look at the middle', 'A blue globe full of white stars, with a white band of words across it.', esc(mean('BRA'))),
+          W('Answer', `A starry globe in a yellow diamond: ${b('Brazil')}.`, `Memory hook: ${esc(hook('BRA'))}`, fn('BRA'))],
+        why: hook('BRA'), check: { k: 'flag', id: 'BRA' } },
+    ],
+    tries: [
+      { q: 'Which country does this flag belong to?', visual: flag('MEX'), cids: ['MEX', 'ITA', 'BRA', 'ARG'], ans: 'MEX', type: 'text', match: 'country', matchIds: ['MEX'], why: hook('MEX'), check: { k: 'flag', id: 'MEX' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('ARG', { zoom: true }), cids: ['ARG', 'BRA', 'MEX', 'USA'], ans: 'ARG', kind: 'flag', why: `It is Argentina: ${hook('ARG')}`, check: { k: 'flag', id: 'ARG' } },
+    ],
+    explain: [
+      { kind: 'hook', text: `Picture the middle of each flag. Mexico: ${esc(hook('MEX'))} Argentina: ${esc(hook('ARG'))} Canada: ${esc(hook('CAN'))}` },
+      { kind: 'picture', text: 'Three neighbours with the same colours: the middle of the flag is the clue.', visual: cmp(['COL', 'ECU', 'VEN'], ['plain, wide yellow', 'a condor badge', 'an arch of stars']) },
+      { kind: 'say', text: 'Point to the middle of the flag and say what you see: “an eagle”, “a sun”, “a globe”, “stars” or “nothing”. In the Americas, the middle is often the clue.' },
+    ],
+    method: ['Name the colours', 'Look in the middle: a badge, a sun, a globe, or nothing?', 'Look in the top corner: stars in a box?', 'Think where in the Americas it is'],
+    mistakes: [{ wrong: 'Mixing up Colombia, Ecuador and Venezuela', fix: esc(diff('COL')) }, { wrong: 'Mixing up Canada and Peru', fix: esc(diff('CAN')) }],
+  });
+
+  add('fl-oceania', {
+    big: 'Oceania’s flags are full of the sea and the southern sky. The stars of the Southern Cross shine on many of them, and some keep the Union Flag in the corner.',
+    why: 'Oceania is a part of the world made of Australia, New Zealand and many Pacific islands, and their flags tell the story of the ocean and the night sky.',
+    ex: [
+      { q: 'Which country does this flag belong to?', visual: flag('AUS'), cids: ['AUS', 'NZL', 'PNG', 'FJI'], ans: 'AUS',
+        walk: [W('Look at the colours', 'Dark blue, red and white.', 'Dark blue is like the night sky.', sw(cols('AUS'))),
+          W('Look in the corner', 'The Union Flag is in the top corner by the pole.', 'The Union Flag shows historic links with Britain.'),
+          W('Count the stars', 'Six white stars: a big seven-pointed star under the Union Flag, and five stars of the Southern Cross.', esc(mean('AUS'))),
+          W('Answer', `Six white stars on dark blue: ${b('Australia')}.`, esc(diff('AUS')), fn('AUS'))],
+        why: hook('AUS'), check: { k: 'flag', id: 'AUS' } },
+      { q: 'Which country does this flag belong to?', visual: flag('PNG'), cids: ['PNG', 'AUS', 'FJI', 'SLB'], ans: 'PNG',
+        walk: [W('Look at the colours', 'Red, black, yellow and white.', 'No blue at all, unlike many flags of the Pacific.', sw(cols('PNG'))),
+          W('Look at the pattern', 'Split from corner to corner (diagonally) into red and black.', 'A diagonal split is a strong clue.', pat('diagonal')),
+          W('Find the symbols', 'A golden bird of paradise on the red, and five white stars on the black.', esc(mean('PNG'))),
+          W('Answer', `A bird of paradise and the Southern Cross: ${b('Papua New Guinea')}.`, `Memory hook: ${esc(hook('PNG'))}`, fn('PNG'))],
+        why: hook('PNG'), check: { k: 'flag', id: 'PNG' } },
+    ],
+    tries: [
+      { q: 'Which country does this flag belong to?', visual: flag('FJI'), cids: ['FJI', 'TUV', 'AUS', 'PNG'], ans: 'FJI', type: 'text', match: 'country', matchIds: ['FJI'], why: hook('FJI'), check: { k: 'flag', id: 'FJI' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('NZL', { zoom: true }), cids: ['NZL', 'AUS', 'PNG', 'FJI'], ans: 'NZL', kind: 'flag', why: `It is New Zealand: ${hook('NZL')}`, check: { k: 'flag', id: 'NZL' } },
+    ],
+    explain: [
+      { kind: 'story', text: 'Sailors in the southern half of the world have steered by the stars of the Southern Cross for hundreds of years. That is why those stars shine on the flags of Australia, New Zealand, Papua New Guinea and Samoa.' },
+      { kind: 'picture', text: 'Count the stars and notice their colour.', visual: cmp(['AUS', 'NZL', 'TUV'], ['six white stars', 'four red stars', 'nine yellow stars']) },
+      { kind: 'say', text: 'Count the stars out loud and say their colour: “six white” is Australia; “four red” is New Zealand; “nine yellow on light blue” is Tuvalu.' },
+    ],
+    method: ['Look for the Union Flag in the corner', 'Count the stars and notice their colour', 'Check the background: dark blue, light blue or something else?', 'Look for a special symbol: a bird, a shield, a map of islands'],
+    mistakes: [{ wrong: 'Mixing up Australia and New Zealand', fix: esc(diff('NZL')) },
+      { wrong: 'Thinking every flag with the Union Flag in the corner belongs to the UK', fix: 'Australia, New Zealand, Fiji and Tuvalu are independent countries. The Union Flag in the corner shows historic links with Britain.' }],
+  });
+
+  add('fl-world', {
+    big: 'With 195 flags, you need a system: colours, then pattern, then the special thing, then the part of the world. A few flags break the rules completely, and those are the easiest to remember.',
+    why: 'Knowing every flag means you can read the world: at the Olympics, at the United Nations and on the news.',
+    ex: [
+      { q: 'Which country does this flag belong to?', visual: flag('NPL'), cids: ['NPL', 'BTN', 'IND', 'CHN'], ans: 'NPL',
+        walk: [W('Look at the shape', 'It is not a rectangle at all: two triangles stacked on top of each other.', 'It is the only national flag in the world that is not a rectangle.'),
+          W('Look at the colours', 'Red, with a blue border.', 'The border runs all the way round the two triangles.', sw(cols('NPL'))),
+          W('Find the symbols', 'A white moon in the top triangle and a white sun in the bottom one.', esc(mean('NPL'))),
+          W('Answer', `Two triangles with a moon and a sun: ${b('Nepal')}.`, 'It is a flag from South Asia, home of the Himalaya mountains.', fn('NPL'))],
+        why: hook('NPL'), check: { k: 'flag', id: 'NPL' } },
+      { q: 'Which country does this flag belong to?', visual: flag('CYP'), cids: ['CYP', 'GRC', 'MLT', 'TUR'], ans: 'CYP',
+        walk: [W('Look at the colours', 'Mostly white, with a copper-orange shape and green branches.', 'A white background makes the symbol stand out.', sw(cols('CYP'))),
+          W('Find the symbol', 'The shape is a map of an island, with two olive branches under it.', esc(mean('CYP'))),
+          W('Think where it is', 'Find the island on the map: it is in the eastern Mediterranean Sea.', 'A map on a flag shows the country itself.', map('CYP', { zoom: true })),
+          W('Answer', `A map of the island on white: ${b('Cyprus')}.`, `Memory hook: ${esc(hook('CYP'))}`, fn('CYP'))],
+        why: hook('CYP'), check: { k: 'flag', id: 'CYP' } },
+    ],
+    tries: [
+      { q: 'Which country does this flag belong to?', visual: flag('KOR'), cids: ['KOR', 'JPN', 'CHN', 'VNM'], ans: 'KOR', type: 'text', match: 'country', matchIds: ['KOR'], why: hook('KOR'), check: { k: 'flag', id: 'KOR' } },
+      { q: `Which flag is this? “${hook('JAM')}”`, transfer: true, visual: emo('🔎', 'Picture the flag'), cids: ['JAM', 'BRA', 'ZAF', 'GHA'], ans: 'JAM', kind: 'flag', why: `That is the flag of Jamaica. ${mean('JAM')}`, check: { k: 'flag', id: 'JAM' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Collect the rule-breakers first: Nepal is two triangles, Cyprus has a map of itself, and Brazil has words across a starry globe. The odd flags are the easiest to remember.' },
+      { kind: 'picture', text: 'Three flags that break the usual rules.', visual: cmp(['NPL', 'CYP', 'BRA'], ['two triangles', 'a map of the island', 'words on a globe']) },
+      { kind: 'say', text: 'Before you answer, say the four clues out loud: “colours, pattern, special thing, part of the world.” If you get stuck on one, move to the next.' },
+    ],
+    method: FLAG_METHOD,
+    mistakes: [{ wrong: 'Guessing the continent from the colours alone', fix: 'Colours travel: Lithuania (in Europe) and Bolivia (in South America) both use yellow, green and red. Check the pattern and where it is.' },
+      { wrong: 'Thinking every flag is the same rectangle shape', fix: 'Nepal’s flag is two triangles, and Switzerland’s is square.' }],
+  });
+
+  add('fl-colours', {
+    big: 'Look at a flag slowly and name every colour, one at a time. Do not forget the small symbols: their colours count too.',
+    why: 'Naming the colours carefully is the first step to knowing any flag.',
+    ex: [
+      { q: 'Look at the flag of France. Which colour is NOT on it?', visual: flag('FRA'), options: ['green', 'blue', 'white', 'red'], answer: 'green', kind: 'colour',
+        walk: [W('Point at each part', 'Point at each stripe, one at a time.', 'Going slowly means you will not miss a colour.'),
+          W('Say each colour', 'Blue… white… red.', 'The flag of France has three colours.', fn('FRA')),
+          W('Check the choices', 'Blue: yes. White: yes. Red: yes. Green: no!', 'Tick off each colour you found.'),
+          W('Answer', `There is no ${b('green')} on the flag of France.`, 'France’s flag is blue, white and red.', sw(cols('FRA')))],
+        why: 'France’s flag is blue, white and red.', check: { k: 'colnot', id: 'FRA', col: 'green' } },
+      { q: 'Look at the flag of Brazil. Which colour IS on it?', visual: flag('BRA'), options: ['yellow', 'red', 'black', 'orange'], answer: 'yellow', kind: 'colour',
+        walk: [W('Point at each part', 'The background, the big diamond, the circle and the band across it.', 'This flag has more parts than most, so go slowly.'),
+          W('Say each colour', 'Name the colour of each part you pointed at.', 'Brazil’s flag has four colours.'),
+          W('Check the choices', 'Is there any red? Any black? Any orange? Look at the big diamond again…', 'Cross out each colour that is not there.'),
+          W('Answer', `${b('yellow')}: the big diamond is yellow.`, `The flag of Brazil is ${esc(list(cols('BRA')))}.`, sw(cols('BRA')))],
+        why: `The flag of Brazil is ${list(cols('BRA'))}.`, check: { k: 'colis', id: 'BRA', col: 'yellow' } },
+    ],
+    tries: [
+      { q: 'Which colour is NOT on this flag?', visual: flag('ITA'), options: ['blue', 'green', 'white', 'red'], answer: 'blue', kind: 'colour', type: 'text', match: 'text', accept: ['blue'], why: 'Italy’s flag is green, white and red: no blue.', check: { k: 'colnot', id: 'ITA', col: 'blue' } },
+      { q: 'Which flag uses exactly these colours: green and white?', transfer: true, visual: sw(['green', 'white']), cids: ['NGA', 'CAN', 'SWE', 'JPN'], ans: 'NGA', kind: 'flag', why: `Nigeria’s flag is green and white. ${hook('NGA')}`, check: { k: 'colset', id: 'NGA' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Be a colour detective. A detective never stops at the first clue: they look in every corner, even at the tiny star or the thin line.' },
+      { kind: 'picture', text: 'Kenya’s flag has thin white lines between its stripes: easy to miss if you rush!', visual: fn('KEN') },
+      { kind: 'do', text: 'Touch each colour on the flag with your finger and count on your other hand: one colour, two colours, three… Then check the choices against your fingers.' },
+    ],
+    method: ['Point at each part of the flag and say its colour', 'Do not forget the small symbols', 'Count how many colours there are', 'Then check each choice against your list'],
+    mistakes: [{ wrong: 'Missing a colour that is only in a small symbol', fix: 'Look at the stars, circles and emblems too: their colours count.' },
+      { wrong: 'Calling every yellow-ish colour “yellow” without looking', fix: 'Some flags use gold, orange or light blue. Look carefully at the shade before you choose.' }],
+  });
+
+  add('fl-patterns', {
+    big: 'Most flags are built from a few simple shapes: stripes lying flat or standing up, crosses, triangles, diagonal bands and boxes in the corner.',
+    why: 'When you can name a flag’s pattern, you can describe it, remember it and even draw it.',
+    ex: [
+      { q: 'What pattern does the flag of Sweden have?', visual: flag('SWE'), options: [FS.PAT_NAME['nordic-cross'], FS.PAT_NAME['horizontal-stripes'], FS.PAT_NAME['vertical-stripes'], FS.PAT_NAME.triangle], answer: FS.PAT_NAME['nordic-cross'],
+        walk: [W('Ignore the colours', 'Look only at the shapes, not the colours.', 'Patterns are about shapes.'),
+          W('Find the lines', 'Two bands cross each other: one goes up and down, one goes across.', 'Two bands crossing make a cross.', pat('cross')),
+          W('Where do they cross?', 'Not in the middle: the cross is pushed towards the flagpole.', 'A cross pushed towards the pole is a Nordic cross, from northern Europe.', pat('nordic-cross')),
+          W('Answer', `Sweden’s pattern is ${b('a Nordic cross')}.`, esc(mean('SWE')), fn('SWE'))],
+        why: 'Sweden has a Nordic cross.', check: { k: 'pattern', id: 'SWE' } },
+      { q: 'What pattern does the flag of Czechia have?', visual: flag('CZE'), options: [FS.PAT_NAME.triangle, FS.PAT_NAME['nordic-cross'], FS.PAT_NAME.saltire, FS.PAT_NAME['vertical-stripes']], answer: FS.PAT_NAME.triangle,
+        walk: [W('Ignore the colours', 'Look only at the shapes, not the colours.', 'Patterns are about shapes.'),
+          W('Look at the pole side', 'A shape points in from the flagpole, like an arrow.', 'Shapes by the pole are often the main pattern.'),
+          W('Look at the rest', 'Two stripes lying flat fill the rest of the flag.', 'A flag can have stripes and another shape together: name the shape that stands out.'),
+          W('Answer', `Czechia’s pattern is ${b('a triangle')}.`, `Memory hook: ${esc(hook('CZE'))}`, fn('CZE'))],
+        why: 'Czechia has a blue triangle by the pole.', check: { k: 'pattern', id: 'CZE' } },
+    ],
+    tries: [
+      { q: 'What pattern does this flag have?', visual: flag('JAM'), options: [FS.PAT_NAME.saltire, FS.PAT_NAME['vertical-stripes'], FS.PAT_NAME['horizontal-stripes'], FS.PAT_NAME['nordic-cross']], answer: FS.PAT_NAME.saltire, type: 'text', match: 'text', accept: ['saltire', 'a saltire', 'an X-shaped cross', 'X-shaped cross'], why: hook('JAM'), check: { k: 'pattern', id: 'JAM' } },
+      { q: 'Which flag has this pattern: a cross in the middle?', transfer: true, visual: pat('cross'), cids: ['CHE', 'FRA', 'CZE', 'PNG'], ans: 'CHE', kind: 'flag', why: hook('CHE'), check: { k: 'patfind', id: 'CHE', pattern: 'cross' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Think of flags as building blocks: a few shapes, put together in different ways, make almost every flag in the world.' },
+      { kind: 'picture', text: 'Four flags, four patterns.', visual: cmp(['FRA', 'DEU', 'SWE', 'JAM'], ['standing up', 'lying flat', 'Nordic cross', 'saltire (X)']) },
+      { kind: 'do', text: 'Draw the pattern in the air with your finger: up-and-down lines for stripes standing up, side-to-side lines for stripes lying flat, a plus for a cross, an X for a saltire.' },
+    ],
+    method: ['Ignore the colours and look only at the shapes', 'Stripes: do they lie flat or stand up?', 'A cross in the middle, or pushed towards the pole (a Nordic cross)? An X (a saltire)?', 'A triangle at the pole? A box in the top corner (a canton)?'],
+    mistakes: [{ wrong: 'Calling a Nordic cross an ordinary cross', fix: 'A Nordic cross is pushed towards the flagpole, like on the flags of Sweden, Norway and Denmark.' },
+      { wrong: 'Mixing up stripes lying flat and stripes standing up', fix: esc(diff('FRA')) }],
+  });
+
+  const PART = (id) => FS.PARTS.find((p) => p.id === id);
+  add('fl-parts', {
+    big: 'Flags have their own words. The hoist is the edge by the flagpole and the fly is the far edge. The field is the background, the canton is the top corner by the pole, and a charge is a symbol.',
+    why: 'Flag experts (called vexillologists) use these words to describe any flag exactly, without needing a picture.',
+    ex: [
+      { q: 'What is the canton of a flag?', visual: part(null), options: ['canton', 'field', 'fly', 'charge'].map((x) => PART(x).is), answer: PART('canton').is,
+        walk: [W('Picture the flag', 'A flag on a pole, with the pole on the left.', 'Flag words describe where things are, starting from the pole.', part(null)),
+          W('Find the top corner', 'Look at the top corner next to the pole.', 'Many flags put something special there.', part('canton')),
+          W('Answer', `The canton is ${b(PART('canton').is)}.`, 'The USA has its stars in the canton, and Australia has the Union Flag there.', fn('USA'))],
+        why: `The canton is ${PART('canton').is}.`, check: { k: 'part', part: 'canton', field: 'is' } },
+      { q: 'What is the name for the edge of the flag next to the flagpole?', visual: part('hoist'), options: ['hoist', 'fly', 'field', 'canton'].map((x) => PART(x).name), answer: PART('hoist').name,
+        walk: [W('Find the edge', 'It is the edge right next to the pole.', 'This is where the rope is.', part('hoist')),
+          W('Think about the rope', 'The rope next to this edge is used to pull the flag up the pole.', 'Which flag word means “pull up”?'),
+          W('Answer', `It is called ${b('The hoist')}: you hoist (pull up) a flag by this edge.`, 'The fly is the opposite edge, which flaps in the wind.', part('hoist'))],
+        why: `The hoist is ${PART('hoist').is}.`, check: { k: 'part', part: 'hoist', field: 'name' } },
+    ],
+    tries: [
+      { q: 'What is the name for the edge of the flag furthest from the flagpole?', visual: part('fly'), options: ['fly', 'hoist', 'canton', 'charge'].map((x) => PART(x).name), answer: PART('fly').name, type: 'text', match: 'text', accept: ['fly', 'the fly'], why: `The fly is ${PART('fly').is}.`, check: { k: 'part', part: 'fly', field: 'name' } },
+      { q: 'Which of these flags has a canton?', transfer: true, visual: pat('canton'), cids: ['USA', 'SWE', 'JAM', 'CZE'], ans: 'USA', kind: 'flag', why: 'The USA’s flag has a blue canton full of stars.', check: { k: 'patfind', id: 'USA', pattern: 'canton' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'The hoist is where you hoist (pull up) the flag. The fly is the part that flies in the wind. The canton is like a little room in the top corner, next to the pole.' },
+      { kind: 'picture', text: 'A charge is any symbol on a flag: here it is a star. On Canada’s flag, the charge is the maple leaf.', visual: part('charge') },
+      { kind: 'do', text: 'Be a flagpole! Stand up straight: your body is the pole and your arm, held out sideways, is the flag. Touch your shoulder: that is the hoist. Wiggle your fingers: that is the fly. Touch the top of your arm near your shoulder: that is the canton.' },
+    ],
+    method: ['Picture the flag with the pole on the left', 'Hoist: the edge by the pole. Fly: the far edge', 'Field: the background. Canton: the top corner by the pole', 'Charge: a symbol on the flag'],
+    mistakes: [{ wrong: 'Mixing up the hoist and the fly', fix: 'The hoist is where you hoist (pull up) the flag: next to the pole. The fly flies free at the far end.' },
+      { wrong: 'Thinking the canton can be in any corner', fix: 'The canton is always the top corner next to the flagpole.' }],
+  });
+
+  add('fl-symbols', {
+    big: 'Many flags carry a symbol (a charge): a star, a sun, a crescent moon, a leaf, an animal or a cross. The symbol is often the quickest way to know the flag.',
+    why: 'A symbol usually tells a story about the country, and it gives you a memory hook for the whole flag.',
+    ex: [
+      { q: 'What symbol can you see on this flag?', visual: flag('CAN'), options: ['A leaf', 'A sun', 'A crescent moon', 'Stars or a star'], answer: 'A leaf',
+        walk: [W('Look in the middle', 'Start right in the middle of the flag.', 'Symbols are often in the middle.'),
+          W('Say what it is', 'A red leaf with pointed edges: a maple leaf.', esc(mean('CAN'))),
+          W('Answer', `The symbol is ${b('a leaf')}: the maple leaf of Canada.`, 'Check the corners too, but this flag has only one symbol.', fn('CAN'))],
+        why: mean('CAN'), check: { k: 'sym', id: 'CAN', sym: 'leaf' } },
+      { q: 'Which flag has a crescent moon on it?', visual: emo('🌙', 'A crescent moon'), cids: ['TUR', 'FRA', 'JPN', 'DEU'], ans: 'TUR', kind: 'flag',
+        walk: [W('Know what to look for', 'A crescent moon is a thin, curved moon, like the edge of a fingernail.', 'Picture it before you look at the flags.'),
+          W('Check each flag', 'Look at the middle and the corners of every flag.', 'A sun is a full circle; a crescent is a curve. Do not mix them up.'),
+          W('Answer', `The crescent moon is on the flag of ${b('Türkiye')}, with a star beside it.`, esc(mean('TUR')), fn('TUR'))],
+        why: mean('TUR'), check: { k: 'symfind', id: 'TUR', sym: 'moon' } },
+    ],
+    tries: [
+      { q: 'Which flag has a bird or an eagle on it?', visual: emo('🦅', 'A bird or an eagle'), cids: ['MEX', 'ITA', 'CAN', 'JPN'], ans: 'MEX', kind: 'flag', why: mean('MEX'), check: { k: 'symfind', id: 'MEX', sym: 'bird' } },
+      { q: 'What is in the middle of the flag of Kenya?', transfer: true, visual: flag('KEN'), options: ['A shield', 'A sun', 'A crescent moon', 'A leaf'], answer: 'A shield', why: mean('KEN'), check: { k: 'sym', id: 'KEN', sym: 'shield' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'A symbol is a flag’s name badge. Remember the badge and you remember the flag: a leaf for Canada, a sun for Japan, an eagle for Mexico.' },
+      { kind: 'picture', text: 'Three flags, three symbols.', visual: cmp(['CAN', 'JPN', 'MEX'], ['a leaf', 'a sun', 'an eagle']) },
+      { kind: 'say', text: 'Play “I spy” with a flag: “I spy with my little eye a symbol in the middle… a star!” Then check the corners for more.' },
+    ],
+    method: ['Look in the middle of the flag first', 'Then look in the corners, especially the top corner by the pole', 'Say what the symbol is: a star, a sun, a bird…', 'Use it as the flag’s memory hook'],
+    mistakes: [{ wrong: 'Missing a small symbol in the corner', fix: 'Always check the top corner by the flagpole (the canton): many flags keep their stars there.' },
+      { wrong: 'Mixing up a sun and a crescent moon', fix: 'A sun is a full circle, like on the flags of Japan and Bangladesh. A crescent moon is a thin curve, like on the flags of Türkiye and Pakistan.' }],
+  });
+
+  add('fl-meanings', {
+    big: 'Every colour and symbol on a flag was chosen for a reason: the land, the sky, the sea, a hero, a faith or an idea such as peace. Some meanings are official; others are traditional, so we say a colour “is often said to stand for” something.',
+    why: 'A flag’s meaning tells you what a country is proud of, and gives you a story that makes the flag easy to remember.',
+    ex: [
+      { q: 'What does the flag of India show or stand for?', visual: flag('IND'), options: [FS.meanOf(C('IND')), FS.meanOf(C('JPN')), FS.meanOf(C('CAN')), FS.meanOf(C('KEN'))], answer: FS.meanOf(C('IND')), ids: ['IND', 'JPN', 'CAN', 'KEN'],
+        walk: [W('Look at the flag', 'Saffron, white and green stripes, with a blue wheel.', 'A flag’s meaning is always about the colours and symbols you can see.', flag('IND')),
+          W('Cross out the misfits', 'A red disc? There is no red disc. A maple leaf? No leaf. Black? There is no black on this flag.', 'Cross out any meaning about colours or symbols that are not there.'),
+          W('Match what is left', 'Saffron, white, green and a wheel: the meaning must talk about those.', 'The right meaning fits every part of the flag.'),
+          W('Answer', `The answer is ${b(FS.meanOf(C('IND')))}`, 'That is the meaning of India’s flag.', fn('IND'))],
+        why: mean('IND'), check: { k: 'mean', id: 'IND' } },
+      { q: 'Which country’s flag shows an eagle on a cactus eating a snake, from an Aztec legend?', visual: emo('📜', 'What the flag means'), cids: ['MEX', 'EGY', 'PER', 'ITA'], ans: 'MEX',
+        walk: [W('Picture the flag', 'An eagle, a cactus and a snake: picture them together.', 'Turn the words into a picture in your head.'),
+          W('Use the clue', 'The Aztecs built their great city in North America, long ago.', 'The legend tells you which part of the world to look in.'),
+          W('Check the choices', 'Egypt has an eagle too, but no cactus or snake. Peru and Italy have plain flags.', 'Cross out the flags that do not fit every part of the meaning.'),
+          W('Answer', `${b('Mexico')}: ${esc(mean('MEX'))}`, `Memory hook: ${esc(hook('MEX'))}`, fn('MEX'))],
+        why: mean('MEX'), check: { k: 'mean', id: 'MEX' } },
+    ],
+    tries: [
+      { q: `Which country’s flag is this about? “${first(mean('JPN'))}”`, visual: emo('📜', 'What the flag means'), cids: ['JPN', 'CAN', 'KEN', 'ITA'], ans: 'JPN', type: 'text', match: 'country', matchIds: ['JPN'], why: mean('JPN'), check: { k: 'mean', id: 'JPN' } },
+      { q: `Which flag is this about? “${FS.meanOf(C('CAN'))}”`, transfer: true, visual: emo('📜', 'What the flag means'), cids: ['CAN', 'PER', 'JPN', 'KEN'], ans: 'CAN', kind: 'flag', why: mean('CAN'), check: { k: 'mean', id: 'CAN' } },
+    ],
+    explain: [
+      { kind: 'story', text: `When a country designs its flag, people think hard about every colour, because each one stands for something they care about. Iceland’s flag tells its own story: ${esc(mean('ISL'))}` },
+      { kind: 'picture', text: 'Iceland’s flag: the sea and sky (blue), the ice and snow (white), and the fire of the volcanoes (red).', visual: fn('ISL') },
+      { kind: 'say', text: 'For each colour, say “This colour stands for…” and finish the sentence. Then ask: is that meaning official, or is it only “often said”?' },
+    ],
+    method: ['Look at the colours and symbols', 'Cross out meanings about colours or symbols that are not there', 'Match the meaning to every part of the flag', 'Remember one meaning per flag as its story'],
+    mistakes: [{ wrong: 'Thinking a colour always means the same thing', fix: 'Red stands for courage on Indonesia’s flag, but for progress and unity on Chad’s: each country chose its own meanings.' },
+      { wrong: 'Saying every meaning is official', fix: 'Some meanings are only traditional. South Africa’s flag has no official meaning, though its Y shape is often said to show paths coming together.' }],
+  });
+
+  /* ---------- look-alikes: the differences are quoted from the data (flag.diff) ---------- */
+  add('lk-europe', {
+    big: 'Look-alike flags always have one difference: the order or direction of the stripes, a shade of a colour, a symbol, or the shape. Find what is the same, ignore it, and hunt for the one clue.',
+    why: 'Even adults mix these flags up. Knowing the one clue makes you a real flag detective.',
+    ex: [
+      { q: 'These flags look alike. Which country has this flag?', visual: flag('BEL'), cids: ['BEL', 'DEU', 'ROU', 'FRA'], ans: 'BEL',
+        walk: [W('Find what is the same', 'Black, yellow and red. Germany uses almost the same colours.', 'Same colours means you must look for another clue.', cmp(['BEL', 'DEU'])),
+          W('Hunt for the difference', esc(diff('BEL')), 'Look-alikes have one clue that tells them apart.'),
+          W('Check the flag', 'These stripes stand up and down, with black by the pole.', 'Standing up, not lying flat.'),
+          W('Answer', `Stripes standing up: ${b('Belgium')}.`, `Memory hook: ${esc(hook('BEL'))}`, fn('BEL'))],
+        why: diff('BEL'), check: { k: 'flag', id: 'BEL' } },
+      { q: 'These flags look alike. Which country has this flag?', visual: flag('IRL'), cids: ['IRL', 'ITA', 'CIV', 'HUN'], ans: 'IRL',
+        walk: [W('Find what is the same', 'Three stripes standing up, with green and white. Several flags look like this.', 'Same pattern means you must look for another clue.'),
+          W('Hunt for the difference', 'Check two things: is the third colour orange or red? And which colour is next to the flagpole?', 'For this family, the colour by the pole is the clue.'),
+          W('Check the flag', 'Green is next to the pole, and the far stripe is orange.', 'Orange, not red. Green by the pole, not orange.'),
+          W('Answer', `Green by the pole and orange at the fly: ${b('Ireland')}.`, esc(diff('IRL')), fn('IRL'))],
+        why: diff('IRL'), check: { k: 'flag', id: 'IRL' } },
+    ],
+    tries: [
+      { q: 'These flags look alike. Which one is Switzerland?', visual: name('CHE'), cids: ['CHE', 'DNK', 'GEO', 'ENG'], ans: 'CHE', kind: 'flag', why: diff('CHE'), check: { k: 'flag', id: 'CHE' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('NOR', { zoom: true }), cids: ['NOR', 'ISL', 'DNK', 'SWE'], ans: 'NOR', kind: 'flag', why: `It is Norway. ${diff('NOR')}`, check: { k: 'flag', id: 'NOR' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Make a rhyme for each clue. “Flat like a cake: Germany. Standing up tall: Belgium.” “Green by the pole: Ireland. Orange by the pole: Ivory Coast.”' },
+      { kind: 'picture', text: `Norway and Iceland are opposites: swap the background and the cross. ${esc(diff('ISL'))}`, visual: cmp(['NOR', 'ISL'], ['red flag, blue cross', 'blue flag, red cross']) },
+      { kind: 'say', text: 'Say the clue out loud before you answer, like a detective: “Stripes standing up… so it is Belgium, not Germany.” Saying it stops you rushing.' },
+    ],
+    method: LOOK_METHOD,
+    mistakes: [{ wrong: 'Mixing up Romania and Chad', fix: esc(diff('ROU')) }, { wrong: 'Mixing up the Netherlands and Luxembourg', fix: esc(diff('LUX')) },
+      { wrong: 'Answering as soon as the colours match', fix: 'Look-alikes share their colours. Always check the one difference before you choose.' }],
+  });
+
+  add('lk-asia', {
+    big: 'Look-alikes in Asia, the Middle East and Oceania are often split by one small thing: which colour is on top, how many stars there are, or the colour of the background. Find the one clue for each flag.',
+    why: 'These flags belong to some of the biggest countries in the world, such as Indonesia and China, so they are worth getting right.',
+    ex: [
+      { q: 'These flags look alike. Which country has this flag?', visual: flag('IDN'), cids: ['IDN', 'POL', 'SGP', 'JPN'], ans: 'IDN',
+        walk: [W('Find what is the same', 'Two stripes lying flat, red and white.', 'Several flags are just red and white stripes.', cmp(['IDN', 'POL', 'SGP'])),
+          W('Hunt for the difference', esc(diff('IDN')), 'Look-alikes have one clue that tells them apart.'),
+          W('Check the flag', 'Red on top, white below, and nothing else on it.', 'Red on top: not Poland. No moon or stars: not Singapore.'),
+          W('Answer', `Red over white: ${b('Indonesia')}.`, 'Monaco’s flag is also red over white, just a little squarer, so in a picture the two look almost the same.', fn('IDN'))],
+        why: diff('IDN'), check: { k: 'flag', id: 'IDN' } },
+      { q: 'These flags look alike. Which country has this flag?', visual: flag('VNM'), cids: ['VNM', 'CHN', 'TUR', 'SGP'], ans: 'VNM',
+        walk: [W('Find what is the same', 'A red flag with a yellow star. China’s flag is red with yellow stars too.', 'Same colours means you must look for another clue.'),
+          W('Hunt for the difference', 'Count the stars and see where they are: one big star in the middle, or five stars in the corner?', 'Counting is a great clue for star flags.'),
+          W('Check the flag', 'One big star, right in the middle.', 'Not five stars in the corner.'),
+          W('Answer', `One big yellow star on red: ${b('Vietnam')}.`, esc(diff('VNM')), fn('VNM'))],
+        why: diff('VNM'), check: { k: 'flag', id: 'VNM' } },
+    ],
+    tries: [
+      { q: 'These flags look alike. Which one is New Zealand?', visual: name('NZL'), cids: ['NZL', 'AUS', 'TUV', 'FJI'], ans: 'NZL', kind: 'flag', why: diff('NZL'), check: { k: 'flag', id: 'NZL' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('BGD', { zoom: true }), cids: ['BGD', 'JPN', 'PLW', 'PAK'], ans: 'BGD', kind: 'flag', why: `It is Bangladesh. ${diff('BGD')}`, check: { k: 'flag', id: 'BGD' } },
+    ],
+    explain: [
+      { kind: 'hook', text: `Indonesia: ${esc(hook('IDN'))} Poland: ${esc(hook('POL'))} Vietnam: one big star. China: one big star with four little friends in the corner.` },
+      { kind: 'picture', text: esc(diff('QAT')), visual: cmp(['QAT', 'BHR'], ['maroon, 9 points', 'red, 5 points']) },
+      { kind: 'do', text: 'Hold your hands flat, one above the other. Top hand red, bottom hand white: Indonesia. Swap them over: Poland. Doing the swap with your hands helps the order stick.' },
+    ],
+    method: LOOK_METHOD,
+    mistakes: [{ wrong: 'Mixing up Qatar and Bahrain', fix: esc(diff('QAT')) }, { wrong: 'Mixing up Japan, Bangladesh and Palau', fix: esc(diff('PLW')) }, { wrong: 'Mixing up Australia and New Zealand', fix: esc(diff('AUS')) }],
+  });
+
+  add('lk-africa', {
+    big: 'Many African look-alikes share green, yellow and red. The clue is usually the order of the stripes, a star and its colour, or the colour of the background.',
+    why: 'Each country chose its own flag with care, so knowing exactly which is which shows real respect.',
+    ex: [
+      { q: 'These flags look alike. Which country has this flag?', visual: flag('GIN'), cids: ['GIN', 'MLI', 'SEN', 'CMR'], ans: 'GIN',
+        walk: [W('Find what is the same', 'Three stripes standing up, in red, yellow and green.', 'Four flags in this family share these colours.', cmp(['GIN', 'MLI', 'SEN', 'CMR'])),
+          W('Hunt for the difference', esc(diff('GIN')), 'Look-alikes have one clue that tells them apart.'),
+          W('Check the flag', 'No star, and red is next to the pole.', 'No star: not Senegal or Cameroon. Red first: not Mali.'),
+          W('Answer', `Red by the pole and no star: ${b('Guinea')}.`, `Memory hook: ${esc(hook('GIN'))}`, fn('GIN'))],
+        why: diff('GIN'), check: { k: 'flag', id: 'GIN' } },
+      { q: 'These flags look alike. Which one is Cameroon?', visual: name('CMR'), cids: ['CMR', 'SEN', 'MLI', 'GIN'], ans: 'CMR', kind: 'flag',
+        walk: [W('Find what is the same', 'All four have green, yellow and red stripes standing up.', 'The colours will not help you here.'),
+          W('Hunt for the difference', 'Two have a star and two do not. Of the two with a star, look at the colour of the star and which stripe it sits on.', 'Stars are the clue in this family.'),
+          W('Remember the clue', 'Cameroon’s clue is a yellow star on the red middle stripe.', 'Senegal’s star is green, on the yellow stripe.'),
+          W('Answer', `The flag with a yellow star on red: ${b('Cameroon')}.`, esc(diff('CMR')), fn('CMR'))],
+        why: diff('CMR'), check: { k: 'flag', id: 'CMR' } },
+    ],
+    tries: [
+      { q: 'These flags look alike. Which country has this flag?', visual: flag('LBR'), cids: ['LBR', 'USA', 'MYS', 'TGO'], ans: 'LBR', type: 'text', match: 'country', matchIds: ['LBR'], why: diff('LBR'), check: { k: 'flag', id: 'LBR' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('GHA', { zoom: true }), cids: ['GHA', 'ETH', 'BOL', 'LTU'], ans: 'GHA', kind: 'flag', why: `It is Ghana. ${diff('GHA')}`, check: { k: 'flag', id: 'GHA' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Traffic lights! Guinea is red, yellow, green from the pole, like a traffic light lying down. Mali is the same backwards, with green first. Add a star: a green star means Senegal, a yellow star means Cameroon.' },
+      { kind: 'picture', text: esc(diff('COD')), visual: cmp(['COD', 'COG'], ['sky blue, with a star', 'green, yellow, red, no star']) },
+      { kind: 'say', text: 'Read each flag aloud from the pole: “Green, yellow, red: Mali.” “Red, yellow, green: Guinea.” Your ears will catch the difference.' },
+    ],
+    method: LOOK_METHOD,
+    mistakes: [{ wrong: 'Mixing up Ghana, Bolivia and Ethiopia', fix: esc(diff('GHA')) }, { wrong: 'Mixing up Liberia and the USA', fix: esc(diff('LBR')) }, { wrong: 'Mixing up Kenya and South Sudan', fix: esc(diff('KEN')) }],
+  });
+
+  add('lk-americas', {
+    big: 'Several neighbours in the Americas share colours because their histories are linked: Colombia, Ecuador and Venezuela were once one country. Look for the badge, the stars, or the size and number of the stripes.',
+    why: 'These flags tell a shared story, so learning their differences also teaches some history.',
+    ex: [
+      { q: 'These flags look alike. Which country has this flag?', visual: flag('COL'), cids: ['COL', 'ECU', 'VEN', 'BOL'], ans: 'COL',
+        walk: [W('Find what is the same', 'Yellow, blue and red stripes lying flat.', 'Three neighbours share these colours.', cmp(['COL', 'ECU', 'VEN'])),
+          W('Hunt for the difference', esc(diff('COL')), 'Look-alikes have one clue that tells them apart.'),
+          W('Check the flag', 'Plain, with no badge and no stars, and the yellow stripe fills the whole top half.', 'No badge: not Ecuador. No stars: not Venezuela.'),
+          W('Answer', `Plain, with a big yellow half: ${b('Colombia')}.`, esc(mean('COL')), fn('COL'))],
+        why: diff('COL'), check: { k: 'flag', id: 'COL' } },
+      { q: 'These flags look alike. Which country has this flag?', visual: flag('URY'), cids: ['URY', 'ARG', 'GRC', 'HND'], ans: 'URY',
+        walk: [W('Find what is the same', 'Blue and white stripes. Argentina, Greece and Honduras have blue and white too.', 'Same colours means you must look for another clue.'),
+          W('Hunt for the difference', 'Count the stripes and find the symbol: three wide stripes with a sun in the middle, or nine thin stripes with something in the corner?', 'Counting stripes is a strong clue.'),
+          W('Check the flag', 'Nine thin stripes, and a smiling sun in the top corner.', 'A sun in the corner, not a cross (Greece has a cross).'),
+          W('Answer', `Nine stripes and a sun in the corner: ${b('Uruguay')}.`, esc(diff('URY')), fn('URY'))],
+        why: diff('URY'), check: { k: 'flag', id: 'URY' } },
+    ],
+    tries: [
+      { q: 'These flags look alike. Which one is Honduras?', visual: name('HND'), cids: ['HND', 'NIC', 'SLV', 'ARG'], ans: 'HND', kind: 'flag', why: diff('HND'), check: { k: 'flag', id: 'HND' } },
+      { q: 'One country is coloured in on the map. Which is its flag?', transfer: true, visual: map('ECU', { zoom: true }), cids: ['ECU', 'COL', 'VEN', 'PER'], ans: 'ECU', kind: 'flag', why: `It is Ecuador. ${diff('ECU')}`, check: { k: 'flag', id: 'ECU' } },
+    ],
+    explain: [
+      { kind: 'story', text: 'Colombia, Ecuador and Venezuela were once one country, so they kept the same yellow, blue and red. Each one has its own clue today: Ecuador has a badge with a condor, Venezuela has an arch of stars, and Colombia is plain.' },
+      { kind: 'picture', text: `Look-alikes can surprise a whole country. ${esc(mean('LIE'))}`, visual: cmp(['HTI', 'LIE'], ['a palm tree badge', 'a gold crown']) },
+      { kind: 'say', text: 'Count out loud: “one, two, three” wide stripes for Argentina; “one, two… nine” thin stripes for Uruguay.' },
+    ],
+    method: LOOK_METHOD,
+    mistakes: [{ wrong: 'Mixing up Canada and Peru', fix: esc(diff('PER')) }, { wrong: 'Mixing up Nicaragua and El Salvador', fix: esc(diff('NIC')) }],
+  });
+
+  /* ================================================================================================
+     B. COUNTRIES AND CAPITALS
+     ================================================================================================ */
+  const CONTS = FS.CONTINENTS;
+  add('co-continents', {
+    big: 'There are seven continents: Africa, Antarctica, Asia, Europe, North America, Oceania and South America. Every country is on one of them, except Antarctica, which has no countries.',
+    why: 'Knowing the continent is the first big step to finding any country on the map.',
+    ex: [
+      { q: 'Which continent is Kenya in?', visual: fn('KEN'), options: ['Africa', 'Asia', 'South America', 'Europe'], answer: 'Africa',
+        walk: [W('Find it on the map', 'Here is Kenya on the world map.', 'The continents are the seven big pieces of land.', map('KEN')),
+          W('Find the equator', 'The equator, an imaginary line round the middle of the Earth, runs right through Kenya.', 'Kenya sits on the equator, on the east side of a big piece of land.', map('KEN', { equator: true })),
+          W('Name the land', 'This big piece of land, south of Europe, is Africa.', 'Africa has more countries than any other continent.'),
+          W('Answer', `Kenya is in ${b('Africa')}.`, 'Its neighbours, such as Tanzania and Ethiopia, are in Africa too.', fn('KEN'))],
+        why: 'Kenya is in Africa.', check: { k: 'cont', id: 'KEN' } },
+      { q: 'Which continent is Mexico in?', visual: fn('MEX'), options: ['North America', 'South America', 'Europe', 'Africa'], answer: 'North America',
+        walk: [W('Find it on the map', 'Find Mexico on the world map.', 'Look at the big piece of land it is on.', map('MEX')),
+          W('Use a neighbour', 'Mexico shares a border with the United States.', 'Neighbours are on the same continent, almost always.'),
+          W('Watch out', 'South America starts further south, at Colombia.', 'Central America and the Caribbean are on the same continent as the United States.'),
+          W('Answer', `Mexico is in ${b('North America')}.`, 'It is on the same continent as the United States and Canada.', fn('MEX'))],
+        why: 'Mexico is in North America.', check: { k: 'cont', id: 'MEX' } },
+    ],
+    tries: [
+      { q: 'Which continent is Japan in?', visual: fn('JPN'), options: ['Asia', 'Europe', 'Oceania', 'Africa'], answer: 'Asia', type: 'text', match: 'text', accept: ['Asia'], why: 'Japan is in Asia.', check: { k: 'cont', id: 'JPN' } },
+      { q: 'One country is coloured in on the map. Which continent is it in?', transfer: true, visual: map('ARG'), options: ['South America', 'North America', 'Africa', 'Oceania'], answer: 'South America', why: 'It is Argentina, in South America.', check: { k: 'cont', id: 'ARG' } },
+    ],
+    explain: [
+      { kind: 'story', text: 'Think of the world as a family of seven big pieces of land. Some hold hands: Europe and Asia are joined, and so are North and South America. Antarctica sits alone at the bottom of the world, covered in ice.' },
+      { kind: 'picture', text: 'Australia is so big that it is most of the land in Oceania. Oceania is Australia, New Zealand and lots of Pacific islands.', visual: map('AUS') },
+      { kind: 'say', text: 'Chant the seven continents, touching a finger for each one: Africa, Antarctica, Asia, Europe, North America, Oceania, South America. Seven fingers, seven continents!' },
+    ],
+    method: ['Picture the world map', 'Find the country, or a country next to it', 'Name the big piece of land it is on', 'Central America and the Caribbean are part of North America'],
+    mistakes: [{ wrong: 'Thinking Mexico or Jamaica are in South America', fix: 'Central America and the Caribbean are part of North America. South America starts at Colombia.' },
+      { wrong: 'Thinking Australia is not part of any continent', fix: 'Australia is in Oceania, with New Zealand and the Pacific islands.' }],
+  });
+
+  add('co-regions', {
+    big: 'Each continent splits into regions. Africa has North, West, East, Central and Southern Africa; Asia has East, South-east, South and Central Asia and the Middle East.',
+    why: 'Regions help geographers compare places: West Africa and East Africa have different languages, climates and histories.',
+    ex: [
+      { q: 'Which part of the world is Nigeria in?', visual: fn('NGA'), options: ['West Africa', 'East Africa', 'Southern Africa', 'North Africa'], answer: 'West Africa',
+        walk: [W('Name the continent', 'Nigeria is in Africa.', 'Start big, then zoom in.', map('NGA')),
+          W('Zoom in', 'It is on the west side of Africa, on the Gulf of Guinea.', 'Its neighbours Benin and Niger are in West Africa too.', map('NGA', { zoom: true })),
+          W('Answer', `Nigeria is in ${b('West Africa')}.`, 'Nigeria has more people than any other country in Africa.', fn('NGA'))],
+        why: 'Nigeria is in West Africa.', check: { k: 'region', id: 'NGA' } },
+      { q: 'Which part of the world is Vietnam in?', visual: fn('VNM'), options: ['South-east Asia', 'East Asia', 'South Asia', 'Central Asia'], answer: 'South-east Asia',
+        walk: [W('Name the continent', 'Vietnam is in Asia.', 'Start big, then zoom in.', map('VNM')),
+          W('Zoom in', 'It is in the south-east corner of Asia, on the South China Sea, next to Laos and Cambodia.', 'Thailand, Indonesia and the Philippines are in the same region.', map('VNM', { zoom: true })),
+          W('Answer', `Vietnam is in ${b('South-east Asia')}.`, 'China, to its north, is in East Asia.', fn('VNM'))],
+        why: 'Vietnam is in South-east Asia.', check: { k: 'region', id: 'VNM' } },
+    ],
+    tries: [
+      { q: 'Which part of the world is Jamaica in?', visual: fn('JAM'), options: ['Caribbean', 'Central America', 'South America', 'West Africa'], answer: 'Caribbean', type: 'text', match: 'text', accept: ['Caribbean', 'the Caribbean'], why: 'Jamaica is an island in the Caribbean Sea.', check: { k: 'region', id: 'JAM' } },
+      { q: 'Which of these countries is in Central America?', transfer: true, visual: txt('Central America'), cids: ['HND', 'CUB', 'COL', 'ESP'], ans: 'HND', why: 'Honduras is in Central America. Cuba is in the Caribbean and Colombia in South America.', check: { k: 'inregion', id: 'HND' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Zoom like a camera: world → continent → region → country. Nigeria: the world, Africa, West Africa, Nigeria.' },
+      { kind: 'picture', text: 'Zoom in on the south-east corner of Asia: Vietnam, Laos, Cambodia and Thailand sit close together.', visual: map('VNM', { zoom: true }) },
+      { kind: 'say', text: 'Say the direction word first, then the continent: “West… Africa!” “South-east… Asia!” The direction tells you which part of the continent.' },
+    ],
+    method: ['First name the continent', 'Then think: north, south, east, west or the middle of it?', 'Islands in the Caribbean Sea are the Caribbean', 'Use a neighbour you know'],
+    mistakes: [{ wrong: 'Putting Egypt in the Middle East region', fix: 'Egypt is in North Africa, even though it is close to the Middle East.' },
+      { wrong: 'Mixing up the Caribbean and Central America', fix: 'The Caribbean is the islands in the Caribbean Sea, such as Jamaica and Cuba. Central America is the strip of land between Mexico and Colombia, with countries such as Honduras.' }],
+  });
+
+  /* Capitals: one lesson per continent */
+  const capEx = (id, opts, walk) => ({ q: `What is the capital city of ${nm(id)}?`, visual: fn(id), options: opts, answer: cap(id), walk, why: `${cap(id)} is the capital of ${nm(id)}.`, check: { k: 'cap', id } });
+  add('ca-europe', {
+    big: 'A capital city is where a country’s government meets. It is often the biggest city, like Paris or London, but not always: Switzerland’s capital is Bern, not Zurich.',
+    why: 'Capitals are in the news every day: “talks in Berlin”, “a meeting in Paris”. Knowing them helps you follow what is happening in the world.',
+    ex: [
+      capEx('FRA', ['Paris', 'Madrid', 'Rome', 'Berlin'], [W('Picture the country', 'France is in Western Europe.', 'The capital is the city where the government meets.', map('FRA')),
+        W('Say the pair', 'France… Paris. Say them together, like a pair of shoes.', 'Pairs are easier to remember than single words.'),
+        W('Use a landmark', 'Paris is home to the Eiffel Tower.', esc(lm('FRA').about), emo(lm('FRA').emoji, lm('FRA').name)),
+        W('Answer', `The capital of France is ${b('Paris')}.`, 'Paris is also France’s biggest city.', fn('FRA'))]),
+      capEx('CHE', ['Bern', 'Zurich', 'Vienna', 'Geneva'], [W('Picture the country', 'Switzerland is in the middle of Western Europe, in the Alps mountains.', 'The capital is the city where the government meets.', map('CHE', { zoom: true })),
+        W('Watch out', 'Zurich is Switzerland’s biggest city, but it is not the capital.', 'The biggest city is not always the capital.'),
+        W('Use a clue', 'The capital begins with “B”.', 'A first letter can be enough to remember it.'),
+        W('Answer', `The capital of Switzerland is ${b('Bern')}.`, 'Bern is where Switzerland’s government meets.', fn('CHE'))]),
+    ],
+    tries: [
+      { q: 'What is the capital city of Spain?', visual: fn('ESP'), options: ['Madrid', 'Lisbon', 'Barcelona', 'Rome'], answer: 'Madrid', type: 'text', match: 'text', accept: ['Madrid'], why: 'Madrid is the capital of Spain.', check: { k: 'cap', id: 'ESP' } },
+      { q: 'One country is coloured in on the map. What is its capital city?', transfer: true, visual: map('DEU', { zoom: true }), options: ['Berlin', 'Paris', 'Warsaw', 'Vienna'], answer: 'Berlin', type: 'text', match: 'text', accept: ['Berlin'], why: 'It is Germany; its capital is Berlin.', check: { k: 'cap', id: 'DEU' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Make a silly sentence linking each pair: “In Bern, the Swiss never burn their toast!” “In Madrid, the Spanish made it!” Funny sentences stick in your memory.' },
+      { kind: 'picture', text: 'Line the pairs up, country then capital, and read them like a list.', visual: emo('🏛️', 'France → Paris · Spain → Madrid · Italy → Rome · Germany → Berlin') },
+      { kind: 'say', text: 'Say each pair three times, then turn it round: “France, Paris. Paris, France.” Learning it both ways round means you can answer either question.' },
+    ],
+    method: CAP_METHOD,
+    mistakes: [{ wrong: 'Choosing the biggest or most famous city', fix: 'Zurich is Switzerland’s biggest city, but Bern is the capital.' },
+      { wrong: 'Being surprised when a capital has the same name as its country', fix: 'Luxembourg’s capital is Luxembourg, and Monaco’s is Monaco: the city and the country share a name.' }],
+  });
+
+  add('ca-asia', {
+    big: 'A capital city is where a country’s government meets. In Asia, some very famous cities are not capitals: Türkiye’s capital is Ankara, not Istanbul.',
+    why: 'Asia has nearly 50 countries, and their capitals are some of the biggest and busiest cities in the world.',
+    ex: [
+      capEx('JPN', ['Tokyo', 'Beijing', 'Seoul', 'Bangkok'], [W('Picture the country', 'Japan is a country of islands in East Asia.', 'The capital is the city where the government meets.', map('JPN', { zoom: true })),
+        W('Say the pair', 'Japan… Tokyo. Say them together.', 'Pairs are easier to remember than single words.'),
+        W('Use a clue', 'The capital begins with “T”.', 'Beijing is China’s capital and Seoul is South Korea’s, so cross them out.'),
+        W('Answer', `The capital of Japan is ${b('Tokyo')}.`, 'Tokyo is also Japan’s biggest city.', fn('JPN'))]),
+      capEx('TUR', ['Ankara', 'Istanbul', 'Tehran', 'Baghdad'], [W('Picture the country', 'Türkiye is where Europe meets Asia.', 'The capital is the city where the government meets.', map('TUR', { zoom: true })),
+        W('Watch out', 'Istanbul is Türkiye’s biggest and most famous city, but it is not the capital.', 'The biggest city is not always the capital.'),
+        W('Use a clue', 'The capital is near the middle of the country, and begins with “A”.', 'Tehran is Iran’s capital and Baghdad is Iraq’s.'),
+        W('Answer', `The capital of Türkiye is ${b('Ankara')}.`, 'Ankara is where Türkiye’s government meets.', fn('TUR'))]),
+    ],
+    tries: [
+      { q: 'What is the capital city of China?', visual: fn('CHN'), options: ['Beijing', 'Tokyo', 'Seoul', 'Hanoi'], answer: 'Beijing', type: 'text', match: 'text', accept: ['Beijing'], why: 'Beijing is the capital of China.', check: { k: 'cap', id: 'CHN' } },
+      { q: 'New Delhi is the capital city of which country?', transfer: true, visual: emo('🏛️', 'New Delhi'), cids: ['IND', 'PAK', 'BGD', 'NPL'], ans: 'IND', type: 'text', match: 'country', matchIds: ['IND'], why: 'New Delhi is the capital of India.', check: { k: 'capof', id: 'IND' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Link each capital to something famous in its country: Tokyo with Mount Fuji’s Japan, Beijing with the Great Wall’s China, New Delhi with the Taj Mahal’s India.' },
+      { kind: 'picture', text: 'Ankara is near the middle of Türkiye; Istanbul is on the coast in the north-west, where Europe meets Asia.', visual: map('TUR', { zoom: true }) },
+      { kind: 'say', text: 'Chant the pairs: “Japan, Tokyo! China, Beijing! India, New Delhi!” Then swap them round: “Tokyo, Japan!”' },
+    ],
+    method: CAP_METHOD,
+    mistakes: [{ wrong: 'Choosing the biggest or most famous city', fix: 'Istanbul is Türkiye’s biggest city, but Ankara is the capital.' },
+      { wrong: 'Writing Delhi for India’s capital', fix: 'The capital is New Delhi, which is part of the big city of Delhi.' }],
+  });
+
+  add('ca-africa', {
+    big: 'A capital city is where a country’s government meets. Some African countries built brand-new capitals: Nigeria’s capital is Abuja, not its biggest city, Lagos.',
+    why: 'Africa has more countries than any other continent, so its capitals are a big part of knowing the world.',
+    ex: [
+      capEx('KEN', ['Nairobi', 'Kampala', 'Addis Ababa', 'Dodoma'], [W('Picture the country', 'Kenya is in East Africa, on the equator.', 'The capital is the city where the government meets.', map('KEN', { zoom: true, equator: true })),
+        W('Say the pair', 'Kenya… Nairobi. Say them together.', 'Pairs are easier to remember than single words.'),
+        W('Use a clue', 'The capital begins with “N”.', 'Kampala, Addis Ababa and Dodoma are the capitals of Kenya’s neighbours.'),
+        W('Answer', `The capital of Kenya is ${b('Nairobi')}.`, 'Nairobi is also Kenya’s biggest city.', fn('KEN'))]),
+      capEx('NGA', ['Abuja', 'Lagos', 'Accra', 'Dakar'], [W('Picture the country', 'Nigeria is in West Africa.', 'The capital is the city where the government meets.', map('NGA', { zoom: true })),
+        W('Watch out', 'Lagos is Nigeria’s biggest city, but it is not the capital.', 'The biggest city is not always the capital.'),
+        W('Use a clue', 'The capital was built near the middle of the country, and begins with “A”.', 'Accra is Ghana’s capital and Dakar is Senegal’s.'),
+        W('Answer', `The capital of Nigeria is ${b('Abuja')}.`, 'Abuja is where Nigeria’s government meets.', fn('NGA'))]),
+    ],
+    tries: [
+      { q: 'What is the capital city of Egypt?', visual: fn('EGY'), options: ['Cairo', 'Tripoli', 'Khartoum', 'Rabat'], answer: 'Cairo', type: 'text', match: 'text', accept: ['Cairo'], why: 'Cairo is the capital of Egypt.', check: { k: 'cap', id: 'EGY' } },
+      { q: 'One country is coloured in on the map. What is its capital city?', transfer: true, visual: map('MAR', { zoom: true }), options: ['Rabat', 'Algiers', 'Tunis', 'Cairo'], answer: 'Rabat', type: 'text', match: 'text', accept: ['Rabat'], why: 'It is Morocco; its capital is Rabat.', check: { k: 'cap', id: 'MAR' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Picture each capital with something famous: Cairo on the River Nile, near the Pyramids of Giza; Nairobi near the savanna; Abuja as a brand-new city built in the middle of Nigeria.' },
+      { kind: 'picture', text: 'Abuja was built near the middle of Nigeria; Lagos is on the coast.', visual: map('NGA', { zoom: true }) },
+      { kind: 'say', text: 'Chant the pairs: “Kenya, Nairobi! Nigeria, Abuja! Egypt, Cairo!” Then swap them round: “Cairo, Egypt!”' },
+    ],
+    method: CAP_METHOD,
+    mistakes: [{ wrong: 'Choosing the biggest city', fix: 'Lagos is Nigeria’s biggest city, but Abuja is the capital.' },
+      { wrong: 'Choosing Casablanca for Morocco', fix: 'Casablanca is Morocco’s biggest city, but the capital is Rabat.' }],
+  });
+
+  add('ca-americas', {
+    big: 'A capital city is where a country’s government meets. In the Americas, the capital is often not the most famous city: Canada’s capital is Ottawa, not Toronto, and Brazil’s is Brasília, not Rio de Janeiro.',
+    why: 'The Americas have many famous cities, so knowing which ones are capitals stops you being tricked.',
+    ex: [
+      capEx('CAN', ['Ottawa', 'Toronto', 'Washington D.C.', 'Mexico City'], [W('Picture the country', 'Canada is in North America, north of the United States.', 'The capital is the city where the government meets.', map('CAN')),
+        W('Watch out', 'Toronto is Canada’s biggest city, but it is not the capital.', 'The biggest city is not always the capital.'),
+        W('Use a clue', 'The capital sits close to where the English-speaking and French-speaking parts of Canada meet.', 'Canada has two official languages, English and French.'),
+        W('Answer', `The capital of Canada is ${b('Ottawa')}.`, 'Ottawa is where Canada’s government meets.', fn('CAN'))]),
+      capEx('BRA', ['Brasília', 'Rio de Janeiro', 'Buenos Aires', 'Lima'], [W('Picture the country', 'Brazil is the biggest country in South America.', 'The capital is the city where the government meets.', map('BRA')),
+        W('Watch out', 'Rio de Janeiro is famous for its beaches and its Carnival, but it is not the capital.', 'The most famous city is not always the capital.'),
+        W('Use a clue', 'Brazil built a brand-new capital in the middle of the country, and named it after the country.', 'Buenos Aires is Argentina’s capital and Lima is Peru’s.'),
+        W('Answer', `The capital of Brazil is ${b('Brasília')}.`, 'Brasília is where Brazil’s government meets.', fn('BRA'))]),
+    ],
+    tries: [
+      { q: 'What is the capital city of Argentina?', visual: fn('ARG'), options: ['Buenos Aires', 'Santiago', 'Lima', 'Bogotá'], answer: 'Buenos Aires', type: 'text', match: 'text', accept: ['Buenos Aires'], why: 'Buenos Aires is the capital of Argentina.', check: { k: 'cap', id: 'ARG' } },
+      { q: 'One country is coloured in on the map. What is its capital city?', transfer: true, visual: map('PER', { zoom: true }), options: ['Lima', 'Quito', 'Santiago', 'Bogotá'], answer: 'Lima', type: 'text', match: 'text', accept: ['Lima'], why: 'It is Peru; its capital is Lima.', check: { k: 'cap', id: 'PER' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Some capitals hide their country in their name: Brasília is named after Brazil, and Mexico City after Mexico. Spot the hidden country and the capital is easy.' },
+      { kind: 'picture', text: 'Ottawa is in the south-east of Canada, not far from the border with the United States.', visual: map('CAN') },
+      { kind: 'say', text: 'Chant the pairs: “Canada, Ottawa! Brazil, Brasília! Argentina, Buenos Aires!” Then swap them round.' },
+    ],
+    method: CAP_METHOD,
+    mistakes: [{ wrong: 'Choosing Toronto or Rio de Janeiro', fix: 'They are big, famous cities, but the capitals are Ottawa and Brasília.' },
+      { wrong: 'Thinking New York is the capital of the United States', fix: 'The capital of the United States is Washington D.C.' }],
+  });
+
+  add('ca-oceania', {
+    big: 'A capital city is where a country’s government meets. In Oceania, the capitals are often not the biggest cities: Australia’s capital is Canberra, not Sydney, and New Zealand’s is Wellington, not Auckland.',
+    why: 'These capitals trick lots of people, so getting them right makes you a real expert.',
+    ex: [
+      capEx('AUS', ['Canberra', 'Sydney', 'Wellington', 'Suva'], [W('Picture the country', 'Australia is a huge country in Oceania.', 'The capital is the city where the government meets.', map('AUS')),
+        W('Watch out', 'Sydney, with its famous Opera House, is the biggest city, but it is not the capital.', 'The most famous city is not always the capital.'),
+        W('Use a clue', 'Canberra was built to be the capital, between Sydney and Melbourne.', 'Wellington is New Zealand’s capital and Suva is Fiji’s.'),
+        W('Answer', `The capital of Australia is ${b('Canberra')}.`, 'Canberra is where Australia’s government meets.', fn('AUS'))]),
+      capEx('NZL', ['Wellington', 'Auckland', 'Canberra', 'Suva'], [W('Picture the country', 'New Zealand is two main islands, south-east of Australia.', 'The capital is the city where the government meets.', map('NZL', { zoom: true })),
+        W('Watch out', 'Auckland is the biggest city, but it is not the capital.', 'The biggest city is not always the capital.'),
+        W('Use a clue', 'The capital is at the southern tip of the North Island, and begins with “W”.', 'It sits in the middle of the country, between the two main islands.'),
+        W('Answer', `The capital of New Zealand is ${b('Wellington')}.`, 'Wellington is where New Zealand’s government meets.', fn('NZL'))]),
+    ],
+    tries: [
+      { q: 'What is the capital city of Fiji?', visual: fn('FJI'), options: ['Suva', 'Apia', 'Honiara', 'Port Moresby'], answer: 'Suva', type: 'text', match: 'text', accept: ['Suva'], why: 'Suva is the capital of Fiji.', check: { k: 'cap', id: 'FJI' } },
+      { q: 'Port Moresby is the capital city of which country?', transfer: true, visual: emo('🏛️', 'Port Moresby'), cids: ['PNG', 'FJI', 'SLB', 'VUT'], ans: 'PNG', type: 'text', match: 'country', matchIds: ['PNG'], why: 'Port Moresby is the capital of Papua New Guinea.', check: { k: 'capof', id: 'PNG' } },
+    ],
+    explain: [
+      { kind: 'story', text: 'Canberra was built between Sydney and Melbourne, a bit like a referee standing between two rivals. Wellington was chosen because it is in the middle of New Zealand, between the two main islands.' },
+      { kind: 'picture', text: 'Wellington is at the bottom of the North Island, right in the middle of New Zealand.', visual: map('NZL', { zoom: true }) },
+      { kind: 'say', text: 'Say each pair together until it sounds right: “Australia, Canberra. New Zealand, Wellington. Fiji, Suva.” Then swap them round.' },
+    ],
+    method: CAP_METHOD,
+    mistakes: [{ wrong: 'Choosing Sydney or Auckland', fix: 'They are the biggest cities, but the capitals are Canberra and Wellington.' },
+      { wrong: 'Mixing up Canberra and Wellington', fix: 'Canberra is in Australia; Wellington is in New Zealand. Say the pairs together until they stick.' }],
+  });
+
+  add('uk-nations', {
+    big: 'The United Kingdom is four nations: England (capital London), Scotland (Edinburgh), Wales (Cardiff) and Northern Ireland (Belfast). London is also the capital of the whole UK.',
+    why: 'This is our own country: knowing its nations, capitals and seas helps you understand the news, the weather map and where people live.',
+    ex: [
+      { q: 'What is the capital city of Scotland?', visual: fn('SCT'), options: ['Edinburgh', 'London', 'Cardiff', 'Belfast'], answer: 'Edinburgh',
+        walk: [W('Picture the UK', 'Four nations: England, Scotland, Wales and Northern Ireland.', 'Each nation has its own capital city.', map('GBR', { zoom: true })),
+          W('Find Scotland', 'Scotland is the northern part of the island of Great Britain.', 'The ring on the map shows where Scotland is.', map('SCT', { zoom: true })),
+          W('Use a landmark', 'Edinburgh Castle stands on top of an old volcanic rock.', 'Linking a capital to its castle helps you remember it.', emo(lm('SCT').emoji, lm('SCT').name)),
+          W('Answer', `The capital of Scotland is ${b('Edinburgh')}.`, 'London is the capital of England, and of the whole UK.', fn('SCT'))],
+        why: 'Edinburgh is the capital of Scotland.', check: { k: 'ukcap', id: 'SCT' } },
+      { q: 'Cardiff is the capital city of which nation?', visual: emo('🏛️', 'Cardiff'), options: ['Wales', 'England', 'Scotland', 'Northern Ireland'], answer: 'Wales',
+        walk: [W('Picture the UK', 'The UK has four nations, each with its own capital city.', 'Picture the map: two islands, four nations.', map('GBR', { zoom: true })),
+          W('Think about the west', 'Cardiff is in the south-west of Great Britain, by the sea.', 'Which nation is in the west of Great Britain, next to England?'),
+          W('Remember the flag', 'This nation’s flag has a red dragon.', 'The dragon is the nation’s symbol.'),
+          W('Answer', `Cardiff is the capital of ${b('Wales')}.`, 'Wales is in the west of Great Britain.', fn('WLS'))],
+        why: 'Cardiff is the capital of Wales.', check: { k: 'uknat', id: 'WLS' } },
+    ],
+    tries: [
+      { q: 'What is the capital city of Northern Ireland?', visual: txt('Northern Ireland'), options: ['Belfast', 'Dublin', 'Cardiff', 'Edinburgh'], answer: 'Belfast', type: 'text', match: 'text', accept: ['Belfast'], why: 'Belfast is the capital of Northern Ireland. Dublin is the capital of Ireland, a different country.', check: { k: 'ukcap', id: 'NIR' } },
+      { q: FS.UK_FACTS[0].q, transfer: true, visual: map('GBR', { zoom: true }), options: [FS.UK_FACTS[0].a].concat(FS.UK_FACTS[0].w), answer: FS.UK_FACTS[0].a, why: FS.UK_FACTS[0].why, check: { k: 'ukfact', i: 0 } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'A rhyme for the pairs: “England has London, the biggest of all; Scotland has Edinburgh, its castle so tall; Wales has Cardiff, down by the sea; Belfast’s in Northern Ireland: that’s all four, you see!”' },
+      { kind: 'picture', text: 'Great Britain is the big island, with England, Scotland and Wales. Northern Ireland is on the island of Ireland, to the west, across the Irish Sea.', visual: map('GBR', { zoom: true }) },
+      { kind: 'say', text: 'Point to each nation on the map and say its capital: north, Scotland, Edinburgh; south, England, London; west, Wales, Cardiff; across the sea, Northern Ireland, Belfast.' },
+    ],
+    method: ['Say the pairs: England–London, Scotland–Edinburgh, Wales–Cardiff, Northern Ireland–Belfast', 'Remember the flags: St George, St Andrew and the dragon', 'Great Britain is one island; Northern Ireland is on the island of Ireland', 'The North Sea is to the east, the Irish Sea to the west, the English Channel to the south'],
+    mistakes: [{ wrong: 'Saying Great Britain and the United Kingdom are the same', fix: 'Great Britain is the island with England, Scotland and Wales. The UK also includes Northern Ireland.' },
+      { wrong: 'Saying Dublin is the capital of Northern Ireland', fix: 'Belfast is the capital of Northern Ireland. Dublin is the capital of Ireland, a different country.' }],
+  });
+
+  add('bs-area', {
+    big: 'Area is how much land a country covers. Russia is the biggest by far, and Vatican City is the smallest. Be careful: flat maps make places near the poles look bigger than they are.',
+    why: 'Size changes everything about a country: how far you can travel, how many kinds of weather it has, and how many neighbours.',
+    ex: [
+      { q: 'Which of these countries is the biggest by land?', visual: emo('📏', 'Area (land)'), cids: ['RUS', 'CAN', 'CHN', 'BRA'], ans: 'RUS',
+        walk: [W('Picture them on the map', 'All four are giants: picture how much of the map each one covers.', 'Area is how much land a country covers.'),
+          W('Use what you know', 'One of them stretches across two continents, Europe and Asia.', 'A country on two continents is likely to be very big.', map('RUS')),
+          W('Compare', ['RUS', 'CAN', 'CHN', 'BRA'].map((x) => `${esc(nm(x))}: ${km2(x)}`).join('<br>'), 'The areas are rounded.'),
+          W('Answer', `${b('Russia')} is the biggest: ${km2('RUS')}.`, 'It is nearly twice the size of Canada, the next biggest.', fn('RUS'))],
+        why: `Russia: ${km2('RUS')}.`, check: { k: 'area', max: true } },
+      { q: 'Which of these countries is the smallest by land?', visual: emo('📏', 'Area (land)'), cids: ['VAT', 'MCO', 'MLT', 'LUX'], ans: 'VAT',
+        walk: [W('Picture them', 'All four are tiny compared with most countries.', 'Small countries are often islands or single cities.'),
+          W('Think about each one', 'Luxembourg and Malta are small countries; Monaco is a small city on the coast of France.', 'Which one could be even smaller than a city?'),
+          W('Remember the record', 'The smallest country in the world is a city state inside Rome, the capital of Italy.', 'It is the home of the Pope.'),
+          W('Answer', `${b('Vatican City')} is the smallest: less than half a square kilometre.`, 'It is the smallest country in the world.', fn('VAT'))],
+        why: 'Vatican City is the smallest country in the world.', check: { k: 'area', max: false } },
+    ],
+    tries: [
+      { q: 'Which of these countries is the biggest by land?', visual: emo('📏', 'Area (land)'), cids: ['AUS', 'NZL', 'JPN', 'GBR'], ans: 'AUS', type: 'text', match: 'country', matchIds: ['AUS'], why: `Australia: ${km2('AUS')}.`, check: { k: 'area', max: true } },
+      { q: 'Which flag belongs to the biggest country by land?', transfer: true, visual: emo('📏', 'Area (land)'), cids: ['CAN', 'FRA', 'JPN', 'ITA'], ans: 'CAN', kind: 'flag', why: `Canada: ${km2('CAN')}.`, check: { k: 'area', max: true } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Remember the giants as a team photo, biggest first: Russia, Canada, China, the United States, Brazil, Australia.' },
+      { kind: 'picture', text: 'Russia covers a huge part of the top of the map, across Europe and Asia. Flat maps stretch places near the poles, so Russia and Canada look even bigger than they really are.', visual: map('RUS') },
+      { kind: 'do', text: 'Show the sizes with your arms: stretch them wide for Russia, a little less wide for Canada and China, and pinch your fingers together for Vatican City.' },
+    ],
+    method: ['Picture each country on the map', 'Remember the giants: Russia, Canada, China, the USA, Brazil, Australia', 'Islands and city states are usually small', 'Compare, then choose'],
+    mistakes: [{ wrong: 'Thinking Greenland is bigger than Africa because it looks big on the map', fix: 'Flat maps stretch places near the poles. Africa is about 14 times bigger than Greenland.' },
+      { wrong: 'Thinking China is bigger than Canada', fix: `They are close, but Canada (${km2('CAN')}) is a little bigger than China (${km2('CHN')}).` }],
+  });
+
+  add('bs-pop', {
+    big: `Population is how many people live in a country. India and China each have ${ppl('IND')}; Vatican City has only ${ppl('VAT')}.`,
+    why: 'Population tells you how busy a country is: how many homes, schools and hospitals it needs.',
+    ex: [
+      { q: 'Which of these countries has the most people?', visual: emo('👥', 'Population (people)'), cids: ['IND', 'RUS', 'CAN', 'AUS'], ans: 'IND',
+        walk: [W('Think about each country', 'Russia, Canada and Australia are huge by land, but much of their land is frozen, forest or desert, with few people.', 'Big land does not always mean lots of people.'),
+          W('Compare', ['IND', 'RUS', 'CAN', 'AUS'].map((x) => `${esc(nm(x))}: ${ppl(x)}`).join('<br>'), 'Populations are rounded estimates.'),
+          W('Answer', `${b('India')} has the most: ${ppl('IND')}.`, 'That is about ten times as many people as Russia.', fn('IND'))],
+        why: `India: ${ppl('IND')}.`, check: { k: 'pop', max: true } },
+      { q: 'Which of these countries has the fewest people?', visual: emo('👥', 'Population (people)'), cids: ['ISL', 'NOR', 'IRL', 'SWE'], ans: 'ISL',
+        walk: [W('Think about each country', 'All four are in Northern Europe. One is a cold island near the Arctic, with ice, volcanoes and few towns.', 'Remember: population is people, not land.'),
+          W('Use what you know', 'Small, cold islands far from other countries usually have few people.', 'Norway, Ireland and Sweden each have millions of people.'),
+          W('Answer', `${b('Iceland')} has the fewest: ${ppl('ISL')}.`, `Norway has ${ppl('NOR')}, Ireland ${ppl('IRL')} and Sweden ${ppl('SWE')}.`, fn('ISL'))],
+        why: `Iceland: ${ppl('ISL')}.`, check: { k: 'pop', max: false } },
+    ],
+    tries: [
+      { q: 'Which of these countries has the most people?', visual: emo('👥', 'Population (people)'), cids: ['NGA', 'GHA', 'KEN', 'EGY'], ans: 'NGA', type: 'text', match: 'country', matchIds: ['NGA'], why: `Nigeria: ${ppl('NGA')}.`, check: { k: 'pop', max: true } },
+      { q: 'Which flag belongs to the country with the most people?', transfer: true, visual: emo('👥', 'Population (people)'), cids: ['USA', 'CAN', 'GBR', 'AUS'], ans: 'USA', kind: 'flag', why: `The United States: ${ppl('USA')}.`, check: { k: 'pop', max: true } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'The people giants, biggest first: China and India (about 1.4 billion each), then the United States, Indonesia, Pakistan and Nigeria.' },
+      { kind: 'picture', text: 'Russia has far more land than India, but India has about ten times as many people.', visual: cmp(['RUS', 'IND'], [ppl('RUS'), ppl('IND')]) },
+      { kind: 'do', text: `Count with your fingers, one finger for every 10 million people. The UK (${ppl('GBR')}) needs about 7 fingers. India needs about 140 fingers: all the fingers of 14 people!` },
+    ],
+    method: ['Think how big each country is and how many big cities it has', 'Remember the giants: India, China, the USA, Indonesia, Pakistan, Nigeria', 'A big country can have few people (Canada, Australia)', 'Compare, then choose'],
+    mistakes: [{ wrong: 'Thinking the biggest country by land has the most people', fix: 'Russia is the biggest by land, but India and China have many more people.' },
+      { wrong: 'Mixing up population and area', fix: `Population is how many people; area is how much land. Canada has lots of land but only ${ppl('CAN')}.` }],
+  });
+
+  /* ================================================================================================
+     C. MAPS AND PLACES
+     ================================================================================================ */
+  const OC4 = ['pacific', 'atlantic', 'indian', 'arctic'];
+  add('oc-oceans', {
+    big: 'There are five oceans: the Pacific (the biggest), the Atlantic, the Indian, the Southern and the Arctic (the smallest). They all join up into one world ocean.',
+    why: 'Oceans cover most of our planet. Ships, weather and sea creatures all depend on them.',
+    ex: [
+      { q: 'Which ocean is coloured in on the map?', visual: water('pacific'), wids: OC4, ans: 'pacific',
+        walk: [W('Look at the map', 'A huge area of water is coloured in, between Asia and Australia on one side and the Americas on the other.', 'The oceans are the big areas of water between the continents.', water('pacific')),
+          W('Think about size', 'It is the biggest ocean of all.', esc(wx('pacific').kidFact)),
+          W('Answer', `It is the ${b('Pacific Ocean')}.`, `Nickname: ${esc(wx('pacific').hook)}`, water('pacific', { label: 'Pacific Ocean' }))],
+        why: wx('pacific').hook, check: { k: 'water', id: 'pacific' } },
+      { q: 'Which ocean goes all the way round Antarctica?', visual: oceans(false), wids: ['southern', 'arctic', 'indian', 'pacific'], ans: 'southern',
+        walk: [W('Find Antarctica', 'Antarctica is the icy land at the very bottom of the world, around the South Pole.', 'Picture the bottom of the globe.'),
+          W('Look around it', 'One ocean makes a ring all the way round it, like a giant moat.', 'The Arctic Ocean is at the top of the world, so it is not this one.'),
+          W('Answer', `It is the ${b('Southern Ocean')}.`, `Nickname: ${esc(wx('southern').hook)}`, water('southern', { full: true, label: 'Southern Ocean' }))],
+        why: wx('southern').hook, check: { k: 'water', id: 'southern' } },
+    ],
+    tries: [
+      { q: 'Which is the smallest ocean?', visual: emo('🌊', 'The smallest ocean'), wids: ['arctic', 'atlantic', 'indian', 'pacific'], ans: 'arctic', type: 'text', match: 'water', matchIds: ['arctic'], why: wx('arctic').hook, check: { k: 'ocean', max: false } },
+      { q: 'Where is the Indian Ocean? Choose the map.', transfer: true, visual: txt('Indian Ocean'), wids: ['indian', 'atlantic', 'pacific', 'arctic'], ans: 'indian', kind: 'watermap', why: wx('indian').hook, check: { k: 'water', id: 'indian' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Give each ocean a nickname: the Pacific is the Giant, the Atlantic is the Zip, the Indian is the Warm One, the Southern is the Ring and the Arctic is the Icebox.' },
+      { kind: 'picture', text: 'Five oceans, all joined together into one world ocean.', visual: oceans() },
+      { kind: 'say', text: 'Say them from biggest to smallest, getting quieter each time: “PACIFIC! Atlantic! Indian… Southern… arctic.”' },
+    ],
+    method: ['Picture the world map with the oceans coloured in', 'The Pacific is the biggest, then the Atlantic, the Indian, the Southern and the Arctic', 'The Arctic is at the top of the world; the Southern Ocean circles Antarctica at the bottom', 'Use the continents around the water as clues'],
+    mistakes: [{ wrong: 'Mixing up the Arctic (north) and the Southern Ocean (south)', fix: 'The Arctic Ocean is around the North Pole. The Southern Ocean goes all the way round Antarctica.' },
+      { wrong: 'Thinking the oceans are separate pools of water', fix: 'All five oceans join up into one world ocean; the names help us talk about different parts of it.' }],
+  });
+
+  add('oc-famous', {
+    big: 'A sea is a smaller part of an ocean, usually partly surrounded by land. The Mediterranean is part of the Atlantic; the Red Sea is part of the Indian Ocean.',
+    why: 'Famous seas are on holiday maps and in history stories, and many countries share their coasts.',
+    ex: [
+      { q: 'Which sea is coloured in on the map?', visual: water('mediterranean', { zoom: true }), wids: ['mediterranean', 'black-sea', 'red-sea', 'north-sea'], ans: 'mediterranean',
+        walk: [W('Look at the map', 'A long sea with land on nearly every side: Europe to the north, Africa to the south and Asia to the east.', esc(wx('mediterranean').kidFact), water('mediterranean', { zoom: true })),
+          W('Use the name', 'Its name means “the sea in the middle of the land”.', esc(wx('mediterranean').named)),
+          W('Answer', `It is the ${b('Mediterranean Sea')}.`, `Nickname: ${esc(wx('mediterranean').hook)}`, water('mediterranean', { zoom: true, label: 'Mediterranean Sea' }))],
+        why: wx('mediterranean').hook, check: { k: 'water', id: 'mediterranean' } },
+      { q: 'The Red Sea is part of which ocean?', visual: water('red-sea', { zoom: true }), wids: OC4.slice().sort((x, y) => (x === 'indian' ? -1 : y === 'indian' ? 1 : 0)), ans: 'indian',
+        walk: [W('Find the sea', 'The Red Sea is a long, thin sea between Africa and Arabia.', `Nickname: ${esc(wx('red-sea').hook)}`, water('red-sea', { zoom: true })),
+          W('Follow the water', 'Follow it south, out through its narrow mouth. Which ocean does it open into?', 'A sea belongs to the ocean it opens into.'),
+          W('Watch out', 'The Suez Canal joins the Red Sea to the Mediterranean, but a canal is dug by people, so it does not count.', 'Follow the natural way out to the open ocean.'),
+          W('Answer', `The Red Sea is part of the ${b('Indian Ocean')}.`, esc(wx('red-sea').clue), water('indian', { label: 'Indian Ocean' }))],
+        why: 'The Red Sea opens into the Indian Ocean.', check: { k: 'wparent', id: 'red-sea' } },
+    ],
+    tries: [
+      { q: 'Which sea lies between Great Britain and Norway?', visual: emo('🌊', 'Between Great Britain and Norway'), wids: ['north-sea', 'irish-sea', 'baltic', 'black-sea'], ans: 'north-sea', type: 'text', match: 'water', matchIds: ['north-sea'], why: wx('north-sea').clue, check: { k: 'coastw', w: 'north-sea', ids: ['GBR', 'NOR'] } },
+      { q: 'Where is the Caribbean Sea? Choose the map.', transfer: true, visual: txt('Caribbean Sea'), wids: ['caribbean', 'mediterranean', 'red-sea', 'south-china-sea'], ans: 'caribbean', kind: 'watermap', why: wx('caribbean').clue, check: { k: 'water', id: 'caribbean' } },
+    ],
+    explain: [
+      { kind: 'hook', text: `Use the nicknames. Mediterranean: ${esc(wx('mediterranean').hook)} Red Sea: ${esc(wx('red-sea').hook)} North Sea: ${esc(wx('north-sea').hook)}` },
+      { kind: 'picture', text: 'The Mediterranean is joined to the Atlantic Ocean by a narrow gap, the Strait of Gibraltar, between Spain and Morocco.', visual: water('mediterranean', { zoom: true, label: 'Mediterranean Sea' }) },
+      { kind: 'say', text: 'Say where each sea is as a sentence: “The Red Sea is between Africa and Arabia.” “The North Sea is between Britain and Norway.” Sentences beat single words.' },
+    ],
+    method: SEA_METHOD,
+    mistakes: [{ wrong: 'Thinking the Red Sea is red', fix: `Its water is blue like other seas. ${esc(wx('red-sea').named)}` },
+      { wrong: 'Mixing up the North Sea and the Irish Sea', fix: 'The North Sea is to the east of Great Britain; the Irish Sea is to the west, between Great Britain and Ireland.' }],
+  });
+
+  add('oc-more', {
+    big: 'Every ocean has smaller waters around its edges: seas, gulfs (very big bays), bays and straits (narrow channels between two lands). The Caspian Sea is not joined to any ocean at all.',
+    why: 'Straits and gulfs are some of the busiest places in the world for ships, so they matter for trade and travel.',
+    ex: [
+      { q: 'Which of these is not joined to any ocean at all?', visual: emo('🏞️', 'Not joined to any ocean'), wids: ['caspian-sea', 'black-sea', 'red-sea', 'baltic'], ans: 'caspian-sea',
+        walk: [W('Know the words', '“Not joined to any ocean” means water with land all the way round it, and no way out to the sea.', 'Even a narrow channel joins a sea to the ocean.'),
+          W('Check each one', 'The Black Sea, the Red Sea and the Baltic Sea all have a narrow channel out to the ocean.', 'Follow each one’s way out.'),
+          W('Answer', `The ${b('Caspian Sea')} has land all the way round it: it is really the world’s biggest lake.`, esc(wx('caspian-sea').clue), water('caspian-sea', { zoom: true, label: 'Caspian Sea' }))],
+        why: wx('caspian-sea').clue, check: { k: 'noocean', id: 'caspian-sea' } },
+      { q: 'The Strait of Gibraltar joins the Atlantic Ocean to which sea?', visual: water('strait-of-gibraltar', { zoom: true }), wids: ['mediterranean', 'red-sea', 'black-sea', 'caribbean'], ans: 'mediterranean',
+        walk: [W('Find the strait', 'A strait is a narrow channel of water between two lands. This one lies between Spain and Morocco.', esc(wx('strait-of-gibraltar').clue), water('strait-of-gibraltar', { zoom: true })),
+          W('Look both ways', 'On the west side is the Atlantic Ocean. On the east side is a sea between Europe and Africa.', 'Which sea lies between Europe and Africa?'),
+          W('Answer', `It joins the Atlantic to the ${b('Mediterranean Sea')}.`, esc(wx('mediterranean').funFact), water('mediterranean', { zoom: true, label: 'Mediterranean Sea' }))],
+        why: 'The Strait of Gibraltar joins the Atlantic to the Mediterranean.', check: { k: 'strait', id: 'strait-of-gibraltar', to: 'mediterranean' } },
+    ],
+    tries: [
+      { q: 'The Bay of Biscay lies between France and which other country?', visual: emo('🌊', 'Bay of Biscay'), cids: ['ESP', 'PRT', 'ITA', 'GBR'], ans: 'ESP', type: 'text', match: 'country', matchIds: ['ESP'], why: wx('bay-of-biscay').clue, check: { k: 'coastw', w: 'bay-of-biscay', ids: ['FRA', 'ESP'], only: true } },
+      { q: 'Where is the Gulf of Guinea? Choose the map.', transfer: true, visual: txt('Gulf of Guinea'), wids: ['gulf-of-guinea', 'gulf-of-mexico', 'bay-of-bengal', 'gulf-of-alaska'], ans: 'gulf-of-guinea', kind: 'watermap', why: wx('gulf-of-guinea').clue, check: { k: 'water', id: 'gulf-of-guinea' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Water words: a sea is a big part of an ocean; a gulf is a very big bay; a bay is where the sea curves into the land; a strait is a narrow gap between two lands, like a doorway.' },
+      { kind: 'picture', text: 'At the Strait of Gibraltar, Europe and Africa are only about 13 km apart.', visual: water('strait-of-gibraltar', { zoom: true, label: 'Strait of Gibraltar' }) },
+      { kind: 'do', text: 'Make the shapes with your hands: cup one hand for a bay, cup both hands wide for a gulf, and hold two hands close together with a small gap for a strait.' },
+    ],
+    method: SEA_METHOD,
+    mistakes: [{ wrong: 'Thinking the Caspian Sea is joined to the ocean because it is called a sea', fix: 'The Caspian has land all the way round it: it is the world’s largest lake.' },
+      { wrong: 'Mixing up a strait and a bay', fix: 'A strait joins two bigger waters through a narrow gap; a bay is a curve in the coast.' }],
+  });
+
+  add('oc-coasts', {
+    big: 'Most countries have a coast on an ocean or a sea. Some have more than one: France is on the Atlantic and the Mediterranean.',
+    why: 'Coasts shape how people live: ports, fishing, beaches and trade all happen where the land meets the sea.',
+    ex: [
+      { q: 'Which ocean is on the coast of France?', visual: fn('FRA'), wids: OC4.slice().sort((x, y) => (x === 'atlantic' ? -1 : y === 'atlantic' ? 1 : 0)), ans: 'atlantic',
+        walk: [W('Picture the country', 'France is in Western Europe.', 'Go round its edges like a boat.', map('FRA', { zoom: true })),
+          W('Look at its edges', 'Its west coast faces a huge ocean; its south coast is on the Mediterranean Sea.', 'A country can touch an ocean and a sea.'),
+          W('Which ocean?', 'The ocean between Europe and the Americas is the Atlantic.', 'The Mediterranean is part of the Atlantic too.'),
+          W('Answer', `France is on the ${b('Atlantic Ocean')}.`, `Nickname: ${esc(wx('atlantic').hook)}`, water('atlantic', { label: 'Atlantic Ocean' }))],
+        why: 'France is on the Atlantic Ocean and the Mediterranean Sea.', check: { k: 'coast', id: 'FRA', w: 'atlantic' } },
+      { q: 'Which two oceans are on the coast of Australia?', visual: fn('AUS'), options: ['Pacific and Indian', 'Atlantic and Arctic', 'Atlantic and Indian', 'Arctic and Pacific'], answer: 'Pacific and Indian',
+        walk: [W('Picture the country', 'Australia is a huge island country in Oceania.', 'Look at both sides of it.', map('AUS')),
+          W('Look east', 'To the east of Australia is the ocean that stretches all the way to the Americas.', 'That is the biggest ocean of all.'),
+          W('Look west', 'To the west of Australia is the ocean that stretches to Africa.', 'That is the warmest ocean.'),
+          W('Answer', `Australia is on the ${b('Pacific and Indian')} oceans.`, 'The Pacific is to the east and the Indian Ocean to the west.', oceans())],
+        why: 'Australia has the Pacific to the east and the Indian Ocean to the west.', check: { k: 'coast2', id: 'AUS', ws: ['pacific', 'indian'] } },
+    ],
+    tries: [
+      { q: 'Which ocean is on the coast of Japan?', visual: fn('JPN'), wids: OC4, ans: 'pacific', type: 'text', match: 'water', matchIds: ['pacific'], why: 'Japan is a country of islands in the Pacific Ocean.', check: { k: 'coast', id: 'JPN', w: 'pacific' } },
+      { q: 'Which of these countries has a coast on the Mediterranean Sea?', transfer: true, visual: water('mediterranean', { zoom: true, label: 'Mediterranean Sea' }), cids: ['ITA', 'DEU', 'POL', 'GBR'], ans: 'ITA', type: 'text', match: 'country', matchIds: wx('mediterranean').coasts.slice(), why: 'Italy sticks out into the middle of the Mediterranean Sea.', check: { k: 'coastof', id: 'ITA', w: 'mediterranean' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Sail round the country like a little boat: start at the top and go all the way round its coast, naming each sea or ocean you pass.' },
+      { kind: 'picture', text: 'France has two coasts: the Atlantic in the west and the Mediterranean in the south.', visual: map('FRA', { zoom: true }) },
+      { kind: 'do', text: 'Trace the coastline on the map with your finger. Every time your finger touches water, say its name.' },
+    ],
+    method: ['Picture the country on the map', 'Go round its coast like a boat', 'Name each ocean or sea you touch', 'A country can have more than one coast'],
+    mistakes: [{ wrong: 'Mixing up the Arctic (north) and the Southern Ocean (south)', fix: 'The Arctic Ocean is around the North Pole. The Southern Ocean goes all the way round Antarctica.' },
+      { wrong: 'Thinking a country can only have one coast', fix: 'France is on the Atlantic and the Mediterranean; Australia is on the Pacific and the Indian Ocean.' }],
+  });
+
+  add('mp-where', {
+    big: 'To find a country, start big: which continent? Then which part of it? Then use a neighbour you already know, or a line on the map such as the equator.',
+    why: 'Finding any country on the map is the most useful skill in geography.',
+    ex: [
+      { q: 'Where is Kenya?', visual: name('KEN'), cids: ['KEN', 'NGA', 'EGY', 'ZAF'], ans: 'KEN', kind: 'map',
+        walk: [W('Name the continent', 'Kenya is in Africa.', 'Start with the right part of the world.'),
+          W('Find the equator', 'The equator is an imaginary line round the middle of the Earth.', 'It is halfway between the North Pole and the South Pole.', world({ equator: true })),
+          W('Follow the line', 'Follow the equator across Africa to the east side, near the Indian Ocean.', 'Kenya sits right on the equator.', map('KEN', { equator: true })),
+          W('Answer', `${b('Kenya')} is the coloured country, on the equator in East Africa.`, esc(C('KEN').funFact), map('KEN', { equator: true }))],
+        why: 'Kenya is in East Africa, on the equator.', check: { k: 'where', id: 'KEN' } },
+      { q: 'Where is Brazil?', visual: name('BRA'), cids: ['BRA', 'AUS', 'IND', 'USA'], ans: 'BRA', kind: 'map',
+        walk: [W('Name the continent', 'Brazil is in South America.', 'Start with the right part of the world.'),
+          W('Which part?', 'It is huge: it fills most of the east side of South America, on the Atlantic coast.', 'It is the biggest country in South America.'),
+          W('Use a neighbour', 'It shares a border with Argentina, Colombia, Peru and many more.', 'Find a neighbour you know, then look next to it.'),
+          W('Answer', `${b('Brazil')} is the coloured country on this map.`, 'Brazil is in South America.', map('BRA'))],
+        why: 'Brazil is in South America.', check: { k: 'where', id: 'BRA' } },
+    ],
+    tries: [
+      { q: 'Which country is coloured in on the map?', visual: map('EGY'), cids: ['EGY', 'SDN', 'DZA', 'MAR'], ans: 'EGY', type: 'text', match: 'country', matchIds: ['EGY'], why: 'It is Egypt, in the north-east corner of Africa.', check: { k: 'where', id: 'EGY' } },
+      { q: 'Where is Japan?', transfer: true, visual: name('JPN'), cids: ['JPN', 'GBR', 'NZL', 'IDN'], ans: 'JPN', kind: 'map', why: 'Japan is a chain of islands in East Asia.', check: { k: 'where', id: 'JPN' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Zoom like a camera: world → continent → part of the continent → the country. Never search the whole map at once.' },
+      { kind: 'picture', text: 'The equator is a great starting line: countries above it are in the northern half of the world, countries below it in the southern half.', visual: world({ equator: true }) },
+      { kind: 'do', text: 'Put your finger on the UK, our home. Then move it to the country, saying the directions out loud: “south… east… past the Mediterranean… there!”' },
+    ],
+    method: ['Which continent is it on?', 'Which part: north, south, east, west or the middle?', 'Find a neighbour you know, or a line such as the equator', 'Small countries have a ring round them on the map'],
+    mistakes: [{ wrong: 'Looking all over the map at once', fix: 'Find the continent first, then the region, then the country.' },
+      { wrong: 'Mixing up east and west on the map', fix: 'On a world map, north is at the top, south at the bottom, east to the right and west to the left.' }],
+  });
+
+  add('mp-shape', {
+    big: 'Every country has its own shape. Italy is a boot, Chile is long and thin, and Japan is a curve of islands.',
+    why: 'Knowing shapes helps you recognise a country on any map, even when there are no names.',
+    ex: [
+      { q: 'Which country has this shape?', visual: shape('ITA'), cids: ['ITA', 'GRC', 'ESP', 'FRA'], ans: 'ITA',
+        walk: [W('Look at the outline', 'Long and thin, sticking out into the sea, with a heel and a toe.', 'Shapes are like fingerprints: no two countries share one.'),
+          W('Find the famous feature', 'It looks like a boot, kicking a ball: the island of Sicily.', 'Sicily is an island in the Mediterranean Sea.'),
+          W('Picture where it is', 'Southern Europe, sticking out into the Mediterranean Sea.', 'Use the part of the world to make sure.', map('ITA', { zoom: true })),
+          W('Answer', `That is the outline of ${b('Italy')}.`, 'Italy is the boot of Europe.', shape('ITA'))],
+        why: 'That is the outline of Italy.', check: { k: 'shape', id: 'ITA' } },
+      { q: 'Which country has this shape?', visual: shape('CHL'), cids: ['CHL', 'ARG', 'PER', 'NOR'], ans: 'CHL',
+        walk: [W('Look at the outline', 'Very long and very thin, running from top to bottom.', 'A very long, thin shape is rare.'),
+          W('Find the famous feature', 'It runs down the west coast of a continent, beside the Pacific Ocean.', 'Which continent has a long Pacific coast in the south?'),
+          W('Think where it is', 'It lies between the Andes mountains and the Pacific, in South America.', 'Argentina is on the other side of the Andes.'),
+          W('Answer', `That is the outline of ${b('Chile')}.`, 'Chile is one of the longest, thinnest countries in the world.', shape('CHL'))],
+        why: 'That is the outline of Chile.', check: { k: 'shape', id: 'CHL' } },
+    ],
+    tries: [
+      { q: 'Which country has this shape?', visual: shape('JPN'), cids: ['JPN', 'GBR', 'NZL', 'PHL'], ans: 'JPN', type: 'text', match: 'country', matchIds: ['JPN'], why: 'That is Japan: a curved chain of islands.', check: { k: 'shape', id: 'JPN' } },
+      { q: 'Which shape is the United Kingdom?', transfer: true, visual: name('GBR', true), cids: ['GBR', 'IRL', 'ISL', 'JPN'], ans: 'GBR', kind: 'shape', why: 'The UK is Great Britain, the north-east of the island of Ireland, and many smaller islands.', check: { k: 'shape', id: 'GBR' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Give each shape a picture: Italy is a boot, Chile is a long noodle, Japan is a curved chain of islands.' },
+      { kind: 'picture', text: 'Italy’s boot: the toe kicks the island of Sicily.', visual: shape('ITA') },
+      { kind: 'do', text: 'Draw the shape in the air with your finger, then say what it looks like. Your hand remembers shapes surprisingly well.' },
+    ],
+    method: ['Is the shape long, wide or round?', 'Count the islands', 'Look for a famous feature: a boot, a point, a curve', 'Think which part of the world has coasts like that'],
+    mistakes: [{ wrong: 'Forgetting that the outline of one country can be shown at any size', fix: 'Compare the shape, not the size: a small country can fill the whole picture.' },
+      { wrong: 'Forgetting the islands', fix: 'Many countries include islands: the UK has hundreds, and Japan is almost all islands. The islands are part of the shape.' }],
+  });
+
+  add('mp-neighbours', {
+    big: `Neighbours are countries that touch on land. Russia has ${C('RUS').borders.length} land neighbours; island countries such as Japan and Iceland have none.`,
+    why: 'Neighbours share rivers, trade, languages and sometimes history, so knowing them helps you understand a whole region.',
+    ex: [
+      { q: 'Which of these countries shares a border with France?', visual: fn('FRA'), cids: ['ESP', 'GBR', 'NOR', 'POL'], ans: 'ESP',
+        walk: [W('Picture the map', 'Find France, then go all the way round its border.', 'A neighbour touches the border on land.', map('FRA', { zoom: true })),
+          W('List the neighbours', esc(list(FS.nbOf('FRA').map(nm))), 'Countries across the sea do not count.'),
+          W('Check the choices', 'The United Kingdom is across the English Channel; Norway and Poland are much further away.', 'A tunnel under the sea does not make a land border.'),
+          W('Answer', `${b('Spain')} shares a border with France, along the Pyrenees mountains.`, 'Spain is France’s neighbour to the south-west.', fn('ESP'))],
+        why: 'Spain is one of France’s neighbours.', check: { k: 'nb', id: 'FRA', nb: 'ESP' } },
+      { q: 'Which of these countries has no land neighbours at all?', visual: emo('🏝️', 'No land border'), cids: ['JPN', 'FRA', 'BRA', 'CHN'], ans: 'JPN',
+        walk: [W('Know the words', 'No land neighbours means no other country touches it on land.', 'Only the sea is all around it.'),
+          W('Check each one', 'France, Brazil and China all have many neighbours on land.', 'Cross out each country with a land border.'),
+          W('Think about islands', 'A country made only of islands, with sea all around, has no land neighbours.', 'Which of these is a country of islands?'),
+          W('Answer', `${b('Japan')} is made of islands, with sea all around.`, 'Japan has no land border with any country.', fn('JPN'))],
+        why: 'Japan is a country of islands with no land border.', check: { k: 'nonb', id: 'JPN' } },
+    ],
+    tries: [
+      { q: 'Which of these countries shares a border with Kenya?', visual: fn('KEN'), cids: ['TZA', 'NGA', 'EGY', 'GHA'], ans: 'TZA', type: 'text', match: 'country', matchIds: FS.nbOf('KEN'), why: `Kenya’s neighbours: ${list(FS.nbOf('KEN').map(nm))}.`, check: { k: 'nb', id: 'KEN', nb: 'TZA' } },
+      { q: 'Which flag belongs to a neighbour of the United States?', transfer: true, visual: txt('The United States'), cids: ['CAN', 'BRA', 'ARG', 'JPN'], ans: 'CAN', kind: 'flag', why: 'Canada and Mexico are the neighbours of the United States.', check: { k: 'nb', id: 'USA', nb: 'CAN' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Neighbours are like the houses on your street that share a fence with yours. A house across the river, or across the sea, is not next door, even if you can see it.' },
+      { kind: 'picture', text: `France touches ${FS.nbOf('FRA').length} countries, from Spain in the south-west to Belgium in the north.`, visual: map('FRA', { zoom: true }) },
+      { kind: 'do', text: 'Trace the border with your finger and count each country you touch, out loud. Stop when you get back to where you started.' },
+    ],
+    method: ['Picture the country on the map', 'Go round its border slowly', 'Name each country it touches', 'Countries across the sea are not neighbours'],
+    mistakes: [{ wrong: 'Counting a country across the sea as a neighbour', fix: 'Neighbours share a land border. The UK and France are joined by a tunnel, but the sea is between them.' },
+      { wrong: 'Forgetting tiny neighbours', fix: 'France also borders tiny Andorra and Monaco, and Italy goes all the way round San Marino and Vatican City.' }],
+  });
+
+  add('mp-landlocked', {
+    big: `A landlocked country has no coast: other countries are all around it. About ${F.CORE.filter((c) => c.landlocked).length} countries are landlocked, such as Switzerland, Bolivia and Mongolia.`,
+    why: 'Being landlocked matters: a landlocked country has to send its goods through its neighbours to reach a port.',
+    ex: [
+      { q: 'Which of these countries has no coast at all?', visual: emo('🏞️', 'Landlocked: no coast'), cids: ['CHE', 'ITA', 'FRA', 'ESP'], ans: 'CHE',
+        walk: [W('Know the word', 'Landlocked means surrounded by land: no coast on any ocean or sea.', 'Picture each country: does it touch the sea?'),
+          W('Check each one', 'Italy, France and Spain all have long coasts on the Mediterranean Sea.', 'Cross out every country with a coast.'),
+          W('Picture the last one', `Switzerland sits in the Alps mountains, with ${esc(list(FS.nbOf('CHE').map(nm)))} all around it.`, 'Land on every side means no coast.', map('CHE', { zoom: true })),
+          W('Answer', `${b('Switzerland')} is landlocked.`, 'To reach the sea, its goods travel through its neighbours.', fn('CHE'))],
+        why: 'Switzerland has no coast.', check: { k: 'land', id: 'CHE' } },
+      { q: 'Which of these countries is landlocked?', visual: emo('🏞️', 'Landlocked: no coast'), cids: ['BOL', 'PER', 'CHL', 'BRA'], ans: 'BOL',
+        walk: [W('Know the word', 'Landlocked means surrounded by land: no coast on any ocean or sea.', 'Picture each country: does it touch the sea?'),
+          W('Check the coasts', 'Peru and Chile are on the Pacific Ocean; Brazil is on the Atlantic.', 'Cross out every country with a coast.'),
+          W('What is left?', 'The one left is in the middle of South America, with neighbours on every side.', 'Picture the map: is it squeezed in between the others?'),
+          W('Answer', `${b('Bolivia')} is landlocked.`, 'Bolivia is one of only two landlocked countries in South America; the other is Paraguay.', map('BOL', { zoom: true }))],
+        why: 'Bolivia has no coast.', check: { k: 'land', id: 'BOL' } },
+    ],
+    tries: [
+      { q: 'Which of these countries has no coastline?', visual: emo('🏞️', 'Landlocked: no coast'), cids: ['MNG', 'CHN', 'RUS', 'JPN'], ans: 'MNG', type: 'text', match: 'country', matchIds: FS.LAND_IDS.slice(), why: 'Mongolia is between China and Russia, with no coast.', check: { k: 'land', id: 'MNG' } },
+      { q: 'Which of these countries has a coast on an ocean or a sea?', transfer: true, visual: emo('🏖️', 'Which one has a coast?'), cids: ['POL', 'AUT', 'HUN', 'CZE'], ans: 'POL', why: 'Poland is on the Baltic Sea; Austria, Hungary and Czechia are landlocked.', check: { k: 'coastal', id: 'POL' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Landlocked is like sitting in the middle seat of a car: someone is on every side of you, and you cannot reach the window (the sea)!' },
+      { kind: 'picture', text: 'Switzerland is wrapped in land on every side.', visual: map('CHE', { zoom: true }) },
+      { kind: 'do', text: 'Put your finger on the country and try to slide it to the sea without crossing another country. If you cannot, the country is landlocked.' },
+    ],
+    method: ['Picture the country on the map', 'Does any side touch an ocean or a sea?', 'If other countries are all around it, it is landlocked', 'A lake does not count as a coast'],
+    mistakes: [{ wrong: 'Thinking a country with a big lake has a coast', fix: 'Lakes, and the Caspian Sea, are surrounded by land. A coast means the ocean, or a sea joined to it.' },
+      { wrong: 'Thinking all landlocked countries are small', fix: 'Mongolia, Ethiopia and Bolivia are big countries, but they are landlocked.' }],
+  });
+
+  /* ================================================================================================
+     E. PEOPLE AND CULTURES (only the app's data; examples of everyday life, never rules; no pictures of people)
+     ================================================================================================ */
+  const fwdQ = (id, kind) => clue(id, kind).q;
+  const revQ = (id, kind) => clue(id, kind).rq;
+  const read = (id, kind, why) => W('Read the clue', `${b(clue(id, kind).name)}: ${esc(clue(id, kind).about)}`, why);
+  add('pc-food', {
+    big: 'Every country has foods people love, often made from what grows there: pizza from Italy, sushi from Japan, poutine from Canada. Food is a delicious clue to a country.',
+    why: 'Food tells you about a country’s farms, weather and history, and sharing it is a friendly way to learn about other people.',
+    ex: [
+      { q: fwdQ('ITA', 'food'), visual: emo('🍕', 'Pizza Margherita'), cids: ['ITA', 'JPN', 'MEX', 'IND'], ans: 'ITA',
+        walk: [read('ITA', 'food', 'The details in the clue often point to a place: Naples is a city.'),
+          W('Narrow it down', 'Naples is a city in the south of Italy, on the Mediterranean Sea.', 'Cross out countries from other parts of the world.', map('ITA', { zoom: true })),
+          W('Link it to the flag', 'Its flag is green, white and red, like the basil, mozzarella and tomato on top.', `Memory hook: ${esc(hook('ITA'))}`),
+          W('Answer', `Pizza Margherita is from ${b('Italy')}.`, 'Pizza is now loved all over the world.', fn('ITA'))],
+        why: `${clue('ITA', 'food').name}: ${clue('ITA', 'food').about}`, check: { k: 'clue', id: 'ITA', kind: 'food', name: 'Pizza Margherita' } },
+      { q: fwdQ('JPN', 'food'), visual: emo('🍣', 'Sushi'), cids: ['JPN', 'MEX', 'ITA', 'KEN'], ans: 'JPN',
+        walk: [read('JPN', 'food', 'Rice and fish: think of a country with lots of coast and rice fields.'),
+          W('Narrow it down', 'It comes from a country of islands in East Asia.', 'Cross out countries from other parts of the world.', map('JPN', { zoom: true })),
+          W('Check the choices', 'Mexico, Italy and Kenya are far from East Asia.', 'Only one choice is a country of islands in East Asia.'),
+          W('Answer', `Sushi is from ${b('Japan')}.`, 'Japan is surrounded by sea, so fish is an important food there.', fn('JPN'))],
+        why: `${clue('JPN', 'food').name}: ${clue('JPN', 'food').about}`, check: { k: 'clue', id: 'JPN', kind: 'food', name: 'Sushi' } },
+    ],
+    tries: [
+      { q: fwdQ('CAN', 'food'), visual: emo('🍟', 'Poutine'), cids: ['CAN', 'ITA', 'JPN', 'IND'], ans: 'CAN', type: 'text', match: 'country', matchIds: ['CAN'], why: `${clue('CAN', 'food').name}: ${clue('CAN', 'food').about}`, check: { k: 'clue', id: 'CAN', kind: 'food', name: 'Poutine' } },
+      { q: revQ('MEX', 'food'), transfer: true, visual: fn('MEX'), options: ['Tacos', 'Sushi', 'Poutine', 'Pizza Margherita'], ids: ['MEX', 'JPN', 'CAN', 'ITA'], answer: 'Tacos', why: `Tacos: ${clue('MEX', 'food').about}`, check: { k: 'cluerev', id: 'MEX', kind: 'food', name: 'Tacos' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Link the food to something you already know: Italy’s flag looks like a pizza (green basil, white mozzarella, red tomato), and Japan, a country of islands, loves fish and rice.' },
+      { kind: 'picture', text: 'Three foods, three countries.', visual: emo('🍽️', 'Pizza: Italy · Sushi: Japan · Poutine: Canada') },
+      { kind: 'say', text: 'Say it like a menu: “Today we have pizza from Italy, sushi from Japan and poutine from Canada!” Saying the country with the food fixes them together.' },
+    ],
+    method: CULTURE_METHOD,
+    mistakes: [CULTURE_MISTAKE, { wrong: 'Thinking a food belongs to only one country', fix: 'Many foods are loved in several countries, and people everywhere eat all sorts of food. These are examples, not rules.' }],
+  });
+
+  add('pc-festivals', {
+    big: 'Festivals, traditional clothes and music are part of a country’s culture. They are examples of what people may enjoy, not things everyone does.',
+    why: 'Festivals show what people celebrate together: the seasons, history, faith and family.',
+    ex: [
+      { q: fwdQ('JPN', 'festival'), visual: emo('🌸', 'Hanami'), cids: ['JPN', 'ESP', 'BRA', 'IRL'], ans: 'JPN',
+        walk: [read('JPN', 'festival', 'The details in the clue often point to a place.'),
+          W('Narrow it down', 'Picnics under the cherry blossom are a spring tradition in a country of islands in East Asia.', 'Cross out countries from other parts of the world.', map('JPN', { zoom: true })),
+          W('Answer', `You might join in with Hanami in ${b('Japan')}.`, 'Hanami means “flower viewing”.', fn('JPN'))],
+        why: `Hanami: ${clue('JPN', 'festival').about}`, check: { k: 'clue', id: 'JPN', kind: 'festival', name: 'Hanami' } },
+      { q: fwdQ('ESP', 'festival'), visual: emo('🍅', 'La Tomatina'), cids: ['ESP', 'JPN', 'BRA', 'IRL'], ans: 'ESP',
+        walk: [read('ESP', 'festival', 'The details in the clue often point to a place.'),
+          W('Listen to the words', '“La Tomatina” and the town name Buñol look and sound Spanish.', 'The language of the words is a clue to the country.'),
+          W('Narrow it down', 'It happens in Southern Europe.', 'Cross out countries from other parts of the world.', map('ESP', { zoom: true })),
+          W('Answer', `You might join in with La Tomatina in ${b('Spain')}.`, 'It is a giant, messy food fight held in one town once a year.', fn('ESP'))],
+        why: `La Tomatina: ${clue('ESP', 'festival').about}`, check: { k: 'clue', id: 'ESP', kind: 'festival', name: 'La Tomatina' } },
+    ],
+    tries: [
+      { q: FS.CLUE.festival(C('BRA')).find((x) => x.name === 'Samba').q, visual: emo('🎵', 'Samba'), cids: ['BRA', 'JPN', 'ESP', 'IRL'], ans: 'BRA', type: 'text', match: 'country', matchIds: ['BRA'], why: `Samba: ${C('BRA').music.about}`, check: { k: 'clue', id: 'BRA', kind: 'festival', name: 'Samba' } },
+      { q: revQ('IRL', 'festival'), transfer: true, visual: fn('IRL'), options: [C('IRL').festival.name, 'Hanami', 'La Tomatina', 'Guelaguetza'], ids: ['IRL', 'JPN', 'ESP', 'MEX'], answer: C('IRL').festival.name, why: `${C('IRL').festival.name}: ${C('IRL').festival.about}`, check: { k: 'cluerev', id: 'IRL', kind: 'festival', name: C('IRL').festival.name } },
+    ],
+    explain: [
+      { kind: 'hook', text: `Match the festival to its season or story: Hanami is spring blossom in Japan; ${esc(C('IRL').festival.name)} is on 17 March, Ireland’s national day.` },
+      { kind: 'picture', text: 'Hanami: picnics under the cherry blossom in spring.', visual: emo('🌸', 'Hanami, Japan') },
+      { kind: 'say', text: 'Say the festival’s name out loud and listen to its language: “La Tomatina” sounds Spanish; “Hanami” sounds Japanese.' },
+    ],
+    method: CULTURE_METHOD,
+    mistakes: [CULTURE_MISTAKE, { wrong: 'Thinking only one country celebrates each festival', fix: 'Many festivals, such as Eid, Diwali, Christmas and New Year, are celebrated in many countries around the world.' }],
+  });
+
+  add('pc-landmarks', {
+    big: 'Landmarks are famous places: buildings, monuments and natural wonders. Each one is a clue to its country.',
+    why: 'Landmarks are a country’s famous faces: they are how many people first picture a place.',
+    ex: [
+      { q: fwdQ('FRA', 'landmark'), visual: emo(lm('FRA').emoji, lm('FRA').name), cids: ['FRA', 'ITA', 'IND', 'CHN'], ans: 'FRA',
+        walk: [read('FRA', 'landmark', 'A city name in the clue is a great help.'),
+          W('Use the city', 'Paris is a capital city.', 'Which country has Paris as its capital?'),
+          W('Narrow it down', 'Paris is in Western Europe.', 'Cross out countries from other parts of the world.', map('FRA', { zoom: true })),
+          W('Answer', `The Eiffel Tower is in ${b('France')}.`, 'It stands in Paris, the capital of France.', fn('FRA'))],
+        why: `Eiffel Tower: ${lm('FRA').about}`, check: { k: 'clue', id: 'FRA', kind: 'landmark', name: 'Eiffel Tower' } },
+      { q: fwdQ('IND', 'landmark'), visual: emo(lm('IND').emoji, lm('IND').name), cids: ['IND', 'FRA', 'EGY', 'CHN'], ans: 'IND',
+        walk: [read('IND', 'landmark', 'Read every word of the clue.'),
+          W('Narrow it down', 'This famous white building is in South Asia.', 'Cross out countries from other parts of the world.', map('IND')),
+          W('Check the choices', 'France is in Europe, Egypt in Africa, and China in East Asia.', 'Only one choice is in South Asia.'),
+          W('Answer', `The Taj Mahal is in ${b('India')}.`, 'It is one of the most famous buildings in the world.', fn('IND'))],
+        why: `Taj Mahal: ${lm('IND').about}`, check: { k: 'clue', id: 'IND', kind: 'landmark', name: 'Taj Mahal' } },
+    ],
+    tries: [
+      { q: fwdQ('CHN', 'landmark'), visual: emo(lm('CHN').emoji, lm('CHN').name), cids: ['CHN', 'JPN', 'IND', 'EGY'], ans: 'CHN', type: 'text', match: 'country', matchIds: ['CHN'], why: `Great Wall of China: ${lm('CHN').about}`, check: { k: 'clue', id: 'CHN', kind: 'landmark', name: 'Great Wall of China' } },
+      { q: revQ('KEN', 'landmark'), transfer: true, visual: fn('KEN'), options: [lm('KEN').name, lm('IND').name, lm('FRA').name, lm('EGY').name], ids: ['KEN', 'IND', 'FRA', 'EGY'], answer: lm('KEN').name, why: `${lm('KEN').name}: ${lm('KEN').about}`, check: { k: 'cluerev', id: 'KEN', kind: 'landmark', name: lm('KEN').name } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Give every landmark a place on your mental map: the Eiffel Tower in Paris, the Taj Mahal in India, the Great Wall winding over the hills of China.' },
+      { kind: 'picture', text: 'The Eiffel Tower, a giant iron tower in Paris.', visual: emo(lm('FRA').emoji, 'Eiffel Tower, Paris, France') },
+      { kind: 'do', text: 'Make the shape with your body: arms up in a point for the Eiffel Tower, arms stretched out long for the Great Wall, and hands together over your head in a dome for the Taj Mahal.' },
+    ],
+    method: CULTURE_METHOD,
+    mistakes: [{ wrong: 'Guessing from the picture alone', fix: 'Read the clue words too: a city name such as Paris or Rome tells you the country.' },
+      { wrong: 'Thinking landmarks are all buildings', fix: 'Natural wonders count too: the Maasai Mara in Kenya and Uluru in Australia are landmarks.' }],
+  });
+
+  add('pc-animals', {
+    big: 'Many countries are known for an animal that lives there, like the kangaroo in Australia or the giant panda in China.',
+    why: 'Animals depend on the land and weather of a country, so an animal is a clue to its landscape.',
+    ex: [
+      { q: fwdQ('AUS', 'animal'), visual: emo(C('AUS').animal.emoji, C('AUS').animal.name), cids: ['AUS', 'CHN', 'IND', 'CAN'], ans: 'AUS',
+        walk: [read('AUS', 'animal', 'Picture the animal and where it might live.'),
+          W('Narrow it down', 'Kangaroos live wild in Oceania.', 'Cross out countries from other parts of the world.', map('AUS')),
+          W('Answer', `The kangaroo is the animal of ${b('Australia')}.`, 'It is on Australia’s coat of arms.', fn('AUS'))],
+        why: `Kangaroo: ${C('AUS').animal.about}`, check: { k: 'clue', id: 'AUS', kind: 'animal', name: 'Kangaroo' } },
+      { q: fwdQ('CHN', 'animal'), visual: emo(C('CHN').animal.emoji, C('CHN').animal.name), cids: ['CHN', 'AUS', 'CAN', 'IND'], ans: 'CHN',
+        walk: [read('CHN', 'animal', 'What it eats is a clue to where it lives.'),
+          W('Narrow it down', 'Giant pandas live in bamboo forests in the mountains of East Asia.', 'Cross out countries from other parts of the world.', map('CHN')),
+          W('Check the choices', 'Australia, Canada and India are not in East Asia.', 'Only one choice is in East Asia.'),
+          W('Answer', `The giant panda is the animal of ${b('China')}.`, 'Wild pandas live only in some mountain forests of China.', fn('CHN'))],
+        why: `Giant panda: ${C('CHN').animal.about}`, check: { k: 'clue', id: 'CHN', kind: 'animal', name: 'Giant panda' } },
+    ],
+    tries: [
+      { q: fwdQ('IND', 'animal'), visual: emo(C('IND').animal.emoji, C('IND').animal.name), cids: ['IND', 'AUS', 'CAN', 'CHN'], ans: 'IND', type: 'text', match: 'country', matchIds: ['IND'], why: `Bengal tiger: ${C('IND').animal.about}`, check: { k: 'clue', id: 'IND', kind: 'animal', name: 'Bengal tiger' } },
+      { q: revQ('CAN', 'animal'), transfer: true, visual: fn('CAN'), options: ['Beaver', 'Kangaroo', 'Giant panda', 'Bengal tiger'], ids: ['CAN', 'AUS', 'CHN', 'IND'], answer: 'Beaver', why: `Beaver: ${C('CAN').animal.about}`, check: { k: 'cluerev', id: 'CAN', kind: 'animal', name: 'Beaver' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Link the animal to the landscape: kangaroos hop across Australia, pandas munch bamboo in China’s mountain forests, and beavers build dams in Canada’s rivers.' },
+      { kind: 'picture', text: 'The giant panda: a black-and-white bear that eats bamboo.', visual: emo(C('CHN').animal.emoji, 'Giant panda, China') },
+      { kind: 'do', text: 'Act it out! Hop like a kangaroo for Australia, munch bamboo like a panda for China, and slap your “tail” on the water like a beaver for Canada.' },
+    ],
+    method: ['Read the clue: what does the animal eat, and where might it live?', 'Think which part of the world has that landscape', 'Cross out countries from other parts of the world', 'Remember the animal as part of that country’s story'],
+    mistakes: [{ wrong: 'Thinking an animal lives in only one country', fix: 'Lions live in many African countries, and wolves across Europe, Asia and North America. The animal is a clue, not a rule.' },
+      { wrong: 'Thinking the animal lives all over the country', fix: 'Wild pandas live only in some mountain forests of China, not all over it.' }],
+  });
+
+  const hi = (id) => C(id).hello;
+  const helloQ = (id) => `In which country might people say “${hi(id).word}” to say hello?`;
+  const helloSay = (id) => `In which country might people say this to say hello? It sounds like: ${FS.noArabic(hi(id).say)}.`;
+  add('pc-hello', {
+    big: 'People say hello in thousands of languages: bonjour in French, hola in Spanish, jambo in Swahili. A greeting is a clue to a country’s language.',
+    why: 'Saying hello in someone’s own language is a warm way to show respect.',
+    ex: [
+      { q: helloQ('FRA'), speak: helloSay('FRA'), visual: hello(hi('FRA').word, hi('FRA').say), cids: ['FRA', 'ESP', 'DEU', 'JPN'], ans: 'FRA',
+        walk: [W('Read the word', `${b(hi('FRA').word)}, said “${esc(hi('FRA').say)}”.`, 'Say it out loud.', null, `Bonjour. It sounds like ${hi('FRA').say}.`),
+          W('Think of the language', `It is ${esc(hi('FRA').lang)}.`, 'Which country speaks French?'),
+          W('Check the choices', `Spain says ${esc(hi('ESP').word.toLowerCase())}, Germany says ${esc(hi('DEU').word.toLowerCase())}, and Japan says ${esc(hi('JPN').word.toLowerCase())}.`, 'Cross out the countries with a different greeting.'),
+          W('Answer', `People say “Bonjour” in ${b('France')}.`, '“Bonjour” means hello in French.', fn('FRA'))],
+        why: '“Bonjour” means hello in French.', check: { k: 'hello', id: 'FRA' } },
+      { q: helloQ('KEN'), speak: helloSay('KEN'), visual: hello(hi('KEN').word, hi('KEN').say), cids: ['KEN', 'EGY', 'FRA', 'JPN'], ans: 'KEN',
+        walk: [W('Read the word', `${b(hi('KEN').word)}, said “${esc(hi('KEN').say)}”.`, 'Say it out loud.', null, `Jambo. It sounds like ${hi('KEN').say}.`),
+          W('Think of the language', `It is ${esc(hi('KEN').lang)}, a language spoken in East Africa.`, 'Which of the countries is in East Africa?'),
+          W('Check the choices', `Egypt says ${esc(hi('EGY').word.toLowerCase())}, France says ${esc(hi('FRA').word.toLowerCase())}, and Japan says ${esc(hi('JPN').word.toLowerCase())}.`, 'Cross out the countries with a different greeting.'),
+          W('Answer', `People say “Jambo” in ${b('Kenya')}.`, '“Jambo” means hello in Swahili.', fn('KEN'))],
+        why: '“Jambo” means hello in Swahili.', check: { k: 'hello', id: 'KEN' } },
+    ],
+    tries: [
+      { q: helloQ('JPN'), speak: helloSay('JPN'), visual: hello(hi('JPN').word, hi('JPN').say), cids: ['JPN', 'CHN', 'KOR', 'FRA'], ans: 'JPN', type: 'text', match: 'country', matchIds: ['JPN'], why: '“Konnichiwa” means hello in Japanese.', check: { k: 'hello', id: 'JPN' } },
+      { q: 'How might people say hello in Spain?', transfer: true, visual: fn('ESP'), options: [hi('ESP').word, hi('FRA').word, hi('ITA').word, hi('JPN').word], ids: ['ESP', 'FRA', 'ITA', 'JPN'], answer: hi('ESP').word, why: '“Hola” means hello in Spanish.', check: { k: 'hellorev', id: 'ESP' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Greetings travel with languages. Wherever Spanish is spoken, people say hola; wherever French is spoken, bonjour. So the greeting tells you the language, and the language narrows down the country.' },
+      { kind: 'picture', text: 'Hola is Spanish: you will hear it in Spain and in most of Latin America, such as Mexico, Argentina and Peru.', visual: hello(hi('ESP').word, hi('ESP').say) },
+      { kind: 'say', text: 'Go round the world saying hello: “Bonjour” (France), “Hola” (Spain), “Ciao” (Italy), “Konnichiwa” (Japan), “Jambo” (Kenya). Smile as you say it: a smile works in every language!' },
+    ],
+    method: ['Say the word out loud using the pronunciation', 'Does it sound like a language you know?', 'Think which countries speak that language', 'Many countries share a language, so look at which one is in the choices'],
+    mistakes: [{ wrong: 'Thinking only one country uses each greeting', fix: 'Many countries share a language: people say hola in Spain and in most of Latin America.' },
+      { wrong: 'Thinking every greeting means exactly “hello”', fix: 'Some greetings mean “good morning” or “peace be with you”. They are all kind ways of greeting someone.' }],
+  });
+
+  add('pc-languages', {
+    big: 'Some languages are spoken in many countries: English, French, Arabic, Spanish and Portuguese spread across the world through history. Many countries have more than one official language.',
+    why: 'Knowing where a language is spoken tells you about history, travel and trade, and who can talk to whom.',
+    ex: [
+      { q: 'Which of these is an official or main language of Brazil?', visual: fn('BRA'), options: ['Portuguese', 'Spanish', 'French', 'English'], answer: 'Portuguese',
+        walk: [W('Think about the country', 'Brazil is in South America.', 'Most of its neighbours speak Spanish.', map('BRA')),
+          W('Remember the history', 'Brazil was once ruled by Portugal, so people there speak Portuguese.', 'Languages spread through history.'),
+          W('Answer', `The language of Brazil is ${b('Portuguese')}.`, 'Brazil has more Portuguese speakers than any other country in the world.', fn('BRA'))],
+        why: 'Brazil speaks Portuguese.', check: { k: 'lang', id: 'BRA', lang: 'Portuguese' } },
+      { q: 'Which of these is an official language of Canada?', visual: fn('CAN'), options: ['French', 'Spanish', 'Portuguese', 'German'], answer: 'French',
+        walk: [W('Think about the country', 'Canada is in North America, north of the United States.', 'Neighbouring countries often share languages, but not always.', map('CAN')),
+          W('Two languages', 'Canada has two official languages. One of them is English.', 'Many countries have more than one official language.'),
+          W('Find the other', 'The other is spoken mostly in the province of Quebec.', 'Which of the choices is spoken in Quebec?'),
+          W('Answer', `${b('French')}: Canada’s official languages are English and French.`, 'You will see both languages on signs and packets in Canada.', fn('CAN'))],
+        why: 'Canada’s official languages are English and French.', check: { k: 'lang', id: 'CAN', lang: 'French' } },
+    ],
+    tries: [
+      { q: 'Which of these is an official or main language of Mexico?', visual: fn('MEX'), options: ['Spanish', 'Portuguese', 'French', 'English'], answer: 'Spanish', type: 'text', match: 'text', accept: ['Spanish'], why: 'Mexico speaks Spanish.', check: { k: 'lang', id: 'MEX', lang: 'Spanish' } },
+      { q: 'In which of these countries is Arabic an official or main language?', transfer: true, visual: emo('🗣️', 'Arabic'), cids: ['EGY', 'IRN', 'TUR', 'ESP'], ans: 'EGY', type: 'text', match: 'country', matchIds: F.CORE.filter((c) => (c.languages || []).includes('Arabic')).map((c) => c.id), why: 'Arabic is spoken in Egypt.', check: { k: 'langof', id: 'EGY', lang: 'Arabic' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Five big travelling languages: English, Spanish, French, Arabic and Portuguese. Each one spread far from its first home through history, so each is spoken in many countries today.' },
+      { kind: 'picture', text: 'Brazil speaks Portuguese, even though most of its neighbours speak Spanish.', visual: map('BRA') },
+      { kind: 'say', text: 'Say each pair as a sentence: “In Brazil they speak Portuguese. In Mexico they speak Spanish.” Then turn it round: “Portuguese is spoken in Brazil.”' },
+    ],
+    method: ['Think which part of the world the country is in', 'Remember the big shared languages: Spanish in Latin America, Arabic in North Africa and the Middle East, French in West Africa', 'Check whether the country has more than one language', 'Learn the pair: the country and its language'],
+    mistakes: [{ wrong: 'Thinking Brazil speaks Spanish', fix: 'Brazil speaks Portuguese, even though most of its neighbours speak Spanish.' },
+      { wrong: 'Thinking each country has only one language', fix: 'Many countries have several: Switzerland has French, German, Italian and Romansh, and India has many languages.' }],
+  });
+
+  add('pc-currencies', {
+    big: 'A currency is the money a country uses: the pound in the UK, the euro in much of Europe, the dollar in the USA and the yen in Japan. Some currencies are shared by many countries.',
+    why: 'Money is part of everyday life: if you travel, you need to know what to pay with.',
+    ex: [
+      { q: 'Which money (currency) is used in Japan?', visual: fn('JPN'), options: ['Japanese yen', 'Chinese yuan', 'Indian rupee', 'Euro'], answer: 'Japanese yen',
+        walk: [W('Think about the country', 'Japan is in East Asia.', 'Money is often named after its country.', map('JPN', { zoom: true })),
+          W('Look for the name', 'Many currencies have the country’s name in them: look for “Japanese”.', 'The Chinese yuan is China’s money and the Indian rupee is India’s.'),
+          W('Answer', `Japan uses the ${b('Japanese yen')}.`, 'People in Japan pay in yen.', fn('JPN'))],
+        why: 'Japan uses the Japanese yen.', check: { k: 'cur', id: 'JPN' } },
+      { q: 'Which money (currency) is used in the United Kingdom?', visual: fn('GBR'), options: ['British pound', 'Euro', 'United States dollar', 'Swiss franc'], answer: 'British pound',
+        walk: [W('Think about the country', 'The UK is in Northern Europe.', 'Not every country in Europe uses the euro.', map('GBR', { zoom: true })),
+          W('Look for the name', 'Look for a currency with “British” in its name.', 'The Swiss franc is Switzerland’s money and the dollar is the USA’s.'),
+          W('Answer', `The UK uses the ${b('British pound')}.`, 'It is also called the pound sterling.', fn('GBR'))],
+        why: 'The UK uses the British pound (pound sterling).', check: { k: 'cur', id: 'GBR' } },
+    ],
+    tries: [
+      { q: 'Which money (currency) is used in India?', visual: fn('IND'), options: ['Indian rupee', 'Pakistani rupee', 'Japanese yen', 'Euro'], answer: 'Indian rupee', type: 'text', match: 'text', accept: ['Indian rupee', 'rupee'], why: 'India uses the Indian rupee.', check: { k: 'cur', id: 'IND' } },
+      { q: 'Which country uses the Swiss franc?', transfer: true, visual: emo('💰', 'Swiss franc'), cids: ['CHE', 'FRA', 'DEU', 'ITA'], ans: 'CHE', type: 'text', match: 'country', matchIds: ['CHE'], why: 'Switzerland uses the Swiss franc.', check: { k: 'curof', id: 'CHE', cur: 'Swiss franc' } },
+    ],
+    explain: [
+      { kind: 'hook', text: 'Find the country hiding in the money’s name: Japanese yen, Indian rupee, Swiss franc, British pound.' },
+      { kind: 'picture', text: 'The euro is shared by many countries in Europe, such as France, Germany, Italy and Ireland.', visual: emo('💶', 'The euro') },
+      { kind: 'say', text: 'Say the money with its country like a shop sign: “In Japan, we pay in yen!” “In India, we pay in rupees!”' },
+    ],
+    method: ['Look for the country’s name in the currency’s name', 'Remember the shared ones: the euro (much of Europe), the CFA franc (West and Central Africa), the East Caribbean dollar', 'Many countries call their money a dollar, a peso, a franc or a dinar', 'Learn the pair: the country and its money'],
+    mistakes: [{ wrong: 'Thinking every European country uses the euro', fix: 'The UK uses the pound, Switzerland the franc, and Norway the krone.' },
+      { wrong: 'Thinking “dollar” always means the US dollar', fix: 'Canada and Australia have their own dollars: the Canadian dollar and the Australian dollar are different money.' }],
+  });
+
+  /* ================================================================================================
+     The engine side: a curated lesson → the plan the Learn engine (app.js runPlan) plays.
+     ================================================================================================ */
+  // cids / wids → options, answer and the id behind each option
+  Object.values(LES).forEach((L) => L.ex.concat(L.tries).forEach((e) => {
+    if (e.cids) { e.ids = e.cids.slice(); e.options = e.cids.map(nm); e.answer = nm(e.ans); }
+    else if (e.wids) { e.ids = e.wids.slice(); e.options = e.wids.map(wn); e.answer = wn(e.ans); }
+  }));
+  const KIND_NAME = { hook: 'A memory hook', story: 'A story to remember', picture: 'See it', say: 'Say it out loud', do: 'Do it' };
+  const KIND_ICON = { hook: '🧠', story: '📖', picture: '👀', say: '🗣', do: '✋' };
+  const PICK = { flag: 1, map: 1, shape: 1, watermap: 1 };
+  function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  const uniq = (a) => a.filter((x, i) => x != null && x !== '' && a.indexOf(x) === i);
+  const skillOf = (id) => (FMG.skillLib && FMG.skillLib.get ? FMG.skillLib.get(id) : null);
+  /* The task for "Your turn" and "Try it": the options shuffled the same way every time (so the lesson never changes),
+     picture options (flags, maps, outlines) with the country or water behind each, and the answer screen's "other flags". */
+  function taskOf(id, e, key) {
+    const order = FMG.rng(hash(`${id}:${key}`)).shuffle(e.options.map((_, i) => i));
+    const labels = order.map((i) => e.options[i]), refs = e.ids ? order.map((i) => e.ids[i]) : null;
+    const ci = labels.indexOf(e.answer);
+    const kind = e.kind || null;
+    const choices = labels.map((l, i) => ({ id: 'c' + i, label: l, ref: refs ? refs[i] : null }));
+    const allC = refs && refs.every((r) => r && C(r)), allW = refs && refs.every((r) => r && WT.byId[r]);
+    const eq = allC || allW ? { options: labels.map((v) => ({ value: v })), answerIndex: ci, optIds: refs, optKind: kind, qt: kind === 'flag' ? 'n2f' : 'lesson' } : null;
+    const base = { correct: 'c' + ci, choices, choiceKind: kind, explain: e.why || '', eq };
+    if (e.type === 'text' && !PICK[kind]) return Object.assign(base, { type: 'text', accept: uniq([e.answer].concat(e.accept || [])), wrong: labels.filter((x) => x !== e.answer), tolerance: !e.strict, match: e.match || null, matchIds: e.matchIds || null });
+    return Object.assign(base, { type: 'choice' });
+  }
+  const piece = (e) => ({ q: esc(e.q), speak: e.speak || e.q, visual: e.visual || null, walk: e.walk });
+  function explainOf(L) { return (L.explain || []).map((x) => ({ kind: x.kind, name: KIND_NAME[x.kind] || 'Another way', icon: KIND_ICON[x.kind] || '↺', text: x.text, visual: x.visual || null, say: x.say || x.text })); }
+  /* What every version of the lesson shares (also used with fresh generated examples for "Another example"). */
+  function frame(id) {
+    const L = LES[id]; if (!L) return null;
+    return { bigIdea: L.big, sayIdea: L.sayBig || null, why: L.why, method: L.method.slice(), mistakes: L.mistakes.slice(), mistake: L.mistakes[0], explain: explainOf(L) };
+  }
+  function plan(id) {
+    const L = LES[id]; if (!L) return null;
+    const S = skillOf(id), ex = L.ex[0], yt = L.ex[1];
+    return Object.assign({
+      plan: true, curated: true, title: S ? S.name : id, early: !!(S && S.stages && S.stages[0] === 'eyfs'), objective: S ? S.obj : '',
+      example: piece(ex),
+      yourTurn: Object.assign(piece(yt), { task: Object.assign(taskOf(id, yt, 'turn'), { record: false }), why: yt.why || '' }),
+      tries: (L.tries || []).map((t, i) => Object.assign(piece(t), { phase: t.transfer ? 'Try it a new way' : 'Try on your own', task: Object.assign(taskOf(id, t, 'try' + i), { record: true, kind: t.transfer ? 'transfer' : 'procedure' }) })),
+    }, frame(id));
+  }
+  FMG.lessonsFl = { LESSONS: LES, get: (id) => LES[id] || null, has: (id) => !!LES[id], plan, frame, taskOf, explainOf, KIND_NAME };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -6988,9 +8425,9 @@ body.reduce-motion .cel-layer { display: none; }`;
     };
   }
 
-  /* A hand-written lesson (lessons-en.js) is used when there is one. "Another example" keeps its big idea, method,
+  /* A hand-written lesson (lessons-fl.js) is used when there is one. "Another example" keeps its big idea, method,
      mistakes and explanations, with fresh examples from the skill's own generator; the automatic lesson is the fallback. */
-  const CURATED = () => FMG.lessonsEn || null;
+  const CURATED = () => FMG.lessonsFl || FMG.lessonsEn || null;
   function startLesson(id, first) {
     const L = LES.LESSONS[id];
     const seed = FMG.newSeed();
@@ -8170,7 +9607,7 @@ body.reduce-motion .cel-layer { display: none; }`;
     const sum = CUR.coverageSummary();
     const rows = CUR.TOPICS.map((t) => { const rel = t.skills.filter((k) => k.status === 'released'); return `<tr><td>${t.num}. ${esc(t.name)}</td><td>${rel.length}</td><td>${t.skills.length - rel.length}</td><td class="small">${rel.length ? esc(rel.map((k) => k.name).join('; ')) : '<span class="muted">Coming in a later phase</span>'}</td></tr>`; }).join('');
     return `<section class="card"><h2 class="h3">What is ready (honest status)</h2>
-      <p>This is <b>Phase 1 (Foundation)</b> of the new Family Flags: the Family Maths framework with all the existing Flags content (195 countries, 45 oceans and seas, 37 look-alike families) moved in as skills. It does <b>not</b> claim complete coverage. Design a flag (topic 6), compass and grid references, latitude and longitude, time zones, mountains and rivers, and climate (topics 13–17) are planned for later phases; their skills are listed as planned, with the phase they are due in. Learn lessons are built from each skill’s own questions until the hand-written lessons arrive (Phase 2).</p>
+      <p>This is <b>Phase 1 (Foundation)</b> of the new Family Flags: the Family Maths framework with all the existing Flags content (195 countries, 45 oceans and seas, 37 look-alike families) moved in as skills. It does <b>not</b> claim complete coverage. Design a flag (topic 6), compass and grid references, latitude and longitude, time zones, mountains and rivers, and climate (topics 13–17) are planned for later phases; their skills are listed as planned, with the phase they are due in. Every released skill now has a hand-written Learn lesson (Phase 2): two chosen worked examples, “I don’t understand” in three different ways, a method card and common mistakes, with the automatic lesson from the skill’s own questions as the fallback.</p>
       <div class="table-wrap"><table><thead><tr><th>Stage</th><th>Released skills</th><th>Planned skills</th></tr></thead><tbody>${CUR.STAGES.map((s) => `<tr><td>${esc(s.route)}</td><td>${sum[s.id].released}</td><td>${sum[s.id].planned}</td></tr>`).join('')}</tbody></table></div>
       <h3>Topics</h3>
       <div class="table-wrap"><table><thead><tr><th>Topic</th><th>Ready</th><th>Planned</th><th>Ready skills</th></tr></thead><tbody>${rows}</tbody></table></div>
