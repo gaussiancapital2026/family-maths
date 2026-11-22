@@ -2330,6 +2330,295 @@ g.tr-guide, g.hw-done, g.tr-good { stroke: none; stroke-width: 0; fill: none; }
 .wt-notes { padding-left: 1.2rem; line-height: 1.55; }
 
 </style>
+  <style>
+/* Family English — printable worksheets (js/worksheets-en.js). The sheet looks like paper on screen in light and dark
+   themes (black on white), and prints on A4 with no app chrome. Black-and-white friendly: no colour is needed to
+   understand anything (word classes become underline styles, sound buttons are black dots and lines). */
+
+/* ---------- the screen: options panel and the preview ---------- */
+.ws-screen { display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 1.2rem; align-items: start; }
+.ws-panel { position: sticky; top: .8rem; }
+.ws-panel h1 { font-size: 1.35rem; margin: .2rem 0 .3rem; }
+.ws-opts-panel { display: grid; gap: .7rem; margin: .8rem 0; }
+.ws-opt { display: grid; gap: .3rem; }
+.ws-optl { font-size: .8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.ws-seg { flex-wrap: wrap; }
+.ws-seg button { min-height: 40px; padding: .4rem .7rem; }
+.ws-panel select, .ws-panel input { font: inherit; min-height: 44px; padding: .4rem .6rem; border-radius: 10px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); max-width: 100%; }
+.ws-num { display: inline-flex; align-items: center; gap: .6rem; }
+.ws-actions { gap: .5rem; flex-wrap: wrap; }
+.ws-standalone { margin: .8rem 0; }
+.ws-tips-pdf { margin: .8rem 0; }
+.ws-tips-pdf ul { padding-left: 1.1rem; margin: .4rem 0; }
+.ws-preview { min-width: 0; display: grid; gap: 1.2rem; overflow-x: auto; }
+@media (max-width: 860px) { .ws-screen { grid-template-columns: 1fr; } .ws-panel { position: static; } }
+
+/* home card */
+.cta-card.worksheets { --tint: var(--t-data); }
+
+/* the library */
+.ws-lib .chips .chip.on { background: var(--primary); color: var(--on-primary); }
+.ws-lsec summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: .5rem; min-height: 44px; }
+.ws-lsec summary::-webkit-details-marker { display: none; }
+.ws-lsec summary::before { content: '▸'; color: var(--muted); transition: transform .15s; }
+.ws-lsec[open] summary::before { transform: rotate(90deg); }
+.ws-lsec summary h2 { margin: 0; }
+.ws-lh { font-size: .95rem; margin: 1rem 0 .4rem; color: var(--muted); }
+.ws-lt { margin: .5rem 0 .9rem; }
+.ws-ltn { font-weight: 700; margin-bottom: .35rem; display: flex; gap: .6rem; align-items: baseline; flex-wrap: wrap; }
+.ws-lgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: .5rem; }
+.ws-lcard { display: flex; flex-direction: column; gap: .15rem; padding: .65rem .8rem; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); min-height: 44px; }
+.ws-lcard:hover { border-color: var(--primary); }
+.ws-lcard span { font-size: .82rem; color: var(--muted); }
+.ws-btn-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+/* ---------- the sheet (paper) ---------- */
+.ws-doc { --ink: #111; --mut: #444; --rule: #222; color: #111; font: 12pt/1.45 "Avenir Next", Avenir, "Segoe UI", "Helvetica Neue", Arial, sans-serif; display: grid; gap: 1.2rem; }
+.ws-doc.ws-young .ws-head { font-size: 13pt; }
+.ws-doc.ws-young { font-family: "Century Gothic", "Avenir Next", Avenir, "Comic Neue", "Segoe UI", Arial, sans-serif; font-size: 16pt; }
+.ws-sheet { background: #fff; color: #111; width: 100%; max-width: 210mm; margin: 0 auto; padding: 12mm 14mm; box-shadow: 0 2px 14px rgba(0, 0, 0, .18); border-radius: 4px; }
+.ws-sheet.cont { padding-top: 6mm; }
+.ws-doc h3, .ws-doc h4 { color: #111; font-family: inherit; letter-spacing: 0; }
+.ws-doc p { margin: 0 0 .5em; }
+.ws-doc b { font-weight: 700; }
+.ws-head { display: grid; grid-template-columns: auto 1fr auto; gap: 4mm; align-items: center; border-bottom: 2px solid #111; padding-bottom: 3mm; margin-bottom: 5mm; }
+.ws-hl { display: flex; align-items: center; gap: 2mm; font-weight: 700; font-size: 12pt; white-space: nowrap; }
+.ws-logo { width: 9mm; height: 9mm; }
+.ws-logo rect { fill: #fff; stroke: #111; stroke-width: 2.5; }
+.ws-logo text { fill: #111; font-family: Arial, sans-serif; }
+.ws-title { font-size: 1.2em; font-weight: 800; line-height: 1.2; }
+.ws-part { font-weight: 600; font-size: .8em; }
+.ws-sub { font-size: 12pt; color: #333; }
+.ws-hr { display: grid; gap: 2.5mm; font-size: 12pt; white-space: nowrap; }
+.ws-fill { display: inline-block; min-width: 42mm; border-bottom: 1.2px solid #111; padding: 0 1mm; font-weight: 600; vertical-align: bottom; min-height: 1.2em; }
+.ws-fill.short { min-width: 30mm; }
+.ws-adult { font-weight: 700; border: 1.5px solid #111; border-radius: 3mm; padding: 1.5mm 3mm; }
+.ws-foot { display: flex; justify-content: space-between; gap: 4mm; flex-wrap: wrap; border-top: 1px solid #999; margin-top: 6mm; padding-top: 2mm; font-size: 12pt; color: #333; }
+.ws-note { font-size: 12pt; color: #222; border-left: 3px solid #111; padding: .5mm 0 .5mm 3mm; margin: 0 0 4mm; }
+.ws-young .ws-note { font-size: 13pt; }
+.ws-mut { font-size: 12pt; color: #444; }
+.ws-h3 { font-size: 1.1em; margin: 5mm 0 2mm; }
+
+/* questions */
+.ws-qs.cols { columns: 2; column-gap: 8mm; }
+.ws-q { display: grid; grid-template-columns: 9mm 1fr auto; gap: 2mm 3mm; break-inside: avoid; page-break-inside: avoid; margin: 0 0 5mm; padding-bottom: 3mm; border-bottom: 1px dashed #bbb; }
+.ws-q.long { break-inside: auto; page-break-inside: auto; }
+.ws-qn { width: 8mm; height: 8mm; border: 1.5px solid #111; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 12pt; }
+.ws-qn:empty { border: 0; }
+.ws-qb { min-width: 0; }
+.ws-qt { font-weight: 600; margin: 0 0 2mm; }
+.ws-gu { display: inline-block; font-size: 12pt; font-weight: 700; border: 1.5px dashed #111; border-radius: 2mm; padding: .5mm 2mm; margin-bottom: 1.5mm; }
+.ws-vis { display: flex; flex-wrap: wrap; gap: 2mm 5mm; align-items: center; margin: 0 0 2mm; }
+.ws-pic { font-size: 30pt; line-height: 1; }
+.ws-big { font-size: 1.9em; font-weight: 800; letter-spacing: .06em; }
+.ws-gapc { display: inline-block; min-width: .7em; border-bottom: 2px solid #111; color: transparent; }
+.ws-sent { font-size: 1.05em; border: 1px solid #999; border-radius: 2mm; padding: 1.5mm 3mm; margin: 0 0 2mm; }
+.ws-opts { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5mm 5mm; }
+.ws-opts.wsc4 { grid-template-columns: repeat(4, minmax(0, auto)); justify-content: start; }
+.ws-opts.wsc2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ws-opts.wsc1 { grid-template-columns: 1fr; }
+.ws-qs.cols .ws-opts.wsc4 { grid-template-columns: repeat(2, minmax(0, auto)); }
+.ws-opts li { display: flex; align-items: flex-start; gap: 2mm; }
+.ws-opts.pic .ws-ol { font-size: 24pt; line-height: 1; }
+.ws-box { flex: none; display: inline-block; width: 5mm; height: 5mm; border: 1.5px solid #111; border-radius: 1mm; margin-top: .15em; background: #fff; }
+.ws-young .ws-box { width: 6mm; height: 6mm; }
+.ws-ansl { margin-top: 2mm; }
+.ws-wline { display: inline-block; height: 9mm; border-bottom: 1.5px solid #111; vertical-align: bottom; }
+.ws-lines { display: grid; margin-top: 1mm; }
+.ws-line { height: 9mm; border-bottom: 1px solid #555; }
+.ws-young .ws-line { height: 12mm; }
+.ws-lines.tight .ws-line { height: 7.5mm; }
+.ws-lines.long .ws-line, .ws-lines.write .ws-line { break-inside: avoid; }
+.ws-mk { font-size: 12pt; font-weight: 700; white-space: nowrap; align-self: start; border: 1px solid #111; border-radius: 1.5mm; padding: 0 1.5mm; }
+.ws-tf { border-collapse: collapse; margin-top: 1mm; }
+.ws-tf th, .ws-tf td { border: 1px solid #555; padding: 1.5mm 3mm; text-align: left; vertical-align: middle; }
+.ws-tf td:not(:first-child), .ws-tf th:not(:first-child) { text-align: center; width: 18mm; }
+.ws-order { list-style: none; padding: 0; margin: 0; display: grid; gap: 2mm; }
+.ws-order li { display: flex; gap: 3mm; align-items: center; }
+.ws-nbox { flex: none; width: 8mm; height: 8mm; border: 1.5px solid #111; border-radius: 1mm; }
+.ws-tips { margin: 0 0 2mm; padding-left: 5mm; color: #333; }
+.ws-spell { font-weight: 500; line-height: 2; }
+.ws-sgap { display: inline-block; width: 42mm; border-bottom: 1.5px solid #111; height: 1.2em; vertical-align: baseline; }
+.ws-sec { break-after: avoid; page-break-after: avoid; margin: 4mm 0 2mm; }
+.ws-sec h3 { font-size: 1.15em; margin: 0 0 1mm; border-bottom: 1.5px solid #111; padding-bottom: 1mm; }
+.ws-total { text-align: right; font-weight: 800; margin-top: 4mm; }
+
+/* texts */
+.ws-text { border: 1.5px solid #111; border-radius: 2mm; padding: 4mm 5mm; margin: 0 0 5mm; }
+.ws-text h3 { font-size: 1.2em; margin: 0 0 1mm; }
+.ws-text h4 { font-size: 1.02em; margin: 3mm 0 1mm; }
+.ws-tk { font-size: 12pt; color: #444; margin-bottom: 2mm; font-style: italic; }
+.ws-text p { line-height: 1.6; orphans: 3; widows: 3; }
+.ws-verse { margin-bottom: 3mm; }
+.ws-pb { break-before: page; page-break-before: always; }
+
+/* remember box */
+.ws-help { border: 1.5px solid #111; border-radius: 3mm; padding: 3mm 4mm; margin: 0 0 5mm; break-inside: avoid; page-break-inside: avoid; }
+.ws-hh { font-weight: 800; text-transform: uppercase; letter-spacing: .06em; font-size: 12pt; margin-bottom: 1mm; }
+.ws-help ol, .ws-help ul { margin: 1mm 0; padding-left: 6mm; }
+.ws-ex { margin-top: 2mm; border-top: 1px dashed #999; padding-top: 2mm; }
+.ws-exa { font-weight: 600; margin-top: 1mm; }
+.ws-help .en-card { background: none; border: 0; padding: 0; box-shadow: none; align-items: flex-start; }
+.ws-help .en-pic { font-size: 24pt; }
+.ws-help .en-buttons { max-width: 60mm !important; height: auto; }
+.ws-wckey { font-size: 12pt; margin-top: 1mm; }
+.ws-wckey .wc { display: inline; padding: 0; background: none !important; }
+
+/* word classes on paper: one underline style per class instead of colour */
+.ws-doc .wc-sent { font-size: 1.05em; justify-content: flex-start; gap: 1mm 2mm; }
+.ws-doc .wc { border-radius: 0; background: none !important; color: #111; }
+.ws-doc .wc.on { background: none !important; border-bottom: 2.5px solid #111; }
+.ws-doc .wc.on.wc-n, .ws-doc .wc.on.wc-pn { border-bottom-style: solid; }
+.ws-doc .wc.on.wc-v { border-bottom: 4.5px double #111; }
+.ws-doc .wc.on.wc-adj { border-bottom-style: dashed; }
+.ws-doc .wc.on.wc-adv { border-bottom-style: dotted; border-bottom-width: 3px; }
+.ws-doc .wc.on.wc-pro { border-bottom: 0; text-decoration: underline wavy #111; text-underline-offset: 4px; }
+.ws-doc .wc.on.wc-prep { border-bottom-width: 1px; }
+.ws-doc .wc.on.wc-conj { border-bottom-width: 4px; }
+.ws-doc .wc.on.wc-det { border-bottom-style: dashed; border-bottom-width: 1.5px; }
+.ws-doc .wc-l { color: #333 !important; font-size: 10pt; }
+.ws-doc .ws-wckey .wc.on { border-bottom-color: #111; }
+.ws-doc .cl { background: none !important; border: 1.5px solid #111 !important; color: #111; }
+.ws-doc .cl-l, .ws-doc .mc-gear, .ws-doc .en-cap { color: #333 !important; }
+.ws-doc mark, .ws-doc mark.hl, .ws-doc mark.bad { background: none; color: #111; border-bottom: 2.5px solid #111; font-weight: 700; }
+.ws-doc .mc-box, .ws-doc .mc-gear { background: #fff !important; border: 1.5px solid #111 !important; color: #111 !important; }
+
+/* sound buttons */
+.ws-doc .en-btl, .ws-doc .en-btl.hl { fill: #111; }
+.ws-doc .en-btn, .ws-doc .en-btn.hl { fill: #111; stroke: #111; }
+.ws-doc .en-btn.line, .ws-doc .en-btn.arc { fill: none; }
+.ws-doc .en-blended { color: #111; }
+.ws-gsvg { width: 100%; max-height: 30mm; }
+.ws-gch { font-size: 40px; font-weight: 800; text-anchor: middle; fill: #111; font-family: "Century Gothic", Avenir, Arial, sans-serif; }
+.ws-gbtn { fill: #111; stroke: #111; }
+.ws-gbtn.line, .ws-gbtn.arc { fill: none; stroke-width: 5; stroke-linecap: round; }
+
+/* script and answers */
+.ws-script, .ws-ans { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.5mm; }
+.ws-ans { columns: 2; column-gap: 8mm; display: block; }
+.ws-ans > li, .ws-script > li { display: grid; grid-template-columns: 9mm 1fr; gap: 2mm; break-inside: avoid; page-break-inside: avoid; margin-bottom: 2.5mm; }
+.ws-an { font-weight: 800; }
+.ws-say { font-size: 1.15em; }
+.ws-why { font-size: 12pt; color: #333; }
+.ws-lv { margin: 2mm 0; break-inside: avoid; page-break-inside: avoid; }
+.ws-lv table { border-collapse: collapse; width: 100%; margin-top: 1mm; }
+.ws-lv td { border: 1px solid #777; padding: 1mm 2mm; vertical-align: top; font-size: 12pt; }
+.ws-lv td:first-child { width: 22mm; font-weight: 700; }
+.ws-answers .ws-ans:has(.ws-lv) { columns: 1; }
+
+/* phonics check */
+.ws-pcards { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.ws-pch { grid-column: 1 / -1; font-size: 12pt; color: #444; }
+.ws-pcard { position: relative; border: 1.5px dashed #555; border-radius: 3mm; min-height: 95mm; display: grid; place-items: center; break-inside: avoid; }
+.ws-pw { font-size: 54pt; font-weight: 700; font-family: "Century Gothic", Avenir, Arial, sans-serif; letter-spacing: .02em; }
+.ws-pk { position: absolute; right: 3mm; bottom: 2mm; font-size: 12pt; color: #555; }
+.ws-alien { position: absolute; left: 3mm; top: 2mm; font-size: 26pt; }
+.ws-score { border-collapse: collapse; width: 100%; }
+.ws-score th, .ws-score td { border: 1px solid #666; padding: 1.2mm 2mm; text-align: left; font-size: 12pt; }
+.ws-score tr { break-inside: avoid; page-break-inside: avoid; }
+.ws-score td:nth-child(3), .ws-score td:nth-child(4) { width: 9mm; text-align: center; }
+
+/* writing tasks */
+.ws-facts { border-collapse: collapse; width: 100%; margin: 2mm 0 4mm; }
+.ws-facts th, .ws-facts td { border: 1px solid #777; padding: 1.2mm 2mm; text-align: left; vertical-align: top; font-size: 12pt; }
+.ws-facts th { width: 18mm; }
+.ws-draft { border: 1.5px dashed #111; padding: 3mm 4mm; margin-bottom: 4mm; }
+.ws-plan { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3mm; }
+.ws-pbx { border: 1.5px solid #111; border-radius: 2mm; padding: 2mm 3mm; break-inside: avoid; page-break-inside: avoid; }
+.ws-pbl { font-weight: 700; font-size: 12pt; }
+.ws-mtn-svg { width: 100%; max-height: 62mm; }
+.ws-mtn-line { fill: none; stroke: #111; stroke-width: 3; stroke-linejoin: round; }
+.ws-mtn-dot { fill: #fff; stroke: #111; stroke-width: 2.5; }
+.ws-mtn-l { font-size: 19px; font-weight: 700; text-anchor: middle; fill: #111; font-family: Arial, sans-serif; }
+.ws-mtn-n { font-size: 19px; font-weight: 800; text-anchor: middle; fill: #111; font-family: Arial, sans-serif; }
+.ws-peel { border-collapse: collapse; width: 100%; }
+.ws-peel th { width: 22mm; text-align: left; border-bottom: 1px solid #777; padding: 1mm; font-size: 12pt; vertical-align: top; }
+.ws-peel th span { display: block; font-weight: 500; font-size: 12pt; }
+.ws-peel td { border-bottom: 1px solid #777; height: 11mm; }
+.ws-wtitle { margin-bottom: 2mm; font-weight: 700; }
+.ws-check { border-collapse: collapse; width: 100%; }
+.ws-check th, .ws-check td { border: 1px solid #777; padding: 1.5mm 2mm; text-align: left; font-size: 12pt; }
+.ws-check td:not(:first-child), .ws-check th:not(:first-child) { width: 20mm; text-align: center; }
+
+/* tracing */
+.ws-tr { break-inside: avoid; page-break-inside: avoid; margin: 0 0 5mm; }
+.ws-trl { font-size: 12pt; margin-bottom: 1mm; }
+.ws-trl span { color: #444; }
+.ws-row { display: block; width: 100%; height: auto; margin: 0 0 1.5mm; }
+.ws-fpic .ws-row { width: auto; max-width: 70mm; max-height: 28mm; }
+.ws-doc .tr-line { stroke: #8a8a8a; stroke-width: .6; fill: none; }
+.ws-doc .tr-line.faint { stroke-dasharray: 1.5 2; }
+.ws-doc .tr-line.dash { stroke-dasharray: 3 2; }
+.ws-doc .tr-line.base { stroke: #333; stroke-width: 1; }
+.ws-doc .hw-band { fill: #f0f0f0; }
+.ws-doc .hw-slant { stroke: #c8c8c8; stroke-width: .5; }
+.ws-doc .hw-ladder { fill: #9a9a9a; }
+.ws-ink { fill: none; stroke: #111; stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; }
+.ws-ghost { fill: none; stroke: #666; stroke-width: 3.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: .1 5.6; }
+.ws-c-faded .ws-ghost { stroke: #9a9a9a; stroke-dasharray: .1 7; }
+.ws-um { fill: #111; stroke: #111; }
+.ws-ug { fill: #cfcfcf; stroke: #cfcfcf; }
+.ws-c-faded .ws-ug { fill: #e2e2e2; stroke: #e2e2e2; }
+.ws-start { fill: #fff; stroke: #111; stroke-width: 2; }
+.ws-gstart { fill: #888; }
+.ws-c-faded .ws-gstart { display: none; }
+.ws-sn { font-size: 11px; font-weight: 800; fill: #111; font-family: Arial, sans-serif; }
+.ws-arrow { fill: #111; }
+.ws-ashaft { fill: none; stroke: #111; stroke-width: 1.8; stroke-linecap: round; }
+
+/* phonics extras: mats and cards */
+.ws-mat { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3mm; }
+.ws-mt { border: 1.5px solid #111; border-radius: 3mm; padding: 2mm; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+.ws-mtg .ws-gsvg { max-height: 22mm; }
+.ws-mte { font-size: 22pt; line-height: 1.1; }
+.ws-mtw { font-size: 14pt; }
+.ws-tw { font-size: 18pt; font-weight: 700; }
+.ws-cut { display: grid; gap: 0; }
+.ws-cut.g12 { grid-template-columns: repeat(3, 1fr); }
+.ws-cut.g8 { grid-template-columns: repeat(2, 1fr); }
+.ws-cut.g6 { grid-template-columns: repeat(2, 1fr); }
+.ws-ccard { border: 1.5px dashed #777; min-height: 58mm; display: grid; place-items: center; align-content: center; gap: 2mm; padding: 4mm; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+.ws-cut.g8 .ws-ccard { min-height: 62mm; }
+.ws-cut.g6 .ws-ccard { min-height: 82mm; }
+.ws-ccard .en-card { background: none; border: 0; box-shadow: none; padding: 0; }
+.ws-ccard .en-buttons { max-width: 70mm !important; width: 100%; }
+.ws-cw { font-size: 38pt; font-weight: 700; font-family: "Century Gothic", Avenir, Arial, sans-serif; }
+.ws-ke { font-size: 60pt; line-height: 1; }
+.ws-kw { font-size: 28pt; font-weight: 700; font-family: "Century Gothic", Avenir, Arial, sans-serif; }
+.ws-scis { border-left: 0; padding-left: 0; }
+
+/* phones: the preview scales down so the page still fits */
+@media screen and (max-width: 700px) {
+  .ws-sheet { padding: 6mm 5mm; }
+  .ws-doc { font-size: 11pt; } .ws-doc.ws-young { font-size: 13pt; }
+  .ws-head { grid-template-columns: 1fr; }
+  .ws-qs.cols, .ws-ans { columns: 1; }
+  .ws-opts.wsc4 { grid-template-columns: repeat(2, minmax(0, auto)); }
+  .ws-plan, .ws-mat { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---------- print ---------- */
+@media print {
+  html.ws-on, html.ws-on body { background: #fff !important; color: #111; }
+  html.ws-on body > *:not(#app) { display: none !important; }
+  html.ws-on #app > *:not(main) { display: none !important; }
+  html.ws-on main.page > *:not(.ws-screen) { display: none !important; }
+  html.ws-on .ws-panel, html.ws-on .topbar, html.ws-on .savebar, html.ws-on .skip { display: none !important; }
+  html.ws-on main.page { padding: 0 !important; margin: 0 !important; max-width: none !important; width: auto !important; }
+  html.ws-on .ws-screen { display: block; }
+  html.ws-on .ws-preview { display: block; overflow: visible; }
+  .ws-doc { display: block; gap: 0; }
+  .ws-sheet { box-shadow: none; border-radius: 0; padding: 0; margin: 0; max-width: none; width: auto; }
+  .ws-sheet + .ws-sheet { break-before: page; page-break-before: always; }
+  .ws-sheet.cont { break-before: auto; page-break-before: auto; padding-top: 4mm; }
+  .ws-foot { break-inside: avoid; page-break-inside: avoid; } /* the code prints at the end of each part; Chrome also prints it, with page numbers, in the page margin */
+  .ws-head { break-after: avoid; page-break-after: avoid; }
+  .ws-qs.cols .ws-q { break-inside: avoid-column; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+@page { size: A4; margin: 14mm; }
+
+</style>
 </head>
 <body>
   <a class="skip" href="#app">Skip to content</a>
@@ -17997,6 +18286,857 @@ Folds of scarlet drapery shut in my view to the right hand; to the left were the
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
+  <!-- Printable worksheets: every skill, mixed revision, papers, texts, writing tasks, tracing and phonics extras -->
+  <script>
+/* Family English — printable worksheets (docs/worksheets-spec.md, shared by every Family Learning app).
+   Every sheet is built from the app's own generators and data, never from new unchecked content:
+     S  one skill at a time      the skill's own templates and format templates (FMG.gen), at any ladder step
+     M  mixed revision           one question from each skill in a stage, a strand of a stage, or a topic
+     P  practice paper           FMG.examPapers.build(id): reading booklet + answer booklet + mark scheme, spelling
+                                 script, phonics word cards + scoring sheet, lined pages sized to the marks
+     T  reading comprehension    every text in the reading banks (reading-bank*.js, exam-texts.js, the passages)
+     W  writing task             prompt, planning frame, lined pages, success criteria, model answer on its own page
+     R  tracing                  handwriting forms from hand-forms.js: dotted strokes, numbered start dots, arrows
+     X  phonics extras           sound mats, sound cards, word cards with sound buttons, tricky words, picture cards
+   Paper only: questions that need the screen (live tracing, tap or drag) are never printed. A "Listen" question is
+   printed only where a grown-up can read the word aloud (phonics and spelling skills): the words go on a separate
+   "Grown-up's script" page, never on the child's page. Every printed question has exactly one right answer.
+   A sheet code (kind~id~options, with the seed) reprints exactly the same sheet. The build functions are pure (no DOM)
+   so tests/worksheets-test.js can build every sheet in node; the screens at the end need a browser.
+   Routes: #/worksheets (library), #/worksheets/lib/<stage>, #/worksheets/sheet/<code> (options + preview + print). */
+(function (root) {
+  'use strict';
+  const FMG = (root.FMG = root.FMG || {});
+  const G = () => FMG.gen, CUR = () => FMG.curriculum, XP = () => FMG.examPapers, H = () => FMG.hand;
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const dec = (s) => String(s == null ? '' : s).replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/[ \t]+/g, ' ').trim();
+  const lc = (s) => String(s == null ? '' : s).toLowerCase().replace(/[’‘]/g, "'").replace(/[“”]/g, '"');
+  const uniq = (a) => a.filter((x, i) => x != null && x !== '' && a.indexOf(x) === i);
+  const LET = ['A', 'B', 'C', 'D'];
+  const s_ = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+  function seedOf(str) { let h = 2166136261; for (const ch of String(str)) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+  const STAGE_NAME = (id) => { const S = CUR().STAGES.find((x) => x.id === id); return S ? S.name : id; };
+  const YOUNG = new Set(['eyfs', 'ks1']);
+
+  /* ================= sheet codes ================= */
+  /* A code is kind~id~options. Options are dot-separated tokens: s<step> n<count> w|d (write-in or A–D) a<0|1> answers
+     h<0|1> help box  g<f|a|n> tracing guide (full, faded, none)  f<n> family  t<text> own letters or words  k<seed>. */
+  const KIND = { S: 'One skill', M: 'Mixed revision', P: 'Practice paper', T: 'Reading comprehension', W: 'Writing task', R: 'Tracing', X: 'Phonics extras' };
+  const encT = (s) => encodeURIComponent(s).replace(/[.~!'()*\-_]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+  function fmtOpts(kind, o) {
+    const t = [];
+    if (kind === 'S' || kind === 'M') t.push(`s${o.s | 0}`, `n${o.n || 10}`, o.st === 'd' ? 'd' : 'w');
+    if (kind === 'T') t.push(o.st === 'd' ? 'd' : 'w');
+    if (kind !== 'R' && kind !== 'X') t.push(`a${o.a === 0 ? 0 : 1}`);
+    if (kind === 'S') t.push(`h${o.h === 0 ? 0 : 1}`);
+    if (kind === 'R' || (kind === 'S' && isHand(o._id))) t.push(`g${(o.g || 'full')[0] === 'n' ? 'n' : o.g === 'faded' ? 'a' : 'f'}`);
+    if (kind === 'R' && o.f != null && o.f !== '') t.push(`f${o.f}`);
+    if (kind === 'R' && o.t) t.push(`t${encT(o.t)}`);
+    if (kind === 'S' || kind === 'M') t.push(`k${((o.k >>> 0) || 1).toString(36)}`);
+    return t.join('.');
+  }
+  function parseOpts(str) {
+    const o = { s: 0, n: 10, st: 'w', a: 1, h: 1, g: 'full', f: '', t: '', k: 1 };
+    String(str || '').split('.').forEach((tk) => {
+      const c = tk[0], v = tk.slice(1);
+      if (c === 's' && /^\d$/.test(v)) o.s = Math.min(5, +v);
+      else if (c === 'n' && /^\d+$/.test(v)) o.n = Math.max(1, Math.min(40, +v));
+      else if (tk === 'w' || tk === 'd') o.st = tk;
+      else if (c === 'a') o.a = v === '0' ? 0 : 1;
+      else if (c === 'h') o.h = v === '0' ? 0 : 1;
+      else if (c === 'g') o.g = v === 'n' ? 'none' : v === 'a' ? 'faded' : 'full';
+      else if (c === 'f') o.f = v;
+      else if (c === 't') { try { o.t = decodeURIComponent(v); } catch (e) { o.t = ''; } }
+      else if (c === 'k' && /^[0-9a-z]+$/.test(v)) o.k = parseInt(v, 36) >>> 0;
+    });
+    return o;
+  }
+  function codeOf(kind, id, o) { return `${kind}~${id}~${fmtOpts(kind, Object.assign({ _id: id }, o || {}))}`; }
+  function parseCode(code) {
+    const m = /^([SMPTWRX])~([^~]+)~?(.*)$/.exec(String(code || '').trim());
+    if (!m) return null;
+    const o = parseOpts(m[3]);
+    return { kind: m[1], id: m[2], o };
+  }
+
+  /* ================= small HTML pieces ================= */
+  const box = '<span class="ws-box" aria-hidden="true"></span>';
+  const lineW = (chars) => `<span class="ws-wline" style="width:${Math.max(28, Math.min(150, 12 + chars * 4.2)).toFixed(0)}mm"></span>`;
+  const lines = (n, cls) => `<div class="ws-lines${cls ? ' ' + cls : ''}">${'<div class="ws-line"></div>'.repeat(Math.max(1, n))}</div>`;
+  function optsHtml(options, opt = {}) {
+    const max = Math.max(...options.map((o) => String(o).length));
+    const cols = opt.pic ? 4 : max <= 9 ? 4 : max <= 30 ? 2 : 1;
+    return `<ul class="ws-opts wsc${cols}${opt.pic ? ' pic' : ''}">${options.map((o, i) => `<li>${box}<b>${LET[i]}</b> <span class="ws-ol">${esc(o)}</span></li>`).join('')}</ul>`;
+  }
+  /* a text (passage, poem, extract) laid out for paper: paragraphs, "## " subheadings, poems line by line */
+  function textHtml(t) {
+    const raw = String(t.text || '');
+    let body;
+    if (/poem/i.test(t.kind || '') && !/\n/.test(raw) && / \/ /.test(raw)) body = raw.split(/ \/  \/ /).map((v) => `<p class="ws-verse">${v.split(' / ').map(esc).join('<br>')}</p>`).join('');
+    else if (/poem/i.test(t.kind || '')) body = raw.split(/\n\s*\n/).map((v) => `<p class="ws-verse">${v.split('\n').map((l) => esc(l.trim())).join('<br>')}</p>`).join('');
+    else body = raw.split(/\n\s*\n/).map((p) => (/^## /.test(p.trim()) ? `<h4>${esc(p.trim().slice(3))}</h4>` : `<p>${esc(p.trim()).replace(/\n/g, '<br>')}</p>`)).join('');
+    return `<div class="ws-text"><h3>${esc(t.title)}</h3>${t.kind ? `<div class="ws-tk">${esc(t.kind)}${t.source ? ' · ' + esc(t.source) : ''}</div>` : ''}${body}</div>`;
+  }
+
+  /* ================= handwriting pictures (deterministic: no global ids) ================= */
+  const n1 = (v) => +(+v).toFixed(1);
+  function arrowOf(F, i) {
+    const s = F.samples[i]; if (!s || s.length < 3) return '';
+    const a = s[0], b = s[Math.min(4, s.length - 1)], ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
+    // beside the stroke (not on it, where black on black would hide it), pointing the way to go
+    const x = a[0] + 9 * Math.cos(ang) + 9 * Math.sin(ang), y = a[1] + 9 * Math.sin(ang) - 9 * Math.cos(ang);
+    return `<g class="ws-arrow" transform="translate(${n1(x)} ${n1(y)}) rotate(${n1((ang * 180) / Math.PI)})"><path d="M-5 0 L5 0" class="ws-ashaft"/><path d="M4 -3.6 L10 0 L4 3.6 Z"/></g>`;
+  }
+  function dotsOf(F, numbers) {
+    const shared = (i) => F.starts.slice(0, i).some((q) => Math.hypot(q[0] - F.starts[i][0], q[1] - F.starts[i][1]) < 4);
+    return F.starts.map((p, i) => `<circle cx="${n1(p[0])}" cy="${n1(p[1])}" r="4.4" class="ws-start"/>${numbers && F.strokes.length > 1 ? `<text x="${n1(p[0] + (shared(i) ? -12 : 6))}" y="${n1(p[1] - 5)}" class="ws-sn">${i + 1}</text>` : ''}`).join('');
+  }
+  function inkOf(F, d, cls) {
+    if (F.nib) return H().nib.svgInk(d, Object.assign({}, H().nib.DEF, { step: 2.5, cls: 'ws-nibp' })).replace(/(\.\d)\d+/g, '$1')
+      .replace('class="ws-nibp"', 'style="stroke:none"').replace('class="nib-hair" style="fill:none;', 'style="fill:none;'); // no colour of their own: they take it from the <use>
+    return `<path d="${d}" class="${cls}"/>`;
+  }
+  /* the ink of a form, drawn once per block. Nib ink is heavy, so it goes in <defs> once (its paths set no colour of
+     their own) and the model (black) and the ghosts (light grey) <use> it. */
+  function inkSet(F, key, guide) {
+    if (!F.nib) return { defs: '', model: F.strokes.map((d) => inkOf(F, d, 'ws-ink')).join(''), ghost: F.strokes.map((d) => inkOf(F, d, 'ws-ghost')).join('') };
+    const id = 'wsk' + seedOf(`${key}|${guide}`).toString(36);
+    return { defs: `<defs><g id="${id}">${F.strokes.map((d) => inkOf(F, d)).join('')}</g></defs>`, model: `<use href="#${id}" class="ws-um"/>`, ghost: `<use href="#${id}" class="ws-ug"/>` };
+  }
+  /* one copy of a form at x: model (black, start dots, numbers, arrows) or ghost (dotted grey, faint start dot) */
+  function copyOf(F, x, kind, ink) {
+    const inner = (kind === 'model' ? ink.model : ink.ghost)
+      + (kind === 'model' ? dotsOf(F, true) + F.strokes.map((_, i) => arrowOf(F, i)).join('') : kind === 'ghost' ? F.starts.map((p) => `<circle cx="${n1(p[0])}" cy="${n1(p[1])}" r="3" class="ws-gstart"/>`).join('') : '');
+    return `<g class="ws-c-${kind}"${x ? ` transform="translate(${n1(x)} 0)"` : ''}>${inner}</g>`;
+  }
+  function paperOf(F, W) {
+    const paper = F.set === 'pat' ? 'wide' : F.set === 'it' || F.set === 'cs' ? 'calli' : F.set === 'print' ? 'wide' : 'school';
+    return H().paperSvg({ w: W, rows: F.rows || 1, set: F.set, lines: F.lines }, paper, {});
+  }
+  const rowSvg = (W, h, inner, label) => `<svg viewBox="0 0 ${n1(W)} ${h}" class="ws-row" role="img" aria-label="${esc(label)}">${inner}</svg>`;
+  /* rows for one form: trace rows then free rows, by guide (full: model + ghosts; faded: model + two ghosts; none: model) */
+  function traceBlock(key, guide, opt = {}) {
+    const width = opt.width || 600;
+    const F = H().form(key, { maxW: width - 10 }); if (!F) return '';
+    const W = Math.max(width, Math.ceil(F.w)), label = H().labelOf(key);
+    const rows = [], ink = inkSet(F, key, guide);
+    const blank = rowSvg(W, F.h, paperOf(F, W), `Lines to write ${label} on your own`);
+    if (F.w <= W / 2.5) { // short forms: several copies along one row
+      const cells = Math.max(2, Math.floor(W / Math.max(F.w, 60))), cw = W / cells;
+      const ghosts = guide === 'full' ? cells - 1 : guide === 'faded' ? Math.min(2, cells - 1) : 0;
+      let inner = ink.defs + paperOf(F, W) + copyOf(F, (cw - F.w) / 2, 'model', ink);
+      for (let i = 1; i <= ghosts; i++) inner += copyOf(F, i * cw + (cw - F.w) / 2, guide === 'faded' ? 'faded' : 'ghost', ink);
+      rows.push(rowSvg(W, F.h, inner, `Trace ${label}`));
+      rows.push(blank);
+      if (guide === 'none') rows.push(blank);
+    } else { // words and sentences: the model, then whole rows of dotted copies, then free rows
+      rows.push(rowSvg(W, F.h, ink.defs + paperOf(F, W) + copyOf(F, 0, 'model', ink), `Model: ${label}`));
+      const ghostRows = guide === 'full' ? 2 : guide === 'faded' ? 1 : 0;
+      for (let i = 0; i < ghostRows; i++) rows.push(rowSvg(W, F.h, paperOf(F, W) + copyOf(F, 0, guide === 'faded' ? 'faded' : 'ghost', ink), `Trace ${label}`));
+      rows.push(blank);
+      if (guide !== 'full') rows.push(blank);
+    }
+    const say = F.say && F.say !== F.text ? F.say : '';
+    return `<div class="ws-tr"><div class="ws-trl"><b>${esc(F.label || F.text)}</b>${say ? ` <span>${esc(say)}</span>` : ''}</div>${rows.join('')}</div>`;
+  }
+  /* a still picture of a form, for a question's picture (hw-fact questions) */
+  function formPic(key) {
+    const F = H().form(key, { maxW: 400 }); if (!F) return '';
+    const ink = inkSet(F, key, 'pic'); // no start dots or numbers: some questions ask how many strokes there are
+    return `<div class="ws-fpic">${rowSvg(F.w, F.h, ink.defs + paperOf(F, F.w) + `<g class="ws-c-model">${ink.model}</g>`, H().labelOf(key))}</div>`;
+  }
+
+  /* ================= generated questions → paper questions ================= */
+  const isHand = (id) => /^(hw|cg)-/.test(String(id || ''));
+  function heardAllowed(skillId) {
+    const S = FMG.skillLib.get(skillId), t = CUR().topicOfSkill(skillId);
+    return !!((S && S.spelling) || (t && t.group === 'phonics'));
+  }
+  const OPEN_ANY = /\b(sounds exactly the same|technique|which language device is used|which device is used)\b/i;
+  const OPEN_ASK = /\b(which word means|opposite of|means the same|more formal way|could start|could replace|which word shows|which phrase|which time word|which adjective|which verb shows|which word makes|sounds the (most|least)|which word tells|which joining word)\b/i;
+  const core = (a) => lc(a).replace(/\(.*?\)/g, ' ').replace(/\b(the|a|an|tense|sentence|voice|sense of)\b/g, ' ').replace(/[^a-z0-9']/g, '');
+  const closedAnswer = (accept) => accept.length > 0 && new Set(accept.map(core)).size === 1;
+  /* One generated question as a paper question, or null when it cannot be done on paper. */
+  function fromGen(q, skillId, st) {
+    if (!q || !q.answer || q.answer.type === 'trace' || !q.choices || q.choices.length !== 4) return null;
+    const eq = (q._raw && q._raw.eq) || {};
+    const options = q.choices.map((c) => dec(c.label)), right = +String(q.answer.correct).slice(1);
+    if (!(right >= 0 && right < 4) || new Set(options).size !== 4 || options.some((o) => !o)) return null;
+    const prompt = dec(eq.prompt || q.prompt);
+    if (!prompt) return null;
+    if (/\b(press|drag|click|tap (the|a|on)|swipe)\b/i.test(prompt)) return null;
+    const shown = lc([prompt, eq.big, eq.sentence, eq.passage && eq.passage.text].join('\n'));
+    const needsSound = /\b(listen|hear)\b/i.test(prompt) || /_/.test(eq.big || '') || /_{2,}/.test(eq.sentence || '');
+    let heard = null;
+    if (needsSound && eq.hear && !shown.includes(lc(String(eq.hear).trim()))) heard = String(eq.hear).trim();
+    if (heard && !heardAllowed(skillId)) return null; // other skills have the same idea without sound: print those
+    if (!heard && /\b(listen|hear)\b/i.test(prompt)) return null; // a listening prompt with nothing to read aloud
+    const typed = q.answer.type === 'text';
+    const accept = typed ? uniq((q.answer.accept || []).map(String).concat(options[right])) : [];
+    // Write-in only when the answer is closed: one answer (its accepted forms are spellings of the same thing), not
+    // read from a picture alone (a picture can have more than one name), and not a "which word means…" choice, where
+    // other good words would be marked wrong on paper. Everything else keeps its A–D tick boxes.
+    const spelling = (FMG.skillLib.get(skillId) || {}).spelling;
+    const write = st === 'w' && typed && (!eq.pic || !!heard) && closedAnswer(accept) && !OPEN_ANY.test(prompt) && (spelling || !OPEN_ASK.test(prompt));
+    const shownPrompt = write ? prompt.replace(/Which (?:spelling|plural|spelling of the \w+) is right\?/g, 'Write the word.').replace(/Which is the right spelling\?/g, 'Write the word.').replace(/Which order is right\?/g, 'Write the order.') : prompt;
+    return {
+      skillId, prompt: shownPrompt, pic: eq.pic || null, big: eq.big || null, sentence: eq.sentence || null, handPic: eq.handPic || null,
+      passage: eq.passage ? { title: eq.passage.title, kind: eq.passage.kind || '', text: eq.passage.text } : null,
+      options, right, write, typed, accept, heard, why: dec(eq.why || ''), choicePic: q.choiceKind === 'pic', fp: q.fingerprint, item: eq.item || null, claim: eq.claim || null,
+    };
+  }
+  /* Draw questions for a skill at a ladder step (deterministic from the seed). */
+  function drawFor(skillId, step, st, seed, n, state) {
+    const g = G(), info = g.stepInfo(skillId, step), level = g.levelOfStep(step);
+    const r = FMG.rng(seed), seedSrc = () => (r() * 2147483647) >>> 0;
+    const out = [], choiceOnly = FMG.evidence && FMG.evidence.CHOICE_ONLY && FMG.evidence.CHOICE_ONLY.has(skillId);
+    let i = state.i || 0;
+    // pass 1 keeps to a few texts (so a sheet is not all reading); pass 2 may use more texts if the sheet is not full
+    [state.maxPass || Math.max(1, Math.ceil(n / 4)), Infinity].forEach((maxPass, pass) => {
+      for (let guard = 0; out.length < n && guard < (pass ? n * 4 + 12 : n * 6 + 12); i++, guard++) {
+        const tid = g.endlessTemplate(skillId, i, null, { step });
+        let pick = null, fallback = null;
+        for (let k = 0; k < 6 && !pick; k++) {
+          const q = g.draw(tid, level, state.recent, seedSrc, { step, gentle: info.gentle, plus: info.plus });
+          const p = fromGen(q, skillId, st); if (!p) continue;
+          if (dupKeys(p).some((x) => state.seen.has(x))) continue;
+          if (p.passage && !state.passages.includes(pkey(p)) && state.passages.length >= maxPass) continue;
+          if (st === 'w' && !p.write && !choiceOnly && k < 3) { fallback = fallback || p; continue; } // prefer write-in questions
+          pick = p;
+        }
+        pick = pick || fallback;
+        if (!pick || dupKeys(pick).some((x) => state.seen.has(x))) continue;
+        dupKeys(pick).forEach((x) => state.seen.add(x));
+        state.recent.unshift(pick.fp); state.recent.length = Math.min(state.recent.length, 80);
+        if (pick.passage && !state.passages.includes(pkey(pick))) state.passages.push(pkey(pick));
+        out.push(pick);
+      }
+    });
+    return out;
+  }
+  /* Two questions are the same question when they ask the same thing about the same words and have the same answer,
+     even if one is wrapped as "Kit says … Is Kit right?" (that would give the other's answer away). */
+  function baseRight(p) {
+    const r = p.options[p.right];
+    const m = /^No,? it (?:is|should be|is spelt) [“‘"]?(.*?)[”’"]?\.?$/.exec(r);
+    const v = /^Yes,? Kit is right/i.test(r) && p.claim ? p.claim : m ? m[1] : r;
+    return lc(v).trim().replace(/[.!?]+$/, '');
+  }
+  function dupKeys(p) {
+    const ctx = `${p.big || ''}|${p.sentence || ''}|${p.heard || ''}|${pkey(p)}`;
+    const ask = p.prompt.replace(/\s*Kit says the answer is [“‘"].*$/, '');
+    const keys = [lc(`q|${ask}|${ctx}|${baseRight(p)}`)];
+    if (p.item) keys.push(lc(`i|${p.item}|${baseRight(p)}`));
+    return keys;
+  }
+  const pkey = (p) => (p.passage ? `${p.passage.title}|${p.passage.text}` : ''); // titles like "Read these" are shared by different lists
+  const newState = (maxPass) => ({ seen: new Set(), recent: [], passages: [], maxPass });
+  /* passages once each: a passage, then every question that uses it */
+  function grouped(items) {
+    const out = [], placed = new Set();
+    items.forEach((p) => {
+      if (!p.passage) { out.push(p); return; }
+      if (placed.has(pkey(p))) return;
+      placed.add(pkey(p));
+      items.filter((x) => pkey(x) === pkey(p)).forEach((x) => out.push(x));
+    });
+    return out;
+  }
+
+  /* a question block (skill and mixed sheets) */
+  function qHtml(p, n, st) {
+    const vis = [];
+    if (p.pic) vis.push(`<div class="ws-pic" aria-hidden="true">${esc(p.pic)}</div>`);
+    if (p.big) vis.push(`<div class="ws-big">${esc(p.big).replace(/_/g, '<span class="ws-gapc">_</span>')}</div>`);
+    if (p.sentence) vis.push(`<p class="ws-sent">${esc(p.sentence)}</p>`);
+    if (p.handPic && H() && H().has(p.handPic)) { const F = H().form(p.handPic, { maxW: 400 }); if (!(F.nib && F.w > 320)) vis.push(formPic(p.handPic)); } // a long calligraphy line is only decoration here
+    const gu = p.heard ? `<div class="ws-gu">🔊 Your grown-up reads number ${n} from the script.</div>` : '';
+    const ans = p.write ? `<div class="ws-ansl">${lineW(Math.max(...p.accept.map((a) => a.length)) + 2)}</div>` : optsHtml(p.options, { pic: p.choicePic });
+    return `<div class="ws-q"><div class="ws-qn">${n}</div><div class="ws-qb">${gu}<p class="ws-qt">${esc(p.prompt)}</p>${vis.length ? `<div class="ws-vis">${vis.join('')}</div>` : ''}${ans}</div></div>`;
+  }
+  function answerRow(p, n, extra) {
+    const r = p.options[p.right];
+    const also = p.accept.filter((a) => lc(a) !== lc(r));
+    return `<li><span class="ws-an">${n}</span><div><b>${p.write ? esc(r) : `${LET[p.right]}&nbsp; ${esc(r)}`}</b>${also.length ? `<div class="ws-mut">Also accept: ${esc(also.join(', '))}</div>` : ''}${p.heard ? `<div class="ws-mut">Read aloud: “${esc(spoken(p.heard))}”</div>` : ''}${p.why ? `<div class="ws-why">${esc(p.why)}</div>` : ''}${extra ? `<div class="ws-mut">${esc(extra)}</div>` : ''}</div></li>`;
+  }
+  const spoken = (h) => String(h).replace(/\bblank\b/g, '(say “blank”)');
+  function scriptPart(items) {
+    const list = items.map((p) => (p.heard ? `<li><span class="ws-an">${p.n}</span><div class="ws-say">“${esc(spoken(p.heard))}”</div></li>` : '')).join('');
+    return list ? { role: 'script', label: 'Grown-up’s script', adult: true, html: `<p class="ws-note">Read each one aloud clearly, twice, when the learner reaches that number. Keep this page out of sight: it has the words on it.</p><ol class="ws-script">${list}</ol>` } : null;
+  }
+  /* a "Remember" box from the skill's hand-written lesson: the big idea, the method and one worked example picture */
+  const HELP_VIS = ['en-buttons', 'en-classes', 'en-clauses', 'en-machine', 'en-owner', 'en-speech', 'en-mark', 'en-sounds', 'en-chain'];
+  function helpBox(skillId) {
+    const L = FMG.lessonsEn && FMG.lessonsEn.get(skillId); if (!L) return '';
+    const big = dec(L.big), method = (L.method || []).map(dec).filter(Boolean).slice(0, 5);
+    let ex = '';
+    const E = L.ex && L.ex[0];
+    if (E && FMG.viz) {
+      const sees = [E.visual].concat((E.walk || []).map((w) => w.see)).filter((v) => v && HELP_VIS.includes(v.type));
+      const v = sees[sees.length - 1];
+      if (v) {
+        const last = E.walk && E.walk.length ? dec(E.walk[E.walk.length - 1].math) : '';
+        const key = v.type === 'en-classes' ? classKey(v) : '';
+        ex = `<div class="ws-ex"><div class="ws-exq"><b>Example.</b> ${esc(dec(E.q))}</div>${FMG.viz.render(v)}${key}${last ? `<div class="ws-exa">${esc(last)}</div>` : ''}</div>`;
+      }
+    }
+    return `<div class="ws-help"><div class="ws-hh">Remember</div>${big ? `<p>${esc(big)}</p>` : ''}${method.length ? `<ol class="ws-method">${method.map((m) => `<li>${esc(m)}</li>`).join('')}</ol>` : ''}${ex}</div>`;
+  }
+  const WC_STYLE = { n: 'solid line', pn: 'solid line', v: 'double line', adj: 'dashed line', adv: 'dotted line', pro: 'wavy line', prep: 'thin line', conj: 'thick line', det: 'dash-dot line' };
+  function classKey(v) {
+    const on = v.hl === 'all' ? Object.keys(WC_STYLE) : [].concat(v.hl || []);
+    const shown = uniq(on.map((c) => (c === 'pn' ? 'n' : c))).filter((c) => WC_STYLE[c]);
+    if (!shown.length) return '';
+    return `<div class="ws-wckey">Key: ${shown.map((c) => `<span class="wc wc-${c} on"><span class="wc-w">${esc(FMG.viz.CLASS[c])}</span></span> = ${WC_STYLE[c]}`).join(' · ')}</div>`;
+  }
+
+  /* ================= kind S: one skill ================= */
+  function stepName(skillId, step) { return G().stepInfo(skillId, step).name; }
+  function handKeys(skillId, step, max) {
+    const keys = [], seen = new Set(); let guide = 'full';
+    for (let k = 0; k < 160 && keys.length < max; k++) {
+      const q = G().generate(`${skillId}:p`, 1009 + k * 7919 + step * 104729, G().levelOfStep(step), { step });
+      if (!q || q.answer.type !== 'trace') continue;
+      const key = q.answer.letter;
+      guide = q.answer.hand ? q.answer.hand.guide : q.answer.guide ? 'full' : 'none';
+      if (!seen.has(key) && H().has(key)) { seen.add(key); keys.push(key); }
+    }
+    return { keys, guide: guide === 'faded' ? 'faded' : guide === 'none' ? 'none' : 'full' };
+  }
+  function buildSkill(id, o) {
+    const k = CUR().skill(id); if (!k || k.status !== 'released') return null;
+    const t = CUR().topicOfSkill(id), step = o.s | 0, stage = k.stages[0];
+    const stages = k.stages.length > 1 ? `${STAGE_NAME(k.stages[0])} to ${STAGE_NAME(k.stages[k.stages.length - 1])}` : STAGE_NAME(stage);
+    const sheet = base('S', id, o, { title: k.name, stage, young: k.stages.every((x) => YOUNG.has(x)), sub: `${stages} · ${t ? t.name : ''} · Step ${step + 1} of 6: ${stepName(id, step)}` });
+    if (isHand(id)) {
+      const want = Math.max(4, Math.min(16, Math.round((o.n || 10) * 0.6)));
+      let hk = handKeys(id, step, want);
+      if (hk.keys.some((key) => (H().form(key) || { w: 0 }).w > 300)) hk = handKeys(id, step, Math.max(3, Math.min(4, Math.round(want / 2.5)))); // long lines: fewer, so the sheet stays a few pages
+      const guide = o.g && o.g !== 'full' ? o.g : hk.guide;
+      sheet.sub += ` · ${guide === 'full' ? 'Trace' : guide === 'faded' ? 'Faded guide' : 'Copy'}`;
+      sheet.parts.push({ role: 'trace', label: 'Handwriting', html: traceIntro(guide) + hk.keys.map((key) => traceBlock(key, guide, { width: /^(print:|pat:|[a-z]$)/.test(key) ? 500 : 600 })).join('') });
+      sheet.traceCount = hk.keys.length;
+      // a few quick questions about the skill (A–D or write-in), from its own fact questions
+      const items = drawFor(id, step, o.st, (o.k ^ seedOf(id)) >>> 0, 4, newState());
+      if (items.length) addQuestions(sheet, items, o, 'Quick questions');
+      return sheet;
+    }
+    if (o.h !== 0) sheet.help = helpBox(id);
+    const items = grouped(drawFor(id, step, o.st, (o.k ^ seedOf(id)) >>> 0, o.n || 10, newState()));
+    if (items.length < (o.n || 10)) sheet.help = (sheet.help || '') + `<p class="ws-note">This step has ${items.length} different questions in the app, so this sheet has ${items.length}, not ${o.n || 10}. Try another step for more.</p>`;
+    addQuestions(sheet, items, o);
+    return sheet;
+  }
+  function traceIntro(guide) {
+    return `<p class="ws-note">${guide === 'full' ? 'Start at the dot and follow the arrow. Trace the dotted letters, then write your own on the empty lines.' : guide === 'faded' ? 'Look at the first one: start at the dot and follow the arrow. Trace the dotted ones, then write on your own.' : 'Look at the model: start at the dot and follow the arrow. Then write it on your own on the lines.'} Numbers show the order of the strokes.</p>`;
+  }
+  function addQuestions(sheet, items, o, label, opt = {}) {
+    const start = sheet.items.length;
+    let html = '', lastPass = null;
+    const cols = !items.some((p) => p.passage || p.sentence || p.handPic || p.prompt.length > 80 || p.options.some((x) => x.length > 24)) && items.length >= 6;
+    items.forEach((p, i) => {
+      const n = start + i + 1;
+      if (p.passage && pkey(p) !== lastPass) { html += textHtml(p.passage); lastPass = pkey(p); }
+      html += qHtml(p, n, o.st);
+      sheet.items.push(Object.assign({ n, type: p.write ? 'write' : 'mc', marks: 1 }, p));
+    });
+    sheet.parts.push({ role: 'questions', label: label || 'Questions', html: `${sheet.help && !label ? sheet.help : ''}<div class="ws-qs${cols ? ' cols' : ''}">${html}</div>`, cont: !!label });
+    const sc = scriptPart(sheet.items);
+    if (sc) sheet.script = sc;
+    if (o.a !== 0) sheet.answerList = sheet.items.map((p) => answerRow(p, p.n, opt.skillName ? (CUR().skill(p.skillId) || {}).name : ''));
+  }
+  function base(kind, id, o, extra) {
+    return Object.assign({ kind, id, o, code: codeOf(kind, id, o), parts: [], items: [], kindName: KIND[kind] }, extra);
+  }
+
+  /* ================= kind M: mixed revision ================= */
+  function mixedSkills(id) {
+    const all = CUR().allSkills().filter((k) => k.status === 'released');
+    let m;
+    if ((m = /^stage:([\w-]+)$/.exec(id))) return { list: all.filter((k) => k.stages.includes(m[1])), stage: m[1], title: `${STAGE_NAME(m[1])} mixed` };
+    if ((m = /^strand:([\w-]+):(\w+)$/.exec(id))) {
+      const g = CUR().GROUPS.find((x) => x.id === m[2]); if (!g) return null;
+      return { list: all.filter((k) => k.stages.includes(m[1]) && (CUR().topicOfSkill(k.id) || {}).group === m[2]), stage: m[1], title: `${STAGE_NAME(m[1])}: ${g.name.replace(/^[A-E]\. /, '')} mixed` };
+    }
+    if ((m = /^topic:([\w-]+)$/.exec(id))) {
+      const t = CUR().topic(m[1]); if (!t) return null;
+      return { list: t.skills.filter((k) => k.status === 'released'), stage: t.stages[0], title: `${t.name}: mixed` };
+    }
+    return null;
+  }
+  function buildMixed(id, o) {
+    const M = mixedSkills(id); if (!M || !M.list.length) return null;
+    const step = o.s | 0;
+    const sheet = base('M', id, o, { title: M.title, stage: M.stage, young: YOUNG.has(M.stage), sub: `${STAGE_NAME(M.stage)} · ${s_(M.list.length, 'skill')} · Step ${step + 1} of 6: ${G().STEP_NAMES[step]}` });
+    const r = FMG.rng(o.k ^ seedOf(id)), order = r.shuffle(M.list.map((k) => k.id));
+    const state = newState(Math.max(1, Math.ceil((o.n || 10) / 5))), items = [];
+    for (let j = 0, miss = 0; items.length < (o.n || 10) && miss < order.length * 2; j++) {
+      const sid = order[j % order.length];
+      state.i = Math.floor(j / order.length) * 2 + (j % 3);
+      const got = drawFor(sid, step, o.st, (o.k ^ seedOf(`${id}|${j}`)) >>> 0, 1, state);
+      if (got.length) { items.push(got[0]); miss = 0; } else miss++;
+    }
+    addQuestions(sheet, grouped(items), o, null, { skillName: true });
+    return sheet;
+  }
+
+  /* ================= kind P: practice papers ================= */
+  function linesFor(marks, stage) {
+    if (stage === 'gcse') return Math.min(130, Math.max(6, Math.round(marks * 3)));
+    if (stage === 'ks3') return Math.min(80, Math.max(4, Math.round(marks * 2.6)));
+    return Math.max(2, Math.round(marks * 2.2));
+  }
+  const mk = (m) => `<span class="ws-mk">${s_(m, 'mark')}</span>`;
+  function paperItemHtml(it, n, stage) {
+    const own = /^Question \d/.test(it.q || '');
+    const head = `<div class="ws-qn">${own ? '' : n}</div>`;
+    const qt = `<p class="ws-qt">${esc(it.q || it.ask || '')}</p>${it.mins ? `<div class="ws-mut">Suggested time: about ${it.mins} minutes</div>` : ''}`;
+    const sub = it.sub ? `<p class="ws-sent">${esc(it.sub)}</p>` : '';
+    let body = '';
+    switch (it.type) {
+      case 'mc': body = optsHtml(it.options); break;
+      case 'multi': body = `<div class="ws-mut">Tick ${it.pick}.</div><ul class="ws-opts wsc1">${it.opts.map((o) => `<li>${box} <span class="ws-ol">${esc(o)}</span></li>`).join('')}</ul>`; break;
+      case 'tf': body = `<table class="ws-tf"><thead><tr><th></th><th>True</th><th>False</th></tr></thead><tbody>${it.rows.map((r) => `<tr><td>${esc(r[0])}</td><td>${box}</td><td>${box}</td></tr>`).join('')}</tbody></table>`; break;
+      case 'order': body = `<ul class="ws-order">${it.shown.map((x) => `<li><span class="ws-nbox"></span> ${esc(x)}</li>`).join('')}</ul>`; break;
+      case 'copy': body = lines(1); break;
+      case 'short': body = lines(linesFor(it.marks, stage)); break;
+      case 'long': body = `${(it.tips || []).length ? `<ul class="ws-tips">${it.tips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}${lines(linesFor(it.marks, stage), 'long')}`; break;
+      case 'spell': body = `<p class="ws-qt ws-spell">${esc(it.gapped).replace(/_{3,}/, '<span class="ws-sgap"></span>')}</p>`; break;
+      default: body = '';
+    }
+    return `<div class="ws-q${it.type === 'long' ? ' long' : ''}">${head}<div class="ws-qb">${it.type === 'spell' ? '' : qt}${sub}${body}</div>${mk(it.marks)}</div>`;
+  }
+  function paperAnswer(it, n) {
+    const ev = [].concat(it.ev || []).filter(Boolean);
+    const evH = ev.length ? `<div class="ws-mut">In the text: ${ev.map((e) => `“${esc(e)}”`).join('; ')}</div>` : '';
+    let a = '', how = '';
+    switch (it.type) {
+      case 'mc': a = `${LET[it.answer]}&nbsp; ${esc(it.options[it.answer])}`; if (it.accept && it.accept.length) how = `Also accept: ${esc(it.accept.join(', '))}`; break;
+      case 'multi': a = it.right.map((i) => esc(it.opts[i])).join(' · '); how = it.perMark ? `1 mark for each true statement ticked (up to ${it.marks}).` : `All ${it.right.length} needed for ${s_(it.marks, 'mark')}.`; break;
+      case 'tf': a = it.rows.map((r) => `${esc(r[0])} <b>${r[1] ? 'True' : 'False'}</b>`).join('<br>'); how = it.marks > 1 ? `All correct: ${it.marks} marks. One mistake: ${it.marks - 1}.` : 'All four correct for 1 mark.'; break;
+      case 'order': a = it.items.map((x, i) => `${i + 1}. ${esc(x)}`).join('<br>'); how = 'All in the right order for 1 mark.'; break;
+      case 'copy': a = esc((it.acc || []).join(' / ')); how = 'Spelling must be copied exactly.'; break;
+      case 'spell': a = esc(it.word); how = it.caps ? 'Needs its capital letter.' : ''; break;
+      case 'short': a = esc(it.model || ''); how = it.scheme ? esc(it.scheme) : (it.keys || []).length ? `Look for: ${esc(it.keys.join(', '))}` : ''; break;
+      case 'long': a = ''; how = ''; break;
+      default: a = esc(XP().answerOf(it));
+    }
+    const lv = it.type === 'long' ? (it.parts || []).map((p) => `<div class="ws-lv"><b>${esc(p.name)} (${s_(p.marks, 'mark')})</b><table>${p.levels.map((L) => `<tr><td>${esc(L.name)}<br><span class="ws-mut">${L.lo === L.hi ? L.lo : `${L.lo}–${L.hi}`}</span></td><td>${esc(L.desc)}</td></tr>`).join('')}</table></div>`).join('') : '';
+    const why = it.why ? `<div class="ws-why">${esc(dec(it.why))}</div>` : '';
+    return `<li><span class="ws-an">${n}</span><div>${a ? `<b>${a}</b>` : ''}${how ? `<div class="ws-mut">${how}</div>` : ''}${why}${evH}${lv}<div class="ws-mut">${s_(it.marks, 'mark')}</div></div></li>`;
+  }
+  function buildPaper(id, o) {
+    const p = XP().build(id); if (!p) return null;
+    const stage = p.stage, young = stage === 'phon' || stage === 'ks1';
+    const sheet = base('P', id, o, { title: p.title, stage, young, sub: `${(XP().STAGES.find((x) => x.id === stage) || {}).long || ''}${p.minutes ? ` · about ${p.minutes} minutes` : ''} · ${s_(p.marks, 'mark')}`, note: p.note });
+    if (p.kind === 'phonics') return phonicsCheck(sheet, p);
+    const booklet = p.kind !== 'ks1read' && p.sections.some((s) => s.text);
+    if (booklet) sheet.parts.push({ role: 'booklet', label: 'Reading booklet', html: p.sections.filter((s) => s.text).map((s, i) => `<div class="${i ? 'ws-pb' : ''}">${textHtml(s.text)}</div>`).join('') });
+    let n = 0, html = '', spellScript = [];
+    const ans = [];
+    p.sections.forEach((s, si) => {
+      html += `<div class="ws-sec"><h3>${esc(s.name)}</h3>${s.minutes ? `<div class="ws-mut">Suggested time: about ${s.minutes} minutes</div>` : ''}${s.intro ? `<p class="ws-note">${esc(s.intro.replace(/Press 🔊 to hear the sentence, then type/, 'Listen to your grown-up read the sentence, then write').replace(/type the missing word/, 'write the missing word'))}</p>` : ''}${booklet && s.text ? `<p class="ws-note">Use the reading booklet: ${esc(s.text.title)}.</p>` : ''}</div>`;
+      if (!booklet && s.text) html += textHtml(s.text);
+      s.items.forEach((it) => {
+        n++;
+        if (it.type === 'spell') spellScript.push({ n, it });
+        html += paperItemHtml(it, n, stage);
+        sheet.items.push({ n, type: it.type, marks: it.marks, it, section: si });
+        ans.push(paperAnswer(it, n));
+      });
+    });
+    sheet.parts.push({ role: 'questions', label: booklet ? 'Answer booklet' : 'Questions', html: `${p.note ? `<p class="ws-note">${esc(p.note.replace(/Most questions mark themselves; for written answers you see the mark scheme and give the mark yourself or with a grown-up\./, 'A grown-up marks it with the mark scheme at the back.'))}</p>` : ''}${html}<div class="ws-total">Total: ______ / ${p.marks}</div>` });
+    if (spellScript.length) {
+      sheet.script = { role: 'script', label: 'Grown-up’s spelling script', adult: true, html: `<p class="ws-note">For each spelling: say the number, say the word, read the whole sentence, then say the word again. The learner writes the missing word in the gap. Allow time between spellings.</p><ol class="ws-script">${spellScript.map(({ n: k, it }) => `<li><span class="ws-an">${k}</span><div class="ws-say">Spelling ${k}: the word is <b>${esc(it.word)}</b>. ${esc(it.sentence)} The word is <b>${esc(it.word)}</b>.</div></li>`).join('')}</ol>` };
+    }
+    if (o.a !== 0) { sheet.answerList = ans; sheet.answerLabel = 'Mark scheme'; }
+    return sheet;
+  }
+  function phonicsCheck(sheet, p) {
+    const words = p.sections.flatMap((s, si) => s.items.map((it, i) => ({ it, si, k: si * 20 + i + 1 })));
+    let cards = '';
+    p.sections.forEach((s, si) => {
+      const ws = words.filter((w) => w.si === si);
+      for (let i = 0; i < ws.length; i += 4) {
+        cards += `<div class="ws-pcards${cards ? ' ws-pb' : ''}"><div class="ws-pch">${esc(s.name)} · words ${ws[i].k}–${ws[Math.min(ws.length, i + 4) - 1].k}</div>${ws.slice(i, i + 4).map((w) => `<div class="ws-pcard">${w.it.alien ? '<span class="ws-alien" aria-label="alien word">👽</span>' : ''}<span class="ws-pw">${esc(w.it.w)}</span><span class="ws-pk">${w.k}</span></div>`).join('')}</div>`;
+      }
+      ws.forEach((w) => sheet.items.push({ n: w.k, type: 'word', marks: 1, it: w.it }));
+    });
+    sheet.parts.push({ role: 'cards', label: 'Word cards for the learner', html: `<p class="ws-note">Show one page at a time. The learner reads each word aloud. Words with an alien 👽 are made-up “alien” words: read them by blending the sounds.</p>${cards}`, plain: true });
+    sheet.parts.push({ role: 'score', label: 'Grown-up’s scoring sheet', adult: true,
+      html: `<p class="ws-note">Tick ✓ each word read correctly and cross ✗ each one that is not. Accept any sensible way of reading an alien word that follows the sounds. Write what the learner said if it was wrong: it shows which sounds to practise.</p><table class="ws-score"><thead><tr><th>No.</th><th>Word</th><th>✓</th><th>✗</th><th>What the learner said</th></tr></thead><tbody>${words.map((w) => `<tr><td>${w.k}</td><td><b>${esc(w.it.w)}</b>${w.it.alien ? ' 👽' : ''}</td><td>${box}</td><td>${box}</td><td></td></tr>`).join('')}</tbody></table><div class="ws-total">Total: ______ / 40</div><p class="ws-note">The pass mark (threshold) has been 32 out of 40 every year so far. It is confirmed each June, so check with your school.</p>` });
+    return sheet;
+  }
+
+  /* ================= kind T: reading comprehension ================= */
+  function readItem(x, r) {
+    const b = { q: x.q, marks: x.m || 1, ev: x.ev, dom: x.dom };
+    if (x.t === 'mc') { const options = r.shuffle([x.a].concat(x.w.slice(0, 3))); return Object.assign(b, { type: 'mc', options, answer: options.indexOf(x.a) }); }
+    if (x.t === 'multi') return Object.assign(b, { type: 'multi', opts: x.opts, right: x.right, pick: x.right.length });
+    if (x.t === 'tf') return Object.assign(b, { type: 'tf', rows: x.rows });
+    if (x.t === 'order') { let shown = r.shuffle(x.items); if (shown.every((v, i) => v === x.items[i])) shown = shown.slice(1).concat(shown[0]); return Object.assign(b, { type: 'order', items: x.items, shown }); }
+    if (x.t === 'copy') return Object.assign(b, { type: 'copy', acc: x.acc });
+    if (x.t === 'short') return Object.assign(b, { type: 'short', keys: x.keys, need: x.need || 1, scheme: x.scheme, model: x.model });
+    if (x.t === 'long') return Object.assign(b, { type: 'long', tips: x.tips || [], parts: [{ name: 'Your answer', marks: x.m, levels: XP().levels(x.m, XP().DESC.evaluate) }] });
+    return null;
+  }
+  /* A–D version of a bank question (as reading-bank.js does for the comprehension screen) */
+  function toChoice(x) {
+    if (x.mc && x.mc.a && x.mc.w) return [x.mc.q || x.q, x.mc.a, x.mc.w.slice(0, 3)];
+    if (x.t === 'mc' && x.w && x.w.length >= 3) return [x.q, x.a, x.w.slice(0, 3)];
+    if (x.t === 'copy' && x.w && x.w.length >= 3) {
+      const q = x.q.replace(/Find and copy (one word|a word|a phrase|a group of words) that/, (m, what) => `Which ${what.replace(/^(one|a) /, '')} from the text`);
+      return q === x.q ? null : [/[?]$/.test(q) ? q : q.replace(/[.:]?$/, '?'), x.acc[0], x.w.slice(0, 3)];
+    }
+    if (x.t === 'order' && x.items.length === 4) return [x.mq || 'Which of these comes first in the text?', x.items[0], x.items.slice(1)];
+    if (x.t === 'tf') {
+      const T = x.rows.filter((r) => r[1]).map((r) => r[0]), F = x.rows.filter((r) => !r[1]).map((r) => r[0]);
+      if (T.length === 1 && F.length >= 3) return ['Which of these statements is true, according to the text?', T[0], F.slice(0, 3)];
+      if (F.length === 1 && T.length >= 3) return ['Which of these statements is NOT true, according to the text?', F[0], T.slice(0, 3)];
+    }
+    return null;
+  }
+  let TEXTS = null;
+  function allTexts() {
+    if (TEXTS) return TEXTS;
+    const out = [], D = FMG.EXAMDATA || {}, SP = FMG.SPAG || {};
+    (FMG.READBANK ? FMG.READBANK.TEXTS : []).forEach((t) => out.push({ id: t.id, title: t.title, level: t.level, kind: t.kind, source: t.source || null, text: t.text, qs: t.qs }));
+    (D.KS2READ || []).filter((P) => !P.bank).forEach((P) => P.texts.forEach((t) => out.push({ id: `ks2-${t.id}`, title: t.title, level: 'Year 5–6', kind: t.kind, text: t.text, qs: t.qs, from: P.title })));
+    (D.E11READ || []).filter((x) => !x.bank).forEach((t) => out.push({ id: `e11-${t.id}`, title: t.title, level: '11+', kind: t.kind, text: t.text,
+      qs: t.qs.map((x) => ({ t: 'mc', q: x.q, a: x.a, w: x.w, ev: x.ev, m: 1, wq: x.wq, acc: x.acc, need: x.need, wm: x.wm })) }));
+    (D.KS3 || []).filter((x) => !x.bank).forEach((t) => out.push({ id: `ks3-${t.id}`, title: t.title, level: 'KS3', kind: t.kind, text: t.text, qs: t.qs }));
+    (SP.PASSAGES || []).filter((p) => !p.bank).forEach((p) => out.push({ id: `p-${p.id}`, title: p.title, level: p.level, kind: p.kind, text: p.text, qs: p.qs.map(([q, a, w]) => ({ t: 'mc', q, a, w, m: 1 })) }));
+    TEXTS = out;
+    return out;
+  }
+  function buildText(id, o) {
+    const t = allTexts().find((x) => x.id === id); if (!t) return null;
+    const r = FMG.rng(seedOf('text-' + id));
+    const young = t.level === 'Year 1–2';
+    const abcd = o.st === 'd';
+    let items = abcd ? t.qs.map(toChoice).filter(Boolean).map(([q, a, w]) => { const options = r.shuffle([a].concat(w)); return { type: 'mc', q, options, answer: options.indexOf(a), marks: 1 }; })
+      : t.qs.map((x) => (x.wq && x.acc ? { type: 'short', q: x.wq, keys: x.acc, need: x.need || 1, scheme: `Accept answers that give this idea: ${x.acc.join(', ')}.`, model: x.wm || x.a, marks: 1, ev: x.ev } : readItem(x, r))).filter(Boolean);
+    if (abcd && !items.length) items = t.qs.map((x) => readItem(x, r)).filter(Boolean);
+    const sheet = base('T', id, o, { title: t.title, stage: t.level, young, sub: `Reading comprehension · ${t.level} · ${t.kind}${abcd ? ' · A–D questions' : ''}` });
+    const stage = t.level === 'KS3' ? 'ks3' : 'ks2';
+    const marks = items.reduce((a, x) => a + x.marks, 0);
+    sheet.parts.push({ role: 'text', label: 'The text', html: textHtml(t) });
+    sheet.parts.push({ role: 'questions', label: 'Questions', html: `<p class="ws-note">Read the text first. Look back at it to find and check every answer.</p>${items.map((it, i) => paperItemHtml(it, i + 1, stage)).join('')}<div class="ws-total">Total: ______ / ${marks}</div>` });
+    items.forEach((it, i) => sheet.items.push({ n: i + 1, type: it.type, marks: it.marks, it }));
+    if (o.a !== 0) { sheet.answerList = items.map((it, i) => paperAnswer(it, i + 1)); sheet.answerLabel = 'Answers'; }
+    return sheet;
+  }
+
+  /* ================= kind W: writing tasks ================= */
+  function storyMountain(labels) {
+    const n = labels.length, W = 760, Hh = 300;
+    const pts = labels.map((_, i) => { const x = 90 + (i * (W - 180)) / Math.max(1, n - 1); const peak = (n - 1) * (n >= 5 ? 0.6 : 0.5); const y = Hh - 40 - (i <= peak ? (i / peak) : ((n - 1 - i) / (n - 1 - peak))) * 200; return [x, y]; });
+    const path = `M20 ${Hh - 20} ` + pts.map((p) => `L${n1(p[0])} ${n1(p[1])}`).join(' ') + ` L${W - 20} ${Hh - 20}`;
+    return `<div class="ws-mtn"><svg viewBox="0 0 ${W} ${Hh}" class="ws-mtn-svg" aria-hidden="true"><path d="${path}" class="ws-mtn-line"/>${pts.map((p, i) => { const short = String(labels[i]).split(/[:?(]/)[0].trim(); return `<circle cx="${n1(p[0])}" cy="${n1(p[1])}" r="15" class="ws-mtn-dot"/><text x="${n1(p[0])}" y="${n1(p[1]) + 7}" class="ws-mtn-n">${i + 1}</text>${short.length <= 26 ? `<text x="${n1(p[0])}" y="${n1(p[1]) - 24}" class="ws-mtn-l">${esc(short)}</text>` : ''}`; }).join('')}</svg>
+      <div class="ws-plan">${labels.map((l, i) => `<div class="ws-pbx"><div class="ws-pbl">${i + 1}. ${esc(l)}</div>${lines(3, 'tight')}</div>`).join('')}</div></div>`;
+  }
+  function peelFrame(labels) {
+    return `<div class="ws-plan">${labels.map((l, i) => {
+      const peel = /reason|point|counter|first|second/i.test(l);
+      return `<div class="ws-pbx"><div class="ws-pbl">${i + 1}. ${esc(l)}</div>${peel ? `<table class="ws-peel">${[['P', 'Point'], ['E', 'Evidence'], ['E', 'Explain'], ['L', 'Link']].map(([a, b]) => `<tr><th>${a}<span>${b}</span></th><td></td></tr>`).join('')}</table>` : lines(2, 'tight')}</div>`;
+    }).join('')}</div>`;
+  }
+  function buildWrite(id, o) {
+    const W = FMG.WRITING; const t = W && W.TASKS.find((x) => x.id === id); if (!t) return null;
+    const young = t.stage === 'ks1';
+    const stageName = { ks1: 'Years 1–2', lks2: 'Years 3–4', uks2: 'Years 5–6', ks3: 'KS3 (Years 7–9)', gcse: 'GCSE English Language' }[t.stage] || t.stage;
+    const sheet = base('W', id, o, { title: t.title, stage: t.stage, young, sub: `Writing task · ${stageName} · ${t.form}` });
+    const kind = t.tool && t.tool.id === 'story' ? 'mountain' : t.tool && t.tool.id === 'peel' ? 'peel' : 'boxes';
+    const frame = kind === 'mountain' ? storyMountain(t.plan) : kind === 'peel' ? peelFrame(t.plan) : `<div class="ws-plan">${t.plan.map((l, i) => `<div class="ws-pbx"><div class="ws-pbl">${i + 1}. ${esc(l)}</div>${lines(3, 'tight')}</div>`).join('')}</div>`;
+    sheet.parts.push({ role: 'task', label: 'The task and your plan', html: `<div class="ws-task"><p class="ws-qt">${esc(t.prompt)}</p><table class="ws-facts"><tr><th>Form</th><td>${esc(t.form)}</td><th>Purpose</th><td>${esc(t.purpose)}</td></tr><tr><th>Reader</th><td>${esc(t.audience)}</td><th>Aim for</th><td>${t.words[0]}–${t.words[1]} words · about ${t.mins} minutes</td></tr></table>${t.draft ? `<div class="ws-draft"><div class="ws-hh">The draft to improve</div><p>${esc(t.draft).replace(/\n/g, '<br>')}</p></div>` : ''}${(t.tips || []).length ? `<div class="ws-help"><div class="ws-hh">Tips</div><ul>${t.tips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}</div><h3 class="ws-h3">Plan it${kind === 'mountain' ? ' on the story mountain' : kind === 'peel' ? ' (PEEL: Point, Evidence, Explain, Link)' : ''}</h3>${frame}` });
+    const n = Math.ceil(t.words[1] / (young ? 5 : t.stage === 'lks2' ? 7 : 9)) + 6;
+    sheet.parts.push({ role: 'lines', label: 'Write it', html: `<div class="ws-wtitle">Title: <span class="ws-wline" style="width:120mm"></span></div>${lines(n, 'write')}` });
+    sheet.lineCount = n;
+    const parts = W.MARKING[t.stage].parts.map(([name, marks, k]) => ({ name, marks, levels: XP().levels(marks, t.stage === 'ks3' || t.stage === 'gcse' ? XP().DESC[k] : W.BANDS[t.stage][k]) }));
+    sheet.parts.push({ role: 'checklist', label: 'Check it', html: `<p class="ws-note">Read your writing again. Tick each one you have done. A grown-up can tick the second box.</p><table class="ws-check"><thead><tr><th>Success criteria</th><th>Me</th><th>Grown-up</th></tr></thead><tbody>${t.criteria.map((c) => `<tr><td>${esc(c)}</td><td>${box}</td><td>${box}</td></tr>`).join('')}</tbody></table>
+      <h3 class="ws-h3">Mark it</h3><p class="ws-note">${esc(W.MARKING[t.stage].note)}</p>${parts.map((p) => `<div class="ws-lv"><b>${esc(p.name)} (${s_(p.marks, 'mark')})</b> &nbsp; Mark: ______ / ${p.marks}<table>${p.levels.map((L) => `<tr><td>${esc(L.name)}<br><span class="ws-mut">${L.lo === L.hi ? L.lo : `${L.lo}–${L.hi}`}</span></td><td>${esc(L.desc)}</td></tr>`).join('')}</table></div>`).join('')}` });
+    if (o.a !== 0) sheet.model = { role: 'model', label: 'Model answer', adult: true, html: `<p class="ws-note">Look at this only after you have written and checked your own.</p><div class="ws-text">${String(t.model.text).split(/\n\s*\n/).map((p) => `<p>${esc(p).replace(/\n/g, '<br>')}</p>`).join('')}</div>${(t.model.notes || []).length ? `<div class="ws-help"><div class="ws-hh">What makes it work</div><ul>${t.model.notes.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}` };
+    return sheet;
+  }
+
+  /* ================= kind R: tracing ================= */
+  const ABC = 'abcdefghijklmnopqrstuvwxyz'.split(''), CAPS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), DIG = '0123456789'.split('');
+  const TRACE_SETS = [
+    { id: 'pat', name: 'Patterns', stage: 'eyfs', families: () => [], keys: () => H().PAT_ORDER.map((p) => `pat:${p}`) },
+    { id: 'print', name: 'Print letters', stage: 'eyfs', families: () => FMG.trace.FAMILIES.map((f) => f.name), keys: (f) => (f !== '' && FMG.trace.FAMILIES[f] ? FMG.trace.FAMILIES[f].letters.split(' ') : ABC) },
+    { id: 'caps', name: 'Capital letters', stage: 'ks1', families: () => [], keys: () => CAPS.map((c) => `print:${c}`) },
+    { id: 'digits', name: 'Digits 0–9', stage: 'eyfs', families: () => [], keys: () => DIG.map((c) => `print:${c}`) },
+    { id: 'words', name: 'Print words', stage: 'ks1', families: () => [], own: true, def: 'cat, dog, the, and, sun, fish', keys: (f, t) => words(t || 'cat, dog, the, and, sun, fish').map((w) => `print:${w}`) },
+    { id: 'pc', name: 'Pre-cursive letters', stage: 'ks1', families: () => FMG.trace.FAMILIES.map((f) => f.name), keys: (f) => (f !== '' && FMG.trace.FAMILIES[f] ? FMG.trace.FAMILIES[f].letters.split(' ') : ABC).map((l) => `pc:${l}`) },
+    { id: 'joins', name: 'The four joins', stage: 'ks1', families: () => Object.keys(FMG.handSkills.JOINS).map((k) => FMG.handSkills.JOIN_NAME[k] || k), keys: (f) => { const J = FMG.handSkills.JOINS, ks = Object.keys(J); return (f !== '' && ks[f] ? J[ks[f]] : ks.flatMap((k) => J[k].slice(0, 3))).map((p) => `j:${p}`); } },
+    { id: 'joined', name: 'Joined words', stage: 'lks2', families: () => [], own: true, def: 'the, and, little, happy, garden, because, look at the moon', keys: (f, t) => words(t || 'the, and, little, happy, garden, because, look at the moon').map((w) => `j:${w}`) },
+    { id: 'cs', name: 'Calligraphy: basic strokes', stage: 'lks2', families: () => [], keys: () => ['down', 'across', 'slope', 'hair', 'arch', 'branch', 'o'].map((k) => `cs:${k}`) },
+    { id: 'it', name: 'Calligraphy: italic letters', stage: 'uks2', families: () => H().IT_FAMILIES.map((f) => f.name), keys: (f) => (f !== '' && H().IT_FAMILIES[f] ? H().IT_FAMILIES[f].letters.split(' ') : ABC).map((l) => `it:${l}`) },
+    { id: 'itcaps', name: 'Calligraphy: italic capitals', stage: 'uks2', families: () => [], keys: () => CAPS.map((l) => `it:${l}`) },
+    { id: 'itwords', name: 'Calligraphy: words and lines', stage: 'uks2', families: () => [], own: true, def: 'minim, moon, pen and ink, Kit writes with care', keys: (f, t) => words(t || 'minim, moon, pen and ink, Kit writes with care').map((w) => `it:${w}`) },
+  ];
+  const words = (t) => String(t || '').split(/[,\n;]+/).map((w) => w.trim().replace(/\s+/g, ' ')).filter(Boolean).slice(0, 24);
+  function buildTrace(id, o) {
+    const S = TRACE_SETS.find((x) => x.id === id); if (!S) return null;
+    const fam = o.f === '' || o.f == null ? '' : +o.f;
+    const keys = S.keys(fam, S.own ? o.t : '').filter((k) => H().has(k));
+    if (!keys.length) return null;
+    const famName = fam !== '' ? (S.families()[fam] || '') : '';
+    const guide = o.g || 'full';
+    const sheet = base('R', id, o, { title: `${S.name}${famName ? ': ' + famName : ''}`, stage: S.stage, young: YOUNG.has(S.stage), sub: `Tracing · ${guide === 'full' ? 'Trace with dotted guides' : guide === 'faded' ? 'Faded guides' : 'Copy from the model'} · ${s_(keys.length, 'row')}` });
+    const width = ['pat', 'print', 'caps', 'digits', 'words'].includes(id) ? 500 : 600;
+    sheet.parts.push({ role: 'trace', label: 'Tracing', html: traceIntro(guide) + (id === 'cs' || id === 'it' || id === 'itcaps' || id === 'itwords' ? '<p class="ws-note">Hold the pen at 45°. The little squares at the left are nib widths: the x-height is five nib widths. Keep the slant lines as your guide.</p>' : '') + keys.map((k) => traceBlock(k, guide, { width })).join('') });
+    sheet.traceCount = keys.length;
+    return sheet;
+  }
+
+  /* ================= kind X: phonics extras ================= */
+  function soundBtn(g) {
+    const show = g.replace('*', '');
+    if (/^[a-z]-e$/.test(g)) return `<svg viewBox="0 0 120 70" class="ws-gsvg"><text x="60" y="38" class="ws-gch">${esc(show.replace('-', '_'))}</text><path d="M30 50 Q60 80 90 50" class="ws-gbtn arc"/></svg>`;
+    const w = Math.max(60, show.length * 34 + 26);
+    return `<svg viewBox="0 0 ${w} 70" class="ws-gsvg"><text x="${w / 2}" y="38" class="ws-gch">${esc(show)}</text>${show.length > 1 ? `<line x1="${w / 2 - show.length * 15}" x2="${w / 2 + show.length * 15}" y1="56" y2="56" class="ws-gbtn line"/>` : `<circle cx="${w / 2}" cy="56" r="5" class="ws-gbtn"/>`}</svg>`;
+  }
+  const PH_STAGES = () => FMG.PHONICS.STAGES;
+  function extraList() {
+    const P = FMG.PHONICS, out = [];
+    PH_STAGES().forEach((s) => { const gr = P.UNITS.filter((u) => u.stage === s.id).flatMap((u) => u.gr); if (gr.length) { out.push({ id: `mat-${s.id}`, name: `${s.name} sound mat`, sub: s.when }); out.push({ id: `gcards-${s.id}`, name: `${s.name} sound cards to cut out`, sub: s.when }); } });
+    PH_STAGES().forEach((s) => { const t = P.UNITS.filter((u) => u.stage === s.id).flatMap((u) => (u.tricky ? u.tricky.split(' ') : [])); if (t.length) out.push({ id: `tcards-${s.id}`, name: `${s.name} tricky word cards`, sub: s.when }); });
+    P.UNITS.filter((u) => u.words).forEach((u) => out.push({ id: `wcards-${u.id}`, name: `Word cards with sound buttons: ${u.title}`, sub: (PH_STAGES().find((s) => s.id === u.stage) || {}).name }));
+    P.CARDS.forEach((c) => out.push({ id: `kids-${c.id}`, name: `Picture flashcards: ${c.name}`, sub: 'Early Years' }));
+    return out;
+  }
+  function cardsGrid(cards, per, cls) {
+    let html = '';
+    for (let i = 0; i < cards.length; i += per) html += `<div class="ws-cut ${cls}${i ? ' ws-pb' : ''}">${cards.slice(i, i + per).map((c) => `<div class="ws-ccard">${c}</div>`).join('')}</div>`;
+    return `<p class="ws-note ws-scis">✂ Cut along the dashed lines.</p>${html}`;
+  }
+  function buildExtra(id, o) {
+    const P = FMG.PHONICS, E = FMG.english;
+    const m = /^(mat|gcards|tcards|wcards|kids)-(\w+)$/.exec(id); if (!m) return null;
+    const [, kind, key] = m;
+    const st = PH_STAGES().find((s) => s.id === key);
+    const L = extraList().find((x) => x.id === id); if (!L) return null;
+    const sheet = base('X', id, o, { title: L.name, stage: 'eyfs', young: true, sub: `Phonics extras${L.sub ? ' · ' + L.sub : ''}` });
+    if (kind === 'mat' && st) {
+      const gr = P.UNITS.filter((u) => u.stage === key).flatMap((u) => u.gr);
+      const tricky = P.UNITS.filter((u) => u.stage === key).flatMap((u) => (u.tricky ? u.tricky.split(' ') : []));
+      sheet.parts.push({ role: 'mat', label: 'Sound mat', html: `<div class="ws-mat">${gr.map((g) => { const [w, e] = P.G[g] || ['', '']; return `<div class="ws-mt"><div class="ws-mtg">${soundBtn(g)}</div><div class="ws-mte" aria-hidden="true">${esc(e)}</div><div class="ws-mtw">${esc(w)}</div></div>`; }).join('')}</div>${tricky.length ? `<div class="ws-help"><div class="ws-hh">Tricky words in ${esc(st.name)}</div><p class="ws-tw">${tricky.map(esc).join(' &nbsp; ')}</p></div>` : ''}` });
+      sheet.cardCount = gr.length;
+    } else if (kind === 'gcards' && st) {
+      const gr = P.UNITS.filter((u) => u.stage === key).flatMap((u) => u.gr);
+      sheet.parts.push({ role: 'cards', label: 'Sound cards', html: cardsGrid(gr.map((g) => soundBtn(g)), 12, 'g12') });
+      sheet.cardCount = gr.length;
+    } else if (kind === 'tcards' && st) {
+      const t = P.UNITS.filter((u) => u.stage === key).flatMap((u) => (u.tricky ? u.tricky.split(' ') : []));
+      sheet.parts.push({ role: 'cards', label: 'Tricky word cards', html: cardsGrid(t.map((w) => `<span class="ws-cw">${esc(w)}</span>`), 12, 'g12') });
+      sheet.cardCount = t.length;
+    } else if (kind === 'wcards') {
+      const u = P.UNITS.find((x) => x.id === key); if (!u) return null;
+      const ws = E.wordsOf(u);
+      sheet.parts.push({ role: 'cards', label: 'Word cards', html: `<p class="ws-note">A dot under a letter is one sound. A line under two or three letters is one sound. Say each sound, then push them together to read the word.</p>${cardsGrid(ws.map((w) => FMG.viz.render({ type: 'en-buttons', gs: E.split(w, u.id) })), 8, 'g8')}` });
+      sheet.cardCount = ws.length;
+    } else if (kind === 'kids') {
+      const set = P.CARDS.find((c) => c.id === key); if (!set) return null;
+      sheet.parts.push({ role: 'cards', label: 'Picture flashcards', html: cardsGrid(set.cards.map(([w, e]) => `<span class="ws-ke" aria-hidden="true">${esc(e)}</span><span class="ws-kw">${esc(w)}</span>`), 6, 'g6') });
+      sheet.cardCount = set.cards.length;
+    } else return null;
+    return sheet;
+  }
+
+  /* ================= build and render ================= */
+  function build(kind, id, o) {
+    if (typeof kind === 'string' && kind.includes('~')) { const c = parseCode(kind); if (!c) return null; kind = c.kind; id = c.id; o = c.o; }
+    o = Object.assign(parseOpts(''), o || {});
+    try {
+      if (kind === 'S') return buildSkill(id, o);
+      if (kind === 'M') return buildMixed(id, o);
+      if (kind === 'P') return buildPaper(id, o);
+      if (kind === 'T') return buildText(id, o);
+      if (kind === 'W') return buildWrite(id, o);
+      if (kind === 'R') return buildTrace(id, o);
+      if (kind === 'X') return buildExtra(id, o);
+    } catch (e) { if (root.WS_DEBUG) throw e; return null; }
+    return null;
+  }
+  /* every page group in print order: child's pages, then the grown-up's script, then the answers or model */
+  function partsOf(sh) {
+    const ps = sh.parts.slice();
+    if (sh.script) ps.push(sh.script);
+    if (sh.answerList) ps.push({ role: 'answers', label: sh.answerLabel || 'Answers', adult: true, html: `<ol class="ws-ans">${sh.answerList.join('')}</ol>` });
+    if (sh.model) ps.push(sh.model);
+    return ps;
+  }
+  const LOGO = '<svg viewBox="0 0 32 32" class="ws-logo" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9"/><text x="16" y="21.5" text-anchor="middle" font-size="14" font-weight="800">Aa</text></svg>';
+  function render(sh, ropt = {}) {
+    if (!sh) return '';
+    const name = ropt.name ? esc(ropt.name) : '';
+    const head = (p) => `<header class="ws-head"><div class="ws-hl">${LOGO}<span>Family English</span></div><div class="ws-hm"><div class="ws-title">${esc(sh.title)}${p.label && p.role !== 'questions' ? ` <span class="ws-part">· ${esc(p.label)}</span>` : ''}</div><div class="ws-sub">${esc(sh.sub || '')}</div></div>${p.adult ? '<div class="ws-hr ws-adult">For the grown-up</div>' : `<div class="ws-hr"><span>Name: <span class="ws-fill">${name}</span></span><span>Date: <span class="ws-fill short"></span></span></div>`}</header>`;
+    const foot = `<footer class="ws-foot"><span>Sheet code: <b>${esc(sh.code)}</b></span><span>Family English · ${esc(sh.kindName)}</span></footer>`;
+    const pages = partsOf(sh).map((p, i) => `<section class="ws-sheet ws-${p.role}${p.cont ? ' cont' : ''}" data-role="${p.role}">${p.cont ? `<h3 class="ws-h3">${esc(p.label)}</h3>` : head(p)}${p.html}${foot}</section>`).join('');
+    const pageStyle = `<style class="ws-pagestyle">@media print{@page{size:A4;margin:14mm;@bottom-left{content:"Family English · Sheet code ${sh.code.replace(/["\\]/g, '')}";font:9pt sans-serif;color:#444}@bottom-right{content:"Page " counter(page) " of " counter(pages);font:9pt sans-serif;color:#444}}}</style>`;
+    return `<div class="ws-doc${sh.young ? ' ws-young' : ''}" data-code="${esc(sh.code)}" data-kind="${sh.kind}">${pageStyle}${pages}</div>`;
+  }
+  function renderCode(code, ropt) { return render(build(code), ropt); }
+
+  /* ================= the library's lists ================= */
+  const EXAM_FOR = { eyfs: ['phon'], ks1: ['phon', 'ks1'], lks2: ['ks2'], uks2: ['ks2'], e11: ['e11', 'ks2'], ks3: ['ks3'], 'gcse-lang': ['gcse'], 'gcse-lit': ['gcse'] };
+  const TEXT_LEVELS = { eyfs: ['Year 1–2'], ks1: ['Year 1–2'], lks2: ['Year 3–4'], uks2: ['Year 5–6'], e11: ['11+', 'Year 5–6'], ks3: ['KS3'], 'gcse-lang': ['KS3'], 'gcse-lit': ['KS3'] };
+  const WRITE_STAGES = { eyfs: ['ks1'], ks1: ['ks1'], lks2: ['lks2'], uks2: ['uks2'], e11: ['uks2'], ks3: ['ks3'], 'gcse-lang': ['gcse'], 'gcse-lit': ['gcse'] };
+  function papersFor(examStage) {
+    const X = XP(), cat = X.catalogue(examStage), out = [];
+    cat.fixed.forEach((f) => out.push({ id: f.id, title: f.title, sub: f.sub }));
+    cat.numbered.forEach(([prefix, name, sub]) => [1, 2, 3].forEach((n) => out.push({ id: `${prefix}-${n}`, title: `${name} ${X.pad(n)}`, sub, family: prefix })));
+    (cat.sections || []).forEach((s) => out.push({ id: `${s.prefix}-1`, title: `11+ section: ${s.name}`, sub: 'one timed section', family: s.prefix }));
+    if (cat.lang) cat.lang.forEach((list, i) => list.forEach((x) => out.push({ id: x.id, title: `Language Paper ${i + 1}: ${x.title}`, sub: x.sub })));
+    if (cat.lit) cat.lit.forEach((g) => { g.essays.forEach((e) => out.push({ id: e.id, title: `${g.lit.title} essay`, sub: e.title })); out.push({ id: `know-${g.lit.id}-1`, title: `${g.lit.title}: knowledge test`, sub: 'quotations, plot, characters and context', family: `know-${g.lit.id}` }); });
+    if (cat.poems) cat.poems.forEach((x) => out.push({ id: x.id, title: 'Poetry comparison essay', sub: x.title }));
+    return out;
+  }
+  function library(stage) {
+    const C = CUR(), released = C.allSkills().filter((k) => k.status === 'released' && k.stages.includes(stage));
+    const strands = C.GROUPS.map((g) => ({ g, topics: C.TOPICS.filter((t) => t.group === g.id).map((t) => ({ t, skills: t.skills.filter((k) => k.status === 'released' && k.stages.includes(stage)) })).filter((x) => x.skills.length) })).filter((x) => x.topics.length);
+    return {
+      stage, released,
+      mixed: released.length ? [{ id: `stage:${stage}`, name: `${STAGE_NAME(stage)} mixed`, n: released.length }].concat(strands.map((s) => ({ id: `strand:${stage}:${s.g.id}`, name: `${s.g.name.replace(/^[A-E]\. /, '')} mixed`, n: s.topics.reduce((a, t) => a + t.skills.length, 0) }))) : [],
+      strands,
+      papers: (EXAM_FOR[stage] || []).map((x) => ({ stage: XP().STAGES.find((s) => s.id === x), list: papersFor(x) })),
+      texts: allTexts().filter((t) => (TEXT_LEVELS[stage] || []).includes(t.level)),
+      writing: (FMG.WRITING ? FMG.WRITING.TASKS : []).filter((t) => (WRITE_STAGES[stage] || []).includes(t.stage)),
+      trace: TRACE_SETS,
+      extras: stage === 'eyfs' || stage === 'ks1' ? extraList() : [],
+    };
+  }
+
+  FMG.worksheets = { build, render, renderCode, codeOf, parseCode, parseOpts, fromGen, drawFor, heardAllowed, library, allTexts, papersFor, TRACE_SETS, extraList, traceBlock, KIND, isHand, mixedSkills, partsOf, seedOf };
+
+  /* ================= screens (browser only) ================= */
+  if (typeof document === 'undefined') return;
+  const A = () => FMG.app;
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+  const R = (re, fn) => { FMG.extRoutes = FMG.extRoutes || []; FMG.extRoutes.push([re, fn]); };
+  const href = (code) => `#/worksheets/sheet/${encodeURIComponent(code)}`;
+  const stepOf = (p, id) => { if (!p) return 0; const st = (p.prefs.steps || {})[id]; return st != null ? st : G().stepOfLevel((p.prefs.levels || {})[id] || 'routine'); };
+  /* links for app.js (skill and topic pages, home, parent area) */
+  function linkSkill(id) { const p = A() && A().profile(); return href(codeOf('S', id, { s: stepOf(p, id), n: 10, st: 'w', a: 1, h: 1, k: FMG.newSeed() })); }
+  function linkTopic(tid) { return href(codeOf('M', `topic:${tid}`, { s: 0, n: 10, st: 'w', a: 1, k: FMG.newSeed() })); }
+  Object.assign(FMG.worksheets, { linkSkill, linkTopic, href });
+
+  const setOn = (on) => document.documentElement.classList.toggle('ws-on', !!on);
+  root.addEventListener('hashchange', () => { if (!/^#worksheets/.test(location.hash)) setOn(false); });
+
+  function libraryPage(stageArg) {
+    const p = A().profile(), C = CUR();
+    const stage = C.STAGES.some((s) => s.id === stageArg) ? stageArg : (p ? p.route : 'ks1');
+    const Lb = library(stage), k = () => FMG.newSeed();
+    const card = (hrefS, title, sub) => `<a class="ws-lcard" href="${hrefS}"><b>${esc(title)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</a>`;
+    const sec = (title, inner, open) => (inner ? `<details class="ws-lsec card"${open ? ' open' : ''}><summary><h2 class="h3">${title}</h2></summary>${inner}</details>` : '');
+    const mixed = Lb.mixed.map((m) => card(href(codeOf('M', m.id, { s: 0, n: 20, st: 'w', a: 1, k: k() })), m.name, s_(m.n, 'skill'))).join('');
+    const skills = Lb.strands.map((s) => `<h3 class="ws-lh">${esc(s.g.name)}</h3>${s.topics.map((t) => `<div class="ws-lt"><div class="ws-ltn">${esc(t.t.name)} <a class="linkbtn small" href="${href(codeOf('M', `topic:${t.t.id}`, { s: 0, n: 10, st: 'w', a: 1, k: k() }))}">topic mix</a></div><div class="ws-lgrid">${t.skills.map((sk) => card(href(codeOf('S', sk.id, { s: stepOf(p, sk.id), n: 10, st: 'w', a: 1, h: 1, k: k() })), sk.name, isHand(sk.id) ? 'tracing sheet' : '')).join('')}</div></div>`).join('')}`).join('');
+    const papers = Lb.papers.map((g) => `<h3 class="ws-lh">${esc(g.stage ? g.stage.long : '')}</h3><div class="ws-lgrid">${g.list.map((x) => card(href(codeOf('P', x.id, { a: 1 })), x.title, x.sub)).join('')}</div>`).join('');
+    const texts = Lb.texts.length ? `<div class="ws-lgrid">${Lb.texts.map((t) => card(href(codeOf('T', t.id, { st: 'w', a: 1 })), t.title, `${t.level} · ${t.kind}`)).join('')}</div>` : '';
+    const writing = Lb.writing.length ? `<div class="ws-lgrid">${Lb.writing.map((t) => card(href(codeOf('W', t.id, { a: 1 })), t.title, t.form)).join('')}</div>` : '';
+    const trace = `<div class="ws-lgrid">${TRACE_SETS.map((s) => card(href(codeOf('R', s.id, { g: 'full' })), s.name, STAGE_NAME(s.stage))).join('')}</div>`;
+    const extras = Lb.extras.length ? `<div class="ws-lgrid">${Lb.extras.map((x) => card(href(codeOf('X', x.id, {})), x.name, x.sub)).join('')}</div>` : '';
+    A().shell(`<section class="ws-lib">
+      <div class="ws-lhead"><h1>🖨 Worksheets</h1><p class="muted">Printable sheets made from the app’s own questions and texts. Choose a sheet, set the options, then print it or save it as a PDF. Each sheet has a code, so you can print the same sheet again.</p></div>
+      <div class="chips" role="tablist" aria-label="Stage">${C.STAGES.map((s) => `<a class="chip${s.id === stage ? ' on' : ''}" role="tab" aria-selected="${s.id === stage}" href="#/worksheets/lib/${s.id}">${esc(s.name)}</a>`).join('')}</div>
+      ${sec('Mixed revision', mixed ? `<div class="ws-lgrid">${mixed}</div>` : '<p class="muted">No released skills at this stage yet.</p>', true)}
+      ${sec('One skill at a time', skills, false)}
+      ${sec('Practice papers', papers, false)}
+      ${sec('Reading comprehension', texts, false)}
+      ${sec('Writing tasks', writing, false)}
+      ${sec('Tracing and handwriting', trace, stage === 'eyfs')}
+      ${sec('Phonics extras: sound mats and flashcards', extras, false)}
+      <section class="card soft"><h2 class="h3">Print a sheet again</h2><p class="small muted">Type the sheet code from the bottom of a printed sheet.</p><div class="row"><input id="ws-code" placeholder="e.g. S~ph-p2a~s0.n10.w.a1.h1.k1" aria-label="Sheet code" style="flex:1;min-width:12rem"><button class="btn primary" id="ws-go">Open</button></div><p class="small" id="ws-codemsg" role="status"></p></section>
+    </section>`, { back: '#/home', title: 'Worksheets', cls: 'wide' });
+    const go = () => { const v = $('#ws-code').value.trim(); const c = parseCode(v); if (!c || !build(v)) { $('#ws-codemsg').textContent = 'That code does not match a sheet. Check it and try again.'; return; } A().go(`#/worksheets/sheet/${encodeURIComponent(v)}`); };
+    $('#ws-go').onclick = go; $('#ws-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
+  }
+
+  /* the options panel and the preview */
+  function sheetPage(code) {
+    const c = parseCode(code);
+    const sh = c && build(code);
+    if (!sh) { A().shell(`<section class="card"><h1>Worksheet not found</h1><p>That sheet code does not match a sheet.</p><a class="btn primary" href="#/worksheets">All worksheets</a></section>`, { back: '#/worksheets', title: 'Worksheets' }); return; }
+    const { kind, id } = c, o = c.o;
+    let nameOnSheet = '';
+    const seg = (key, list, cur) => `<div class="seg ws-seg" role="radiogroup" data-key="${key}">${list.map(([v, n]) => `<button type="button" role="radio" aria-selected="${String(v) === String(cur)}" aria-checked="${String(v) === String(cur)}" data-v="${v}">${esc(n)}</button>`).join('')}</div>`;
+    const row = (label, inner) => `<div class="ws-opt"><span class="ws-optl">${label}</span>${inner}</div>`;
+    const ctl = [];
+    if (kind === 'S' || kind === 'M') {
+      const names = [0, 1, 2, 3, 4, 5].map((i) => [i, `${i + 1}. ${kind === 'S' ? stepName(id, i) : G().STEP_NAMES[i]}`]);
+      ctl.push(row('Level (ladder step)', seg('s', names, o.s)));
+      ctl.push(row(kind === 'S' && isHand(id) ? 'How much' : 'Questions', seg('n', [[10, '10'], [20, '20'], [30, '30']], o.n)));
+      ctl.push(row('Answer style', seg('st', [['w', 'Write-in'], ['d', 'A–D tick boxes']], o.st)));
+      if (kind === 'S' && !isHand(id)) ctl.push(row('Remember box', seg('h', [[1, 'Yes'], [0, 'No']], o.h)));
+      if (kind === 'S' && isHand(id)) ctl.push(row('Tracing guide', seg('g', [['full', 'Dotted to trace'], ['faded', 'Faded'], ['none', 'Copy only']], o.g || 'full')));
+    }
+    if (kind === 'T') ctl.push(row('Questions', seg('st', [['w', 'As in the test (mixed kinds)'], ['d', 'A–D only']], o.st)));
+    if (kind === 'P') {
+      const m = /^(.*?)-(\d+)$/.exec(id); const numbered = m && Object.values(XP().NUMBERED).some((l) => l.some(([pre]) => pre === m[1])) || (m && /^(e11sec-\w+|know-\w+)$/.test(m[1]));
+      if (numbered) ctl.push(row('Paper number', `<span class="ws-num"><button type="button" class="btn ghost sm" data-pn="-1" aria-label="Previous paper">‹</button><b>${XP().pad(+m[2])}</b><button type="button" class="btn ghost sm" data-pn="1" aria-label="Next paper">›</button></span>`));
+    }
+    if (kind === 'R') {
+      const S = TRACE_SETS.find((x) => x.id === id);
+      ctl.push(row('Set', `<select id="ws-set" aria-label="Tracing set">${TRACE_SETS.map((x) => `<option value="${x.id}"${x.id === id ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select>`));
+      const fams = S.families();
+      if (fams.length) ctl.push(row('Letters', `<select id="ws-fam" aria-label="Letter family"><option value="">All of them</option>${fams.map((f, i) => `<option value="${i}"${String(o.f) === String(i) ? ' selected' : ''}>${esc(f)}</option>`).join('')}</select>`));
+      if (S.own) ctl.push(row('Words (commas between)', `<input id="ws-words" value="${esc(o.t || S.def)}" aria-label="Your own words" style="min-width:14rem">`));
+      ctl.push(row('Guide', seg('g', [['full', 'Dotted to trace'], ['faded', 'Faded'], ['none', 'Copy only']], o.g || 'full')));
+    }
+    if (kind === 'X') ctl.push(row('Sheet', `<select id="ws-x" aria-label="Which sheet">${extraList().map((x) => `<option value="${x.id}"${x.id === id ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select>`));
+    if (kind !== 'R' && kind !== 'X') ctl.push(row(kind === 'W' ? 'Model answer page' : kind === 'P' ? 'Mark scheme' : 'Answer sheet', seg('a', [[1, 'Include'], [0, 'Leave out']], o.a)));
+    ctl.push(row('Name on the sheet', `<input id="ws-name" placeholder="Leave blank to write by hand" aria-label="Name on the sheet (optional)" maxlength="30">`));
+    const standalone = (root.navigator && root.navigator.standalone === true) || (root.matchMedia && root.matchMedia('(display-mode: standalone)').matches);
+    const backTo = kind === 'S' ? `#/skill/${id}` : kind === 'M' && /^topic:/.test(id) ? `#/topic/${id.slice(6)}` : '#/worksheets';
+    A().shell(`<section class="ws-screen">
+      <div class="ws-panel card">
+        <div class="eyebrow">${esc(KIND[kind])} · 🖨 Worksheet</div>
+        <h1>${esc(sh.title)}</h1>
+        <p class="small muted">${esc(sh.sub || '')}</p>
+        <div class="ws-opts-panel">${ctl.join('')}</div>
+        <div class="row ws-actions"><button class="btn primary" id="ws-print">🖨 Print</button>${kind === 'S' || kind === 'M' ? '<button class="btn ghost" id="ws-new">↻ New questions</button>' : ''}<a class="btn ghost" href="#/worksheets">All worksheets</a></div>
+        ${standalone ? `<div class="note ws-standalone">Printing from the home-screen app does not always work. <a href="${esc(location.href)}" target="_blank" rel="noopener">Open in Safari to print</a>: the same sheet opens there with the same settings.</div>` : ''}
+        <details class="small ws-tips-pdf"><summary>Save as PDF, and printing tips</summary><ul><li>iPad or iPhone: tap Print, then pinch out on the preview (or tap Share in the print options) and choose Save to Files.</li><li>Mac or PC: choose Print, then “Save as PDF” as the printer.</li><li>Paper size A4, scale 100%, and turn off “headers and footers”. The answers always start on a new page, so you can keep them back.</li></ul></details>
+        <p class="small muted">Sheet code: <b id="ws-code-now">${esc(sh.code)}</b></p>
+      </div>
+      <div class="ws-preview" id="ws-preview" aria-label="Preview of the worksheet">${render(sh)}</div>
+    </section>`, { back: backTo, title: 'Worksheet', cls: 'wide' });
+    setOn(true);
+    const redraw = (next) => {
+      const nc = codeOf(next.kind, next.id, next.o), s2 = build(nc);
+      if (!s2) return;
+      $('#ws-preview').innerHTML = render(s2, { name: nameOnSheet });
+      $('#ws-code-now').textContent = s2.code;
+      try { history.replaceState(null, '', A().toHash(`#/worksheets/sheet/${encodeURIComponent(nc)}`)); } catch (e) { /* ignore */ }
+      cur = next;
+    };
+    let cur = { kind, id, o: Object.assign({}, o) };
+    $$('.ws-seg').forEach((sg) => sg.addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-v]'); if (!b) return;
+      $$('button', sg).forEach((x) => { const on = x === b; x.setAttribute('aria-selected', on); x.setAttribute('aria-checked', on); });
+      const key = sg.dataset.key, v = b.dataset.v;
+      const no = Object.assign({}, cur.o, { [key]: /^(s|n|a|h)$/.test(key) ? +v : v });
+      redraw({ kind: cur.kind, id: cur.id, o: no });
+    }));
+    const newBtn = $('#ws-new'); if (newBtn) newBtn.onclick = () => redraw({ kind: cur.kind, id: cur.id, o: Object.assign({}, cur.o, { k: FMG.newSeed() }) });
+    $$('[data-pn]').forEach((b) => (b.onclick = () => { const m = /^(.*?)-(\d+)$/.exec(cur.id); const nn = Math.max(1, +m[2] + +b.dataset.pn); A().go(`#/worksheets/sheet/${encodeURIComponent(codeOf('P', `${m[1]}-${nn}`, cur.o))}`); }));
+    const setSel = $('#ws-set'); if (setSel) setSel.onchange = () => A().go(`#/worksheets/sheet/${encodeURIComponent(codeOf('R', setSel.value, { g: cur.o.g }))}`);
+    const famSel = $('#ws-fam'); if (famSel) famSel.onchange = () => redraw({ kind: 'R', id: cur.id, o: Object.assign({}, cur.o, { f: famSel.value }) });
+    const wIn = $('#ws-words'); if (wIn) wIn.addEventListener('change', () => redraw({ kind: 'R', id: cur.id, o: Object.assign({}, cur.o, { t: wIn.value }) }));
+    const xSel = $('#ws-x'); if (xSel) xSel.onchange = () => A().go(`#/worksheets/sheet/${encodeURIComponent(codeOf('X', xSel.value, {}))}`);
+    const nm = $('#ws-name'); nm.addEventListener('input', () => { nameOnSheet = nm.value.trim(); $$('.ws-fill:not(.short)', $('#ws-preview')).forEach((f) => (f.textContent = nameOnSheet)); });
+    $('#ws-print').onclick = () => { setOn(true); try { root.print(); } catch (e) { /* the Safari note explains */ } };
+  }
+
+  R(/^#\/worksheets$/, () => libraryPage(null));
+  R(/^#\/worksheets\/lib\/([\w-]+)$/, (s) => libraryPage(s));
+  R(/^#\/worksheets\/sheet\/(.+)$/, (code) => sheetPage(code));
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
   <script>
 /* buddy-art (Update 5) — original blocky buddy characters (shared with Family Maths) as inline SVG.
    FMG.buddyArt = { list, states, svg(id, opts), head(id, size, opts) }
@@ -22304,7 +23444,7 @@ body.reduce-motion .cel-layer { display: none; }`;
     let h = curRoute();
     if (h === '#/start') h = '#/';
     if (FMG.app) FMG.app.ctx = { screen: 'browse' };
-    if (!profile() && !/^#\/(parent(\/\w+)?)?$/.test(h) && h !== '#/') { go('#/'); return; }
+    if (!profile() && !/^#\/(parent(\/\w+)?)?$/.test(h) && !/^#\/worksheets(\/|$)/.test(h) && h !== '#/') { go('#/'); return; }
     for (const [re, fn] of routes) { const m = h.match(re); if (m) { const y = window.scrollY; fn(...m.slice(1).map(decodeURIComponent)); if (stay) window.scrollTo(0, y); else { window.scrollTo(0, 0); focusMain(); } return; } }
     go('#/');
   }
@@ -22382,7 +23522,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         <p class="muted">${p.prefs.ui === 'playful' ? 'What shall we play today?' : 'Pick a topic, or carry on where you left off.'}</p>
       </section>
       ${p.prefs.tiny ? `<a class="cta-card flash-hero" href="#/cards"><div><div class="eyebrow">Flashcards</div><div class="cta-title">Pictures and words 🐶 🍎 🚗</div><div class="muted small">Tap a card to hear its word. Then play “Find the…”</div></div><span class="cta-go" aria-hidden="true">${svgArrow()}</span></a>` : ''}
-      <div class="cta-row">${continueCard}${dueCard}<a class="cta-card exam" href="#/exams"><div><div class="eyebrow">Exams</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Real test practice' : 'Phonics check to GCSE'}</div><div class="muted small">Phonics check, SATs-style paper, reading texts, GCSE papers and essays</div></div><span class="cta-go" aria-hidden="true">${svgArrow()}</span></a>${p.prefs.tiny ? '' : `<a class="cta-card early" href="#/cards"><div><div class="eyebrow">Early Years</div><div class="cta-title">Flashcards and games</div><div class="muted small">Picture cards with a natural voice</div></div><span class="cta-go" aria-hidden="true">${svgArrow()}</span></a>`}${FMG.tools ? `<a class="cta-card tools" href="#/tools"><div><div class="eyebrow">English toolbox</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Sounds and letters' : 'Sound mat, handwriting pad & more'}</div><div class="muted small">Hands-on tools for words and writing</div></div><span class="cta-go" aria-hidden="true">${svgTools()}</span></a>` : ''}</div>
+      <div class="cta-row">${continueCard}${dueCard}<a class="cta-card exam" href="#/exams"><div><div class="eyebrow">Exams</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Real test practice' : 'Phonics check to GCSE'}</div><div class="muted small">Phonics check, SATs-style paper, reading texts, GCSE papers and essays</div></div><span class="cta-go" aria-hidden="true">${svgArrow()}</span></a>${p.prefs.tiny ? '' : `<a class="cta-card early" href="#/cards"><div><div class="eyebrow">Early Years</div><div class="cta-title">Flashcards and games</div><div class="muted small">Picture cards with a natural voice</div></div><span class="cta-go" aria-hidden="true">${svgArrow()}</span></a>`}${FMG.worksheets ? `<a class="cta-card worksheets" href="#/worksheets"><div><div class="eyebrow">Worksheets</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Sheets to print 🖨' : 'Print worksheets and papers'}</div><div class="muted small">Every skill, mixed revision, practice papers, tracing</div></div><span class="cta-go" aria-hidden="true">🖨</span></a>` : ''}${FMG.tools ? `<a class="cta-card tools" href="#/tools"><div><div class="eyebrow">English toolbox</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Sounds and letters' : 'Sound mat, handwriting pad & more'}</div><div class="muted small">Hands-on tools for words and writing</div></div><span class="cta-go" aria-hidden="true">${svgTools()}</span></a>` : ''}</div>
       <div class="dir-tools">
         <div class="seg" role="tablist" aria-label="Topic view">
           <button role="tab" aria-selected="${tab === 'recommended'}" data-tab="recommended">Recommended</button>
@@ -22465,7 +23605,8 @@ body.reduce-motion .cel-layer { display: none; }`;
         <span class="tc-icon lg">${VIZ.icon(t.icon)}</span>
         <div><h1>${esc(t.name)}</h1><p class="muted">${esc(t.desc)}</p>
         <div class="chips static">${t.stages.map((s) => `<span class="chip">${esc(CUR.STAGES[CUR.stageIndex(s)].name)}</span>`).join('')}</div>
-        ${(() => { const xt = FMG.examHub && FMG.examHub.forTopic(t.id, p.route); return xt ? `<a class="btn primary sm" style="margin-top:.6rem" href="${xt.href}">📝 Exam questions on this topic</a>` : ''; })()}</div>
+        ${(() => { const xt = FMG.examHub && FMG.examHub.forTopic(t.id, p.route); return xt ? `<a class="btn primary sm" style="margin-top:.6rem" href="${xt.href}">📝 Exam questions on this topic</a>` : ''; })()}
+        ${FMG.worksheets && t.skills.some((k) => k.status === 'released') ? `<a class="btn ghost sm" style="margin-top:.6rem" href="${FMG.worksheets.linkTopic(t.id)}">🖨 Worksheet for this topic</a>` : ''}</div>
       </section>
       <div class="two-col">
         <div><h2 class="h2">Skills</h2><div class="skill-list">${skills.join('')}</div></div>
@@ -22514,6 +23655,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         <a class="btn ghost" href="#/play/check/${k.id}">✓ Check <span class="muted small">5 fresh questions</span></a>
         <a class="btn ghost ${st.pendingReview ? 'due' : ''}" href="#/play/review/${k.id}">↻ Review ${st.reviewDue ? `<span class="muted small">${st.pendingReview ? 'due now' : 'due ' + FMG.prettyDate(st.reviewDue)}</span>` : ''}</a>
         ${tool && tool.id ? `<a class="btn ghost" href="${tool.href}">${svgTools()} ${esc(tool.label || tool.name)}</a>` : ''}
+        ${FMG.worksheets ? `<a class="btn ghost" href="${FMG.worksheets.linkSkill(k.id)}">🖨 Worksheet <span class="muted small">print this skill</span></a>` : ''}
       </div>
       ${FMG.writing ? FMG.writing.skillCard(k.id) : ''}
       <section class="card progress-card">
@@ -23673,7 +24815,7 @@ body.reduce-motion .cel-layer { display: none; }`;
     const db = store.get();
     if (!parentChild || !db.profiles.find((p) => p.id === parentChild)) parentChild = (profile() || db.profiles[0] || {}).id;
     const child = db.profiles.find((p) => p.id === parentChild);
-    const tabs = [['progress', 'Progress'], ['attempts', 'History'], ['learners', 'Learners & settings'], ['voice', 'Voice & sounds'], ['backup', 'Backup'], ['coverage', 'Coverage']];
+    const tabs = [['progress', 'Progress'], ['attempts', 'History'], ['learners', 'Learners & settings'], ['voice', 'Voice & sounds'], ['worksheets', 'Worksheets'], ['backup', 'Backup'], ['coverage', 'Coverage']];
     let body = '';
     if (tab === 'progress' && child) body = parentProgress(child);
     if (tab === 'attempts' && child) body = parentAttempts(child);
@@ -23681,6 +24823,7 @@ body.reduce-motion .cel-layer { display: none; }`;
     if (tab === 'backup') body = parentBackup();
     if (tab === 'coverage') body = parentCoverage();
     if (tab === 'voice') body = FMG.englishScreens ? FMG.englishScreens.voicePanel() : '';
+    if (tab === 'worksheets') body = `<section class="card"><h2 class="h3">🖨 Printable worksheets</h2><p>Sheets made from the app’s own questions and texts, for every stage: one skill at a time (at any step of the ladder, write-in or A–D tick boxes), mixed revision, practice papers with mark schemes, reading comprehension, writing tasks, tracing sheets, sound mats and flashcards.</p><p class="small muted">Answers always start on a new page, so you can keep them back. Each sheet has a code at the bottom: type it into the Worksheets screen to print the same sheet again. No learner’s name is printed unless you type one in.</p><a class="btn primary" href="#/worksheets${child ? '/lib/' + child.route : ''}">Open worksheets${child ? ' for ' + esc(child.nickname) + '’s stage' : ''}</a></section>`;
     shell(`
       <section class="parent-head"><h1>Parent dashboard</h1>
         ${db.profiles.length ? `<div class="seg" role="tablist" aria-label="Choose child">${db.profiles.map((p) => `<button role="tab" aria-selected="${p.id === parentChild}" data-child="${p.id}">${esc(p.nickname)}</button>`).join('')}</div>` : ''}

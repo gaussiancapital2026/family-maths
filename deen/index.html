@@ -1596,6 +1596,196 @@ details.journey.target { box-shadow: inset 0 0 0 2px var(--primary), var(--shado
 .abcd-opt.picked, .abcd-opt.picked[disabled] { border-color: var(--primary); background: var(--primary-soft, var(--surface-2)); opacity: 1; }
 
 </style>
+<style>
+/* Family Deen Game — printable worksheets. A4 portrait pages, black-and-white friendly; nothing but the sheet prints. */
+@page { size: A4; margin: 14mm; }
+
+/* ---------- The screen: options panel and the A4 preview ---------- */
+.ws-panel h1 { margin-bottom: .2rem; }
+.ws-opts-grid { display: grid; gap: .7rem 1.2rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: .8rem 0; }
+.ws-opts-grid .fld, .fld { display: flex; flex-direction: column; gap: .3rem; }
+.ws-ol { font-weight: 700; font-size: .9rem; }
+.ws-chk { flex-direction: row !important; align-items: center; gap: .5rem !important; font-weight: 650; }
+.ws-acts { margin: .6rem 0; }
+.ws-safari { margin: .6rem 0; }
+.ws-lib-sec { margin: 1rem 0; }
+.ws-lib-sec .row { flex-wrap: wrap; gap: .4rem; }
+.ws-h3 { font-size: 1rem; margin: .9rem 0 .4rem; }
+.ws-stage { border-top: 1px solid var(--line, #ddd); padding: .5rem 0; }
+.ws-stage summary { display: flex; justify-content: space-between; gap: .6rem; cursor: pointer; font-weight: 700; }
+.ws-units { columns: 2 240px; padding-left: 1.1rem; margin: .5rem 0; }
+.ws-units li { break-inside: avoid; margin: .15rem 0; }
+.ws-tools { margin: .4rem 0; flex-wrap: wrap; gap: .4rem; }
+.ws-stage-row { margin: .4rem 0 .2rem; }
+.ws-wrap { overflow: hidden; margin: 1rem -1rem 0; padding: 0 .5rem; }
+.ws-sheets { display: flex; flex-direction: column; align-items: center; gap: 8mm; padding: 4mm 0 10mm; }
+.ws-measure { position: absolute !important; left: -10000px; top: 0; visibility: hidden; pointer-events: none; padding: 0; }
+
+/* ---------- A page (always paper colours, whatever the app theme) ---------- */
+.ws-sheets, .ws-flat {
+  --tj-ik: #0b84d8; --tj-iks: #e0338a; --tj-qa: #d42a1f; --tj-iq: #6f3fc4; --tj-id: #11782f; --tj-ids: #67a821; --tj-gh: #ef7a00;
+  --tj-m2: #b07d00; --tj-m4: #a0632b; --tj-m5: #8a3f12; --tj-m6: #6a2a0a; --tj-si: #8a8aa0;
+}
+.ws-page { position: relative; box-sizing: content-box; width: 182mm; height: 267mm; padding: 14mm; background: #fff; color: #111;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, .18); border-radius: 2px; overflow: hidden; font: 12pt/1.35 var(--font, system-ui, sans-serif); text-align: left; }
+.ws-page.big { font-size: 16pt; }
+.ws-body { height: calc(267mm - 10mm); overflow: hidden; }
+.ws-measure .ws-body { height: auto; overflow: visible; display: flow-root; }
+.ws-body > * { margin-bottom: 5mm; }
+.ws-page.big .ws-body > * { margin-bottom: 6mm; }
+.ws-foot { position: absolute; left: 14mm; right: 14mm; bottom: 14mm; height: 7mm; display: flex; justify-content: space-between; align-items: flex-end;
+  font-size: 12pt; color: #444; border-top: .3mm solid #999; padding-top: 1mm; }
+:where(.ws-page, .ws-flat) .ar { font-family: var(--ar-font, "Scheherazade New", "Noto Naskh Arabic", "Geeza Pro", serif); line-height: 1.75; font-size: 1em; unicode-bidi: isolate; }
+.ws-page p, .ws-flat p { margin: 0 0 1.5mm; }
+
+/* header */
+.ws-head { border-bottom: .5mm solid #111; padding-bottom: 2.5mm; margin-bottom: 4mm; }
+.ws-brand { display: flex; align-items: center; gap: 2mm; font-weight: 750; font-size: 12pt; }
+.ws-logo { width: 7mm; height: 7mm; }
+.ws-kind { margin-left: auto; font-weight: 650; color: #444; }
+.ws-title { font-size: 18pt; margin: 2mm 0 .5mm; line-height: 1.2; color: #111; }
+.ws-page.big .ws-title { font-size: 22pt; }
+.ws-sub { color: #333; font-size: 12pt; }
+.ws-nd { display: flex; gap: 8mm; margin: 3mm 0 1mm; font-weight: 650; }
+.ws-nd span { display: flex; align-items: flex-end; gap: 2mm; }
+.ws-nd span:first-child { flex: 1; }
+.ws-fill { display: inline-block; flex: 1; min-width: 40mm; border-bottom: .35mm solid #111; font-style: normal; font-weight: 500; padding: 0 2mm; min-height: 1.3em; }
+.ws-intro { font-style: italic; margin-top: 2mm !important; }
+.ws-respect { font-size: 12pt; color: #333; border-left: 1mm solid #999; padding-left: 2mm; }
+.ws-cont { display: flex; justify-content: space-between; border-bottom: .3mm solid #999; padding-bottom: 1.5mm; margin-bottom: 4mm; color: #333; font-weight: 650; }
+.ws-anshead { border-bottom: .5mm solid #111; margin-bottom: 4mm; }
+.ws-anshead h2 { font-size: 16pt; margin: 0 0 1mm; color: #111; }
+
+/* two columns */
+.ws-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.ws-cell { min-width: 0; }
+.ws-blk.half { display: inline-block; width: 48%; vertical-align: top; }
+
+/* questions */
+.ws-q, .ws-join, .ws-har { display: flex; gap: 2.5mm; break-inside: avoid; page-break-inside: avoid; }
+.ws-qn { flex: none; width: 7mm; height: 7mm; border: .35mm solid #111; border-radius: 50%; display: grid; place-items: center; font-weight: 750; font-size: 12pt; }
+.ws-page.big .ws-qn { width: 9mm; height: 9mm; font-size: 14pt; }
+.ws-qb { flex: 1; min-width: 0; }
+.ws-prompt { font-weight: 650; }
+.ws-mk { font-weight: 500; color: #333; white-space: nowrap; }
+.ws-arin { font-size: 1.35em; line-height: 1.3; }
+.ws-qar { text-align: center; margin: 1mm 0 2mm; }
+.ws-qar .ar { font-size: 36pt; line-height: 1.6; }
+.ws-page.big .ws-qar .ar { font-size: 48pt; }
+.ws-qar.long .ar, .ws-qar.quran .ar { font-size: 24pt; line-height: 1.9; }
+.ws-page.big .ws-qar.long .ar, .ws-page.big .ws-qar.quran .ar { font-size: 28pt; }
+.ws-qar.colour .ar { font-size: 30pt; }
+.ws-hi { text-decoration: underline; text-decoration-thickness: .9mm; text-underline-offset: .32em; font-weight: 700; }
+.ws-tw { text-decoration: underline; text-decoration-thickness: .5mm; text-underline-offset: .45em; }
+.ws-ref { text-align: center; font-size: 12pt; color: #333; }
+.ws-opts { list-style: none; padding: 0; margin: 1mm 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5mm 4mm; }
+.ws-opts.arabic { grid-template-columns: repeat(4, 1fr); }
+.ws-opts.long { grid-template-columns: 1fr; }
+.ws-opts.arabic.long .ar { font-size: 20pt; }
+.ws-opts li { display: flex; align-items: center; gap: 1.8mm; min-width: 0; }
+.ws-opts.arabic li { flex-direction: column; gap: 0; border: .3mm solid #999; border-radius: 1.5mm; padding: 1mm 0 0; }
+.ws-opts.arabic li .ws-box { display: inline-block; vertical-align: -1mm; margin-right: 1.2mm; }
+.ws-opts.arabic .ws-lrow { display: flex; align-items: center; gap: 1.2mm; }
+.ws-opts.arabic.long li { flex-direction: row; border: 0; padding: 0; gap: 3mm; }
+.ws-opts .ar { font-size: 24pt; line-height: 1.5; }
+.ws-page.big .ws-opts .ar { font-size: 30pt; }
+.ws-box { flex: none; width: 4.5mm; height: 4.5mm; border: .4mm solid #111; border-radius: .6mm; }
+.ws-page.big .ws-box { width: 6mm; height: 6mm; }
+.ws-l { flex: none; }
+.ws-dot { width: 3.4mm; height: 3.4mm; flex: none; vertical-align: -.4mm; margin: 0 .6mm; }
+.ws-write { display: flex; align-items: flex-end; gap: 2mm; margin: 2.5mm 0 1mm; }
+.ws-write span { font-weight: 650; white-space: nowrap; }
+.ws-write i { flex: 1; border-bottom: .35mm solid #111; height: 8mm; }
+.ws-write.short i { flex: 0 1 55mm; }
+.ws-page.big .ws-write i { height: 11mm; }
+
+/* answers */
+.ws-a { break-inside: avoid; page-break-inside: avoid; padding: 1mm 0 1.5mm; border-bottom: .2mm dotted #999; }
+.ws-al { font-weight: 750; }
+.ws-aar { font-size: 20pt; line-height: 1.6; }
+.ws-also { display: block; font-size: 12pt; color: #333; }
+.ws-why, .ws-why-in { font-size: 12pt; color: #333; }
+.ws-page .tj { text-decoration: underline; text-decoration-thickness: .35mm; text-underline-offset: .35em; font-weight: 700; }
+
+/* colour key */
+.ws-key { border: .35mm solid #555; border-radius: 2mm; padding: 2mm 3mm; break-inside: avoid; }
+.ws-keyh { font-weight: 750; }
+.ws-key ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 6mm; }
+.ws-key li { line-height: 1.2; }
+.ws-key li.wide { grid-column: 1 / -1; }
+.ws-key li { display: flex; align-items: center; gap: 1.5mm; }
+.ws-keyar { margin-left: auto; font-size: 15pt; line-height: 1.3; white-space: nowrap; }
+.ws-keyn { font-size: 12pt; color: #444; margin-top: 1mm !important; }
+.ws-rule { font-size: 13pt; border-bottom: .3mm solid #999; padding-bottom: 1mm; }
+.tjf-ik { fill: var(--tj-ik); } .tjf-iks { fill: var(--tj-iks); } .tjf-qa { fill: var(--tj-qa); } .tjf-iq { fill: var(--tj-iq); } .tjf-id { fill: var(--tj-id); } .tjf-ids { fill: var(--tj-ids); }
+.tjf-gh { fill: var(--tj-gh); } .tjf-m2 { fill: var(--tj-m2); } .tjf-m4 { fill: var(--tj-m4); } .tjf-m5 { fill: var(--tj-m5); } .tjf-m6 { fill: var(--tj-m6); } .tjf-si { fill: var(--tj-si); }
+
+/* tracing */
+.ws-tr { display: block; overflow: visible; }
+.ws-trt { font-family: var(--ar-font, "Scheherazade New", "Noto Naskh Arabic", "Geeza Pro", serif); fill: #e3e3e3; stroke: #5a5a5a; stroke-linecap: round; stroke-linejoin: round; }
+.ws-gl { stroke: #8a8a8a; }
+.ws-gl.top { stroke: #aaa; }
+.ws-trow { display: flex; justify-content: space-between; margin: 0 0 2mm; }
+.ws-letter-rows .ws-lab:first-child { margin-top: 0 !important; }
+.ws-letter { break-inside: avoid; padding-bottom: 2mm; }
+.ws-lt-top { display: flex; gap: 6mm; align-items: center; }
+.ws-lt-info { flex: 1; }
+.ws-lt-name { font-size: 20pt; font-weight: 750; margin: 0 !important; }
+.ws-letter.big .ws-lt-name { font-size: 26pt; }
+.ws-lt-ar { font-size: 42pt; line-height: 1.2; min-width: 30mm; text-align: center; border: .3mm solid #bbb; border-radius: 2mm; }
+.ws-letter.big .ws-lt-ar { font-size: 54pt; }
+.ws-start { font-weight: 650; border: .3mm dashed #777; border-radius: 1.5mm; padding: 1mm 2mm; display: inline-block; }
+.ws-lab { font-weight: 750; margin: 1.5mm 0 .5mm !important; }
+.ws-forms { display: flex; justify-content: space-between; }
+.ws-forms figure { margin: 0; text-align: center; }
+.ws-forms figcaption { font-size: 12pt; font-weight: 650; }
+.ws-forms small { font-weight: 400; color: #444; font-size: 12pt; }
+.ws-join { align-items: center; padding: 1mm 0 2mm; border-bottom: .2mm dotted #aaa; }
+.ws-jmain { flex: 1; min-width: 0; }
+.ws-join .ws-write { margin: 1mm 0 0; }
+.ws-jrow { flex: 1; display: flex; align-items: center; gap: 3mm; justify-content: flex-start; }
+.ws-jparts { display: flex; gap: 2.5mm; }
+.ws-jp { font-size: 34pt; line-height: 1.5; border: .25mm solid #bbb; border-radius: 1.5mm; padding: 0 1.5mm; min-width: 8mm; text-align: center; }
+.ws-join.big .ws-jp { font-size: 40pt; }
+.ws-jeq { font-size: 18pt; font-weight: 700; color: #555; }
+.ws-jrow figure { margin: 0; text-align: center; flex: none; }
+.ws-jrow figcaption { font-size: 12pt; color: #444; }
+
+.ws-har { padding: 1mm 0 2mm; border-bottom: .2mm dotted #aaa; }
+.ws-hrow { display: flex; align-items: center; gap: 4mm; }
+.ws-hrow .ws-write { flex: 1; margin: 0; }
+
+/* flashcards */
+.ws-page.cards .ws-row2 { gap: 0; }
+.ws-card { border: .4mm dashed #666; height: 58mm; box-sizing: border-box; padding: 3mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; break-inside: avoid; }
+.ws-card.dua { height: auto; min-height: 50mm; }
+.ws-cbig { font-size: 64pt !important; line-height: 1.35 !important; }
+.ws-cname-ar { font-size: 32pt !important; line-height: 1.6 !important; }
+.ws-cname { font-weight: 750; font-size: 15pt; margin: 0 !important; }
+.ws-csub { font-size: 12pt; color: #333; }
+.ws-cnum { font-size: 12pt; color: #555; align-self: flex-end; margin: 0 !important; }
+.ws-cdua { font-size: 24pt !important; line-height: 1.8 !important; }
+.ws-cdua.long { font-size: 19pt !important; }
+.ws-ctr { font-style: italic; font-size: 12pt; }
+.ws-cwhen { font-size: 12pt; font-weight: 650; }
+
+/* the flat version (tests and fallback) */
+.ws-flat { background: #fff; color: #111; padding: 14mm; max-width: 182mm; }
+.ws-brk { break-before: page; page-break-before: always; }
+
+/* ---------- Print: only the pages ---------- */
+@media print {
+  html.ws-on body > :not(#app), html.ws-on #app > :not(main), html.ws-on main > :not(.ws-wrap) { display: none !important; }
+  html.ws-on, html.ws-on body, html.ws-on #app, html.ws-on main.page { background: #fff !important; margin: 0 !important; padding: 0 !important; max-width: none !important; width: auto !important; min-height: 0 !important; box-shadow: none !important; }
+  html.ws-on .ws-wrap { margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+  html.ws-on .ws-sheets { display: block !important; padding: 0 !important; gap: 0 !important; zoom: 1 !important; }
+  html.ws-on .ws-page { padding: 0 !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; break-after: page; page-break-after: always; break-inside: avoid; page-break-inside: avoid; }
+  html.ws-on .ws-page:last-child { break-after: auto; page-break-after: auto; }
+  html.ws-on .ws-foot { left: 0; right: 0; bottom: 0; }
+  .ws-page, .ws-page * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+</style>
 </head>
 <body>
   <a class="skip" href="#app">Skip to content</a>
@@ -4339,7 +4529,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         const rows = ss.map((s) => {
           const b = E.best(db, p.id, sec.id, s.id);
           return s.open
-            ? `<li class="ex-row"><span class="ex-name">${esc(s.name)}</span>${badge(b && { grade: b.grade, pct: b.pct })}<a class="btn sm ${b ? 'ghost' : 'primary'}" href="#/exams/test/${sec.id}/${s.id}">${b ? 'Try again' : 'Take test'}</a></li>`
+            ? `<li class="ex-row"><span class="ex-name">${esc(s.name)}</span>${badge(b && { grade: b.grade, pct: b.pct })}<a class="btn sm ${b ? 'ghost' : 'primary'}" href="#/exams/test/${sec.id}/${s.id}">${b ? 'Try again' : 'Take test'}</a>${FMG.worksheets ? `<a class="btn sm ghost" href="#/ws/paper/${sec.id}/${s.id}/new" title="Print this test as a practice paper" aria-label="Print ${esc(s.name)} as a practice paper">🖨</a>` : ''}</li>`
             : `<li class="ex-row off" aria-disabled="true"><span class="ex-name">${esc(s.name)}</span><span class="small muted">For older learners</span></li>`;
         }).join('');
         const wb = E.best(db, p.id, sec.id, 'all');
@@ -4347,7 +4537,7 @@ body.reduce-motion .cel-layer { display: none; }`;
           <h2><span aria-hidden="true">${sec.emoji}</span> ${esc(sec.name)}</h2>
           <div class="row ex-actions">
             ${open.length ? `<a class="btn primary" href="#/exams/ladder/${sec.id}">🪜 Exam ladder${lad && ss[lad.r] ? ` <span class="small">(${esc(ss[lad.r].name.replace(/^\d+\s*·\s*/, ''))})</span>` : ''}</a>
-            <a class="btn ghost" href="#/exams/test/${sec.id}/all">Whole-section exam</a>${wb ? badge({ grade: wb.grade, pct: wb.pct }) : ''}` : '<span class="muted small">Opens when you are older.</span>'}
+            <a class="btn ghost" href="#/exams/test/${sec.id}/all">Whole-section exam</a>${FMG.worksheets ? `<a class="btn ghost" href="#/ws/paper/${sec.id}/all/new">🖨 Print a paper</a>` : ''}${wb ? badge({ grade: wb.grade, pct: wb.pct }) : ''}` : '<span class="muted small">Opens when you are older.</span>'}
           </div>
           <ol class="ex-rows">${rows}</ol></section>`;
       }).join('');
@@ -4482,6 +4672,552 @@ body.reduce-motion .cel-layer { display: none; }`;
 
 </script>
   <script>
+/* Family Deen Game — printable worksheets (Family App worksheets spec, 22 Nov 2026).
+   Every sheet is built only from the app's own data and question makers: the lessons' questions (deen.js),
+   the exams' stage tests (deen-exams.js), the letters, shapes, marks and word lists (reading.js),
+   the Qur'an words (quran.js), the duas (content.js) and the 99 Names (names.js).
+   This file holds no Arabic of its own: every Arabic letter printed comes from that data.
+   No sound, no text-to-speech, no pictures of living things.
+   The top half has no screen code, so node tests can build every sheet; the screens register through FMG.appReady. */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG, D = FMG.deen, E = FMG.deenExams, R = FMG.reading, esc = FMG.esc;
+  const NM = (FMG.NAMES && FMG.NAMES.names) || [];
+  const QURAN = (FMG.QURAN && FMG.QURAN.surahs) || [];
+
+  /* ---------------- Options and the sheet code ----------------
+     A sheet is fully described by its kind, two targets and its options, so the same code always reprints the same sheet.
+     Options code: band letter (l little, m learner, s student), count, answer style (w write-in, t tick boxes),
+     answer sheet (1/0), story level (0 = the learner's own), then x and the seed. Example: m20t10x482913. */
+  const BAND_OF = { l: 'little', m: 'explorer', s: 'expert' }, BAND_CODE = { little: 'l', explorer: 'm', expert: 's' };
+  const COUNTS = [10, 20, 30];
+  function optsCode(o) { return `${BAND_CODE[o.b] || 'm'}${o.n}${o.y === 'w' ? 'w' : 't'}${o.a ? 1 : 0}${o.L || 0}x${o.s}`; }
+  function parseOpts(str) {
+    const m = /^([lms])(\d{1,2})([wt])([01])([0-4])x(\d{1,9})$/.exec(String(str || ''));
+    if (!m) return null;
+    return { b: BAND_OF[m[1]], n: Math.max(1, Math.min(40, +m[2])), y: m[3], a: m[4] === '1', L: +m[5], s: +m[6] };
+  }
+  const newSeed = () => (FMG.newSeed() % 900000) + 100000;
+  function defaults(band, seed) { return { b: BAND_CODE[band] ? band : 'explorer', n: 10, y: 't', a: true, L: 0, s: seed || newSeed() }; }
+  const bandName = (b) => `${D.band(b).name} (${D.band(b).ages})`;
+  const prof = (b) => ({ id: 'ws', band: b, prefs: {} }); // private lessons are never printed
+  const secOf = (id) => D.SECTIONS.find((s) => s.id === id);
+
+  /* ---------------- Paper rules ----------------
+     Questions that only work on a screen are never printed: listening, tapping, dragging or live tracing. */
+  const SCREEN_ONLY_QT = ['listen', 'drag', 'tap', 'trace', 'record'];
+  const SCREEN_ONLY_RE = /\b(listen to|listen and|listen, then|press play|play the (sound|recording|ayah)|tap the (speaker|sound|button)|drag the)\b/i;
+  function paperOK(q) {
+    if (!q || !q.prompt || !q.options || q.options.length !== 4 || q.answerIndex < 0 || q.answerIndex > 3) return false;
+    if (SCREEN_ONLY_QT.includes(q.qt) || SCREEN_ONLY_RE.test(q.prompt)) return false;
+    const vals = q.options.map((o) => String(o.ar || o.value));
+    if (new Set(vals).size !== 4 || vals.some((v) => !v || v === 'undefined')) return false;
+    return true;
+  }
+  const sigOf = (q) => `${q.qt}|${q.prompt}|${q.ar || ''}|${q.snip ? q.snip.cls + q.ref : ''}|${q.options[q.answerIndex].ar || q.options[q.answerIndex].value}`;
+
+  /* Questions for a list of items: every item once (shuffled by the seed), then round again with other question shapes
+     until the count is reached. The same question is never printed twice on one sheet. */
+  function collect(items, rng, band, n, start) {
+    const out = (start || []).slice(), seen = new Set(out.map(sigOf));
+    if (!items.length) return out;
+    const order = rng.shuffle(items.slice());
+    for (let k = 0, guard = 0; out.length < n && guard < n * 12 + order.length * 2; k++, guard++) {
+      const q = D.makeQuestion(order[k % order.length], rng, band);
+      if (!paperOK(q) || seen.has(sigOf(q))) continue;
+      seen.add(sigOf(q)); out.push(q);
+    }
+    return out;
+  }
+
+  /* ---------------- Arabic on paper ---------------- */
+  const AR = '\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF';
+  const AR_RUN = new RegExp(`[${AR}]+(?:[\\s\\u200c\\u200d]+[${AR}]+)*`, 'g');
+  const HAS_AR = new RegExp(`[${AR}]`);
+  const arSpan = (t, cls = '') => `<span class="ar ${cls}" dir="rtl" lang="ar">${esc(t)}</span>`;
+  /* English text that has a few Arabic words inside (from the app's own questions): the Arabic is set in the Arabic font. */
+  const arIn = (t) => esc(t).replace(AR_RUN, (m) => `<span class="ar ws-arin" dir="rtl" lang="ar">${m}</span>`);
+  const hue = (cls) => (R.RULES[cls] || {}).hue || 'si';
+  const dot = (h) => `<svg class="ws-dot" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="4.4" class="tjf-${h}"/></svg>`;
+  /* A teaching word coloured by the same rules the app uses (reading.js colourise). Qur'an words use the Qur'an's own marks. */
+  const arC = (t, cls = '') => `<span class="ar ${cls}" dir="rtl" lang="ar">${R.colourise(t).map(([x, h]) => (h ? `<span class="tj tj-${h}">${esc(x)}</span>` : esc(x))).join('')}</span>`;
+  function wordHtml(pieces, o = {}) {
+    return pieces.map((p) => {
+      if (o.mark && p[1] === o.mark) return `<u class="ws-hi">${esc(p[0])}</u>`;
+      if (o.only && p[1] === o.only) return `<span class="tj tj-${hue(p[1])}">${esc(p[0])}</span>`;
+      return esc(p[0]);
+    }).join('');
+  }
+  const huesIn = (t) => Array.from(new Set(R.colourise(t).map((x) => x[1]).filter(Boolean)));
+  function keyHtml(hues, title) {
+    const rows = R.MUSHAF_KEY.filter((k) => !hues || hues.includes(k.hue)).map((k) => `<li class="${k.ar.length > 12 ? 'wide' : ''}">${dot(k.hue)}<b>${esc(k.name)}</b> ${arSpan(k.ar, 'ws-keyar')}</li>`)
+      .concat(R.EXTRA_KEY.filter((k) => hues && hues.includes(k.hue)).map((k) => `<li>${dot(k.hue)}<b>${esc(k.name)}</b></li>`));
+    return rows.length ? `<div class="ws-key"><p class="ws-keyh">${esc(title || 'Colour key (the colours of your tajweed Mushaf)')}</p><ul>${rows.join('')}</ul><p class="ws-keyn">Printing in black and white? Each colour is named here, and coloured letters on answer sheets are underlined too.</p></div>` : '';
+  }
+
+  /* Tracing: SVG text, so the guide line sits exactly on the baseline. Light grey fill with a dotted grey outline. */
+  /* Sizes are in mm (1pt = 0.353mm). The dotted outline, the baseline and the upper guide all scale with the letter. */
+  const f2 = (x) => +x.toFixed(2);
+  function traceSvg(text, w, h, size, o = {}) {
+    const base = f2(h * (o.base || 0.55)), top = f2(base - size * 0.42), lw = f2(Math.max(0.25, size * 0.012));
+    const style = o.dark ? 'fill:#1a1a1a;stroke:none' : `stroke-width:${f2(size * 0.022)};stroke-dasharray:${f2(size * 0.07)} ${f2(size * 0.045)}`;
+    const t = text == null ? '' : `<text x="${f2(w / 2)}" y="${base}" text-anchor="middle" direction="rtl" font-size="${f2(size)}" class="ws-trt" style="${style}" lang="ar">${esc(text)}</text>`;
+    return `<svg class="ws-tr" viewBox="0 0 ${f2(w)} ${f2(h)}" style="width:${f2(w)}mm;height:${f2(h)}mm" role="img" aria-label="${text ? (o.dark ? 'The letter' : 'Letter to trace') : 'Space to write'}">
+      <line x1="1" x2="${f2(w - 1)}" y1="${top}" y2="${top}" class="ws-gl top" style="stroke-width:${lw};stroke-dasharray:${f2(lw * 4)} ${f2(lw * 4)}"/><line x1="1" x2="${f2(w - 1)}" y1="${base}" y2="${base}" class="ws-gl base" style="stroke-width:${f2(lw * 1.4)}"/>${t}</svg>`;
+  }
+  /* Letter heights for children writing: about 70pt for little learners, 65pt for learners, 48pt for students. */
+  const PT = 0.3528;
+  const WRITE_PT = { little: 70, explorer: 65, expert: 48 };
+  const writeMm = (b) => (WRITE_PT[b] || 65) * PT;
+  const CELLS = 4, CELL_W = 44;
+  const traceRow = (text, size) => `<div class="ws-trow" dir="rtl">${Array.from({ length: CELLS }, () => traceSvg(text, CELL_W, size * 1.25, size)).join('')}</div>`;
+  const writeRow = (size) => `<div class="ws-trow" dir="rtl">${Array.from({ length: CELLS }, () => traceSvg(null, CELL_W, size * 1.25, size)).join('')}</div>`;
+  const START_NOTE = '<p class="ws-start">✏️ Start where your teacher shows you.</p>';
+
+  /* Letter clusters: a letter with its own marks, as one piece (the same rule reading.js uses). */
+  const isMark = (c) => /[\u064B-\u065F\u0670\u06D6-\u06ED]/.test(c);
+  function clusters(t) { const out = []; for (const c of String(t)) { if (out.length && isMark(c)) out[out.length - 1] += c; else if (c.trim()) out.push(c); } return out; }
+
+  /* ---------------- Question blocks ---------------- */
+  function answerOf(q) {
+    const o = q.options[q.answerIndex];
+    let name = '';
+    if (o.ar && R.byId[o.value]) name = R.byId[o.value].label;
+    else if (o.ar && R.MARKS[o.value]) name = R.MARKS[o.value].name;
+    return { letter: o.letter, ar: o.ar || '', text: o.ar ? name : String(o.value) };
+  }
+  const isCompact = (q) => !q.quran && !q.snip && !q.quranOpts && (!q.ar || q.ar.length <= 10) && q.prompt.length <= 64 &&
+    q.options.every((o) => (o.ar ? String(o.ar).length <= 9 : String(o.value).length <= 24));
+  function optsHtml(q) {
+    const isAr = q.options.some((x) => x.ar), long = q.quranOpts || q.options.some((x) => (x.ar ? String(x.ar).length > 18 : String(x.value).length > 30));
+    const chip = (v) => (R.HUE_BY_NAME[v] && /^(detect|noon|meem)$/.test(q.qt) ? dot(R.HUE_BY_NAME[v]) : '');
+    return `<ol class="ws-opts ${isAr ? 'arabic' : ''} ${long ? 'long' : ''}">${q.options.map((x) => `<li>${x.ar ? `<span class="ws-lrow"><span class="ws-box" aria-hidden="true"></span><b class="ws-l">${x.letter}</b></span>` : `<span class="ws-box" aria-hidden="true"></span><b class="ws-l">${x.letter}</b>`} ${x.ar ? arSpan(x.ar) : `${chip(x.value)}<span class="ws-v">${arIn(String(x.value))}</span>`}</li>`).join('')}</ol>`;
+  }
+  function snipHtml(s) {
+    return `<div class="ws-qar quran">${'<span class="ar" dir="rtl" lang="ar">' + s.words.map((w, i) => (i === s.hi ? wordHtml(w, { mark: s.cls }) : wordHtml(w))).join(' ') + '</span>'}</div>`;
+  }
+  function qHtml(q, i, o, marks) {
+    const write = o.y === 'w' && q.typable;
+    const a = answerOf(q);
+    const lineCls = a.text.length > 16 ? 'long' : 'short';
+    return `<div class="ws-q"><div class="ws-qn">${i}</div><div class="ws-qb">
+      <p class="ws-prompt">${arIn(q.prompt)}${marks ? ' <span class="ws-mk">[1 mark]</span>' : ''}</p>
+      ${q.ar ? `<div class="ws-qar ${q.quran ? 'quran' : ''} ${q.ar.length > 14 ? 'long' : ''}">${arSpan(q.ar)}</div>` : ''}
+      ${q.snip ? snipHtml(q.snip) : ''}${q.ref ? `<p class="ws-ref">${esc(q.ref)}</p>` : ''}
+      ${write ? `<div class="ws-write ${lineCls}"><span>Answer:</span><i></i></div>` : optsHtml(q)}</div></div>`;
+  }
+  function ansHtml(q, i, o, marks) {
+    const a = answerOf(q), write = o.y === 'w' && q.typable;
+    const also = write ? Array.from(new Set((q.accept || []).filter((x) => x && String(x).toLowerCase() !== a.text.toLowerCase()))).slice(0, 4) : [];
+    return `<div class="ws-a"><b class="ws-an">${i}.</b> <span class="ws-al">${write ? '' : `${a.letter}`}</span>
+      ${a.ar ? arSpan(a.ar, 'ws-aar') : ''}${a.text ? ` <b>${arIn(a.text)}</b>` : ''}${marks ? ' <span class="ws-mk">[1]</span>' : ''}
+      ${also.length ? `<span class="ws-also">Also accept: ${also.map((x) => arIn(String(x))).join(', ')}</span>` : ''}
+      ${q.why ? `<div class="ws-why">${arIn(q.why)}</div>` : ''}</div>`;
+  }
+
+  /* ---------------- Sheet builders ---------------- */
+  function unitItems(u, o) { return u.levels ? D.levelItems(u, o.L || D.levelFor(o.b)) : D.itemsOf(u, o.b); }
+  const canSheet = (u) => !!u && !u.private && unitItems(u, defaults('expert', 1)).length > 0;
+  function questionSheet(base, qs, o, extra = {}) {
+    const marks = !!extra.marks, cols = qs.length && qs.every(isCompact) ? 2 : 1;
+    const tajweed = qs.some((q) => /^(detect|noon|meem)$/.test(q.qt));
+    const quran = qs.some((q) => q.quran || q.snip);
+    const intro = o.y === 'w'
+      ? 'Write your answer on the line. Where there are four choices, tick one box.'
+      : 'Tick one box for each question.';
+    const blocks = qs.map((q, i) => ({ html: qHtml(q, i + 1, o, marks), half: cols === 2 }));
+    if (tajweed || extra.key) blocks.unshift({ html: keyHtml(null) });
+    const answers = qs.map((q, i) => ({ html: ansHtml(q, i + 1, o, marks), half: cols === 2 }));
+    return Object.assign({ intro: (extra.intro ? extra.intro + ' ' : '') + intro, blocks, answers: o.a ? answers : [], answerList: qs.map(answerOf), qs, respect: quran ? 'quran' : '', cols,
+      answerHead: marks ? `Answers and marks · Total ${qs.length} marks · Pass ${pct(60, qs.length)} · Merit ${pct(75, qs.length)} · Distinction ${pct(90, qs.length)}` : 'Answers' }, base);
+  }
+  const pct = (p, n) => `${Math.ceil((p / 100) * n)}+`;
+
+  const BUILD = {
+    /* One lesson (or one story, at a chosen story level). */
+    unit(a, b, o) {
+      const u = D.unit(a); if (!canSheet(u)) return null;
+      const L = u.levels ? o.L || D.levelFor(o.b) : 0;
+      const qs = collect(unitItems(u, Object.assign({}, o, { L })), FMG.rng(o.s), o.b, o.n);
+      if (!qs.length) return null;
+      const lv = L ? ` · Story level ${L}: ${D.STORY_LEVELS[L - 1].name}` : '';
+      return questionSheet({ title: u.title, sub: `${secOf(u.section).name} · ${u.group.replace(/^\d+\s*·\s*/, '')}${lv}`, unit: u }, qs, o, { key: !!u.colourKey });
+    },
+    /* Mixed revision across a stage (or a whole section), spread over its lessons like the stage tests. */
+    mixed(a, b, o) {
+      const sec = secOf(a); if (!sec) return null;
+      const p = prof(o.b), ss = E.stages(a, p).filter((s) => s.open);
+      const s = b === 'all' ? null : ss.find((x) => x.id === b);
+      if (b !== 'all' && !s) return null;
+      const units = s ? s.units : ss.flatMap((x) => x.units), items = units.flatMap((u) => D.itemsOf(u, o.b));
+      if (!units.length) return null;
+      const rng = FMG.rng(o.s);
+      const seen = new Set(), first = E.buildTest(units, rng, { band: o.b, count: o.n }).filter((q) => paperOK(q) && !seen.has(sigOf(q)) && seen.add(sigOf(q)));
+      const qs = collect(items, rng, o.b, o.n, first).slice(0, o.n);
+      return questionSheet({ title: `${s ? s.name.replace(/^\d+\s*·\s*/, '') : sec.name}: mixed revision`, sub: `${sec.name}${s ? ` · ${s.name.replace(/^\d+\s*·\s*/, '')}` : ' · every stage'}` }, qs, o);
+    },
+    /* A practice paper: the stage test from the exams hub, in paper layout, with marks. */
+    paper(a, b, o) {
+      const sec = secOf(a); if (!sec) return null;
+      const p = prof(o.b), rng = FMG.rng(o.s);
+      const t = E.stageTest(a, b, p, rng); if (!t || !t.qs.length) return null;
+      const seen = new Set(), kept = t.qs.filter((q) => paperOK(q) && !seen.has(sigOf(q)) && seen.add(sigOf(q)));
+      // A question that cannot go on paper (or a repeat) is replaced from the same lessons, so the paper keeps its length.
+      const units = b === 'all' ? E.stages(a, p).filter((x) => x.open).flatMap((x) => x.units) : t.stage.units;
+      const qs = collect(units.flatMap((u) => D.itemsOf(u, o.b)), rng, o.b, t.qs.length, kept);
+      const name = b === 'all' ? 'Whole-section exam' : t.title.replace(/^\d+\s*·\s*/, '');
+      return questionSheet({ title: `${name}: practice paper`, sub: `${sec.name} · ${qs.length} questions · ${qs.length} marks`, fixedCount: true }, qs, Object.assign({}, o, { n: qs.length }),
+        { marks: true, intro: `No hints and no timer, like the tests at madrasa. Pass is 60%, Merit 75%, Distinction 90%. Score: ______ out of ${qs.length}.` });
+    },
+    /* Tracing and writing: each letter large, its shapes, rows to trace and rows to write. */
+    trace(a, b, o) {
+      const u = D.unit(a), ids = a === 'all' ? R.LETTERS.map((l) => l.id) : u && (u.gen === 'letters' || u.gen === 'forms') ? u.letters : null;
+      if (!ids) return null;
+      const big = o.b === 'little';
+      const blocks = ids.flatMap((id) => letterBlocks(R.byId[id], o.b));
+      return { title: a === 'all' ? 'All the letters: trace and write' : `${u.title}: trace and write`, sub: `Qur’an Reading · ${a === 'all' ? 'The letters' : u.group.replace(/^\d+\s*·\s*/, '')}`, blocks, answers: [], noStyle: true,
+        intro: 'Trace over the grey letters, then write them yourself on the empty lines. Arabic is written from right to left.', count: ids.length };
+    },
+    /* Joining: the letters of a word one by one, then the word joined up, to trace and to write. */
+    join(a, b, o) {
+      const list = R.WORDS[a]; if (!list) return null;
+      const lv = R.LEVELS.find((l) => l.list === a), big = o.b === 'little', read = !big;
+      const words = FMG.rng(o.s).shuffle(list.map((w, i) => i)).slice(0, Math.min(o.n, list.length)).map((i) => list[i]);
+      const blocks = words.map((w, i) => ({ html: joinBlock(w, i + 1, read && o.b, big) }));
+      const hues = Array.from(new Set(words.flatMap((w) => huesIn(w.ar))));
+      const answers = words.map((w, i) => ({ html: `<div class="ws-a"><b class="ws-an">${i + 1}.</b> ${arC(w.ar, 'ws-aar')} <b>${esc(w.tr)}</b>${w.en ? ` <span class="ws-why-in">“${esc(w.en)}”</span>` : ''}</div>`, half: true }));
+      if (hues.length && o.a) answers.push({ html: keyHtml(hues, 'Coloured letters follow your Mushaf colours') });
+      return { title: `Joining letters: ${lv ? lv.title : a}`, sub: `Qur’an Reading · ${lv ? lv.group.replace(/^\d+\s*·\s*/, '') : 'Reading words'}`, blocks, answers: o.a ? answers : [], noStyle: true, count: words.length,
+        answerList: words.map((w) => ({ ar: w.ar, text: w.tr })),
+        intro: `Look at the letters one at a time. Then trace the word joined up, and write it in the empty box.${read ? ' Last, write how it is read.' : ''}` };
+    },
+    /* Harakat: read a letter with its mark and write the sound; older learners also write the letter with a mark. */
+    haraka(a, b, o) {
+      const u = D.unit(a); if (!u || u.gen !== 'haraka') return null;
+      const rng = FMG.rng(o.s), big = o.b === 'little';
+      const pairs = []; u.letters.forEach((id) => u.marks.forEach((m) => pairs.push([id, m])));
+      const pick = rng.shuffle(pairs).slice(0, Math.min(o.n, pairs.length));
+      const rows = pick.map(([id, m], i) => ({ id, m, s: R.syll(id, m), kind: big || i % 3 !== 2 ? 'read' : 'write' }));
+      const blocks = rows.map((r, i) => ({ html: harakaBlock(r, i + 1, big, o.b), half: !big }));
+      const answers = rows.map((r, i) => ({ html: `<div class="ws-a"><b class="ws-an">${i + 1}.</b> ${arSpan(r.s.ar, 'ws-aar')} <b>${esc(r.s.tr)}</b> <span class="ws-why-in">${esc(R.byId[r.id].label)} with a ${esc(R.MARKS[r.m].name.toLowerCase())}</span></div>`, half: true }));
+      return { title: `${u.title}: read and write`, sub: `Qur’an Reading · ${u.group.replace(/^\d+\s*·\s*/, '')}`, blocks, answers: o.a ? answers : [], noStyle: true, count: rows.length,
+        answerList: rows.map((r) => ({ ar: r.s.ar, text: r.s.tr })),
+        intro: big ? 'Trace each letter with its mark. Say it to a grown-up, then write how it sounds.' : 'Trace and read each one, then write how it sounds. Where there is an empty box, write the letter with the mark.' };
+    },
+    /* Tajweed colouring: real examples from the Qur'an (the same ones the lesson shows). Colour the rule's letters with the Mushaf colour. */
+    colour(a, b, o) {
+      const u = D.unit(a); if (!u) return null;
+      const rules = (u.examples || u.detective || []).filter((cls) => R.RULES[cls] && (D.ruleIndex[cls] || []).length);
+      if (!rules.length) return null;
+      const blocks = [], answers = [];
+      let n = 0;
+      rules.forEach((cls) => {
+        const r = R.RULES[cls], h = hue(cls), ex = quranExamples(cls);
+        blocks.push({ html: `<div class="ws-rule">${dot(h)} <b>${esc(r.name)}</b>: ${arIn(r.kid)}</div>` });
+        answers.push({ html: `<div class="ws-rule">${dot(h)} <b>${esc(r.name)}</b></div>` });
+        ex.forEach((e) => {
+          n++;
+          const words = e.a.w.slice(e.from, e.to + 1);
+          const line = (only) => words.map((w, i) => (e.from + i === e.w ? `<span class="ws-tw">${wordHtml(w, only ? { only: cls } : {})}</span>` : wordHtml(w))).join(' ');
+          blocks.push({ html: `<div class="ws-q"><div class="ws-qn">${n}</div><div class="ws-qb"><p class="ws-prompt">In the underlined word, colour the letters of ${esc(r.name)} ${dot(h)}.</p>
+            <div class="ws-qar quran colour"><span class="ar" dir="rtl" lang="ar">${line(false)}</span></div><p class="ws-ref">Surah ${esc(e.s.name)} ${esc(e.a.k)}</p></div></div>`, half: true });
+          answers.push({ html: `<div class="ws-a"><b class="ws-an">${n}.</b> <span class="ar ws-aar" dir="rtl" lang="ar">${line(true)}</span> <span class="ws-why-in">${esc(r.name)} · Surah ${esc(e.s.name)} ${esc(e.a.k)}</span></div>`, half: true });
+        });
+      });
+      blocks.unshift({ html: keyHtml(Array.from(new Set(rules.map(hue))), 'Colours to use (from your tajweed Mushaf)') });
+      return { title: `${u.title}: tajweed colouring`, sub: `Qur’an Reading · ${u.group.replace(/^\d+\s*·\s*/, '')}`, blocks, answers: o.a ? answers : [], noStyle: true, count: n, respect: 'quran',
+        intro: 'Use coloured pencils. Find the rule in the underlined word and colour only its letters. Check with the answer sheet or your Mushaf.' };
+    },
+    /* Flashcards to cut out. */
+    cards(a, b, o) {
+      const cut = 'Cut along the dashed lines.';
+      if (a === 'letters') {
+        const u = b === 'all' ? null : D.unit(b), ids = b === 'all' ? R.LETTERS.map((l) => l.id) : u && u.letters ? u.letters : null; if (!ids) return null;
+        const blocks = ids.map((id) => { const l = R.byId[id]; return { half: true, html: `<div class="ws-card letter">${arSpan(l.ch, 'ws-cbig')}<p class="ws-cname">${esc(l.label)}</p><p class="ws-csub">Sound: “${esc(l.tr)}” · Dots: ${l.dots ? `${l.dots} ${esc(l.pos)}` : 'none'}</p></div>` }; });
+        return { title: u ? `Letter cards: ${u.title}` : 'Letter cards: all the letters', sub: 'Qur’an Reading · flashcards', blocks, answers: [], noStyle: true, cards: true, count: ids.length, intro: cut };
+      }
+      if (a === 'names') {
+        const u = b === 'all' ? null : D.unit(b), ns = b === 'all' ? NM.map((x) => x.n) : u && u.gen === 'names' ? u.names : null; if (!ns) return null;
+        const blocks = ns.map((n) => { const x = NM.find((y) => y.n === n); return { half: true, html: `<div class="ws-card name"><p class="ws-cnum">${x.n} of 99</p>${arSpan(x.ar, 'ws-cname-ar')}<p class="ws-cname">${esc(x.tr)}</p><p class="ws-csub">“${esc(x.m)}”</p></div>` }; });
+        return { title: u ? `99 Names cards: ${u.title}` : '99 Names of Allah: all the cards', sub: '99 Names of Allah · flashcards', blocks, answers: [], noStyle: true, cards: true, count: ns.length, respect: 'names', intro: cut };
+      }
+      if (a === 'duas') {
+        const us = D.UNITS.filter((u) => u.section === 'duas' && !u.private && (b === 'all' || u.id === b)); if (!us.length) return null;
+        const rank = D.bandRank(o.b);
+        const cs = us.flatMap((u) => u.cards.filter((c) => c.ar && D.bandRank(c.band || 'little') <= rank));
+        if (!cs.length) return null;
+        const blocks = cs.map((c) => ({ html: `<div class="ws-card dua"><p class="ws-cname">${esc(c.h)}</p>${arSpan(c.ar, `ws-cdua ${c.ar.length > 90 ? 'long' : ''}`)}${c.tr ? `<p class="ws-ctr">${esc(c.tr)}</p>` : ''}${c.en ? `<p class="ws-csub">“${esc(c.en)}”</p>` : ''}${c.t ? `<p class="ws-cwhen">${esc(c.t)}</p>` : ''}${c.ref ? `<p class="ws-ref">${esc(c.ref)}</p>` : ''}</div>` }));
+        return { title: b === 'all' ? 'Dua cards: all the duas' : `Dua cards: ${us[0].title}`, sub: 'Duas · flashcards', blocks, answers: [], noStyle: true, cards: true, count: cs.length, respect: 'dua', intro: cut };
+      }
+      return null;
+    },
+  };
+
+  /* The same three examples the lesson shows: short surahs first, one per surah. */
+  function quranExamples(cls) {
+    const occ = (D.ruleIndex[cls] || []).slice().sort((x, y) => y.s - x.s), out = [], seen = new Set();
+    const sur = (n) => QURAN.find((x) => x.n === n);
+    const txt = (o) => sur(o.s).ayahs[o.a].w.slice(Math.max(0, o.w - 1), o.w + 2).map((w) => w.map((p) => p[0]).join('')).join(' ');
+    for (const o of occ) { const t = txt(o); if (seen.has(o.s) || seen.has(t)) continue; seen.add(o.s); seen.add(t); out.push(o); if (out.length >= 3) break; }
+    return out.map((o) => { const s = sur(o.s), a = s.ayahs[o.a]; return { s, a, w: o.w, from: Math.max(0, o.w - 1), to: Math.min(a.w.length - 1, o.w + 1) }; });
+  }
+
+  /* One letter per page: the letter itself very large, its four shapes to trace, then as many rows of tracing
+     and of empty guide lines as fit on the page (the screen fills them; the flat version shows two of each). */
+  function letterBlocks(l, band) {
+    const forms = l.id === 'hamzah' ? [] : [['On its own', 'isolated', l.ch], ['Start', 'initial', R.form(l.id, 'start')], ['Middle', 'medial', R.form(l.id, 'middle')], ['End', 'final', R.form(l.id, 'end')]];
+    const demo = (band === 'expert' ? 110 : 120) * PT, shape = 60 * PT, row = writeMm(band);
+    const top = `<div class="ws-letter ${band === 'little' ? 'big' : ''}">
+      <div class="ws-lt-top">${traceSvg(l.ch, 64, demo * 1.32, demo, { dark: true, base: 0.52 })}
+        <div class="ws-lt-info"><p class="ws-lt-name">${esc(l.label)}</p>
+          <p>Sound: “${esc(l.tr)}”</p><p>Dots: ${l.dots ? `${l.dots} ${esc(l.pos)}` : 'none'}</p>${START_NOTE}</div></div>
+      ${forms.length ? `<p class="ws-lab">Its shapes · trace them</p><div class="ws-forms" dir="rtl">${forms.map(([t, s, f]) => `<figure>${traceSvg(f, CELL_W, shape * 1.25, shape)}<figcaption>${t}<small> (${s})</small></figcaption></figure>`).join('')}</div>` : ''}</div>`;
+    const lab1 = '<p class="ws-lab">Trace</p>', lab2 = '<p class="ws-lab">Now write it yourself</p>', tr = traceRow(l.ch, row), wr = writeRow(row);
+    const rows = (t, w) => `<div class="ws-letter-rows">${lab1}${tr.repeat(t)}${lab2}${wr.repeat(w)}</div>`;
+    return [{ html: top, brk: true }, { html: rows(2, 2), fill: { rows, maxT: 5, maxW: 3 } }];
+  }
+  function joinBlock(w, i, read, big) {
+    const parts = clusters(w.ar), want = writeMm(big ? 'little' : read === 'expert' ? 'expert' : 'explorer') * 0.9, size = Math.min(want, 50 / (parts.length * 0.7)), wd = Math.min(50, Math.max(34, parts.length * size * 0.7));
+    return `<div class="ws-join ${big ? 'big' : ''}"><div class="ws-qn">${i}</div><div class="ws-jmain">
+      <div class="ws-jrow" dir="rtl">
+        <div class="ws-jparts">${parts.map((c) => arSpan(c, 'ws-jp')).join('')}</div>
+        <div class="ws-jeq" aria-hidden="true">=</div>
+        <figure>${traceSvg(w.ar, wd, size * 1.25, size)}<figcaption>Trace</figcaption></figure>
+        <figure>${traceSvg(null, wd, size * 1.25, size)}<figcaption>Write</figcaption></figure></div>
+      ${read ? '<div class="ws-write short"><span>How is it read?</span><i></i></div>' : ''}</div></div>`;
+  }
+  function harakaBlock(r, i, big, band) {
+    const size = writeMm(band) * (big ? 1 : 0.85), l = R.byId[r.id], M = R.MARKS[r.m];
+    if (r.kind === 'write') {
+      return `<div class="ws-har"><div class="ws-qn">${i}</div><div class="ws-qb"><p class="ws-prompt">Write <b>${esc(l.label)}</b> ${arSpan(l.ch, 'ws-arin')} with a <b>${esc(M.name.toLowerCase())}</b>.</p>
+        ${traceSvg(null, size * 1.8, size * 1.45, size, { base: 0.6 })}</div></div>`;
+    }
+    return `<div class="ws-har"><div class="ws-qn">${i}</div><div class="ws-qb ws-hrow">${traceSvg(r.s.ar, size * 1.8, size * 1.45, size, { base: 0.6 })}
+      <div class="ws-write short"><span>It says:</span><i></i></div></div></div>`;
+  }
+
+  /* ---------------- Building and rendering a sheet ---------------- */
+  const KINDS = ['unit', 'mixed', 'paper', 'trace', 'join', 'haraka', 'colour', 'cards'];
+  const KIND_NAME = { unit: 'Lesson worksheet', mixed: 'Mixed revision', paper: 'Practice paper', trace: 'Tracing and writing', join: 'Joining practice', haraka: 'Harakat practice', colour: 'Tajweed colouring', cards: 'Flashcards' };
+  function build(kind, a, b, o) {
+    if (!BUILD[kind] || !o) return null;
+    o = Object.assign(defaults('explorer', 1), o);
+    if (!COUNTS.includes(o.n) && kind !== 'paper') o.n = 10;
+    const s = BUILD[kind](a, b || 'x', o);
+    if (!s) return null;
+    return Object.assign({ kind, a, b: b || 'x', o, band: o.b, big: o.b === 'little', code: `${kind}-${a}-${b || 'x'}-${optsCode(o)}`,
+      level: bandName(o.b), kindName: KIND_NAME[kind] }, s);
+  }
+  const RESPECT = {
+    quran: 'This sheet has words of the Qur’an on it. Please keep it clean and treat it with respect.',
+    names: 'These cards have the names of Allah on them. Please keep them clean and treat them with respect.',
+    dua: 'These cards have duas and the name of Allah on them. Please keep them clean and treat them with respect.',
+  };
+  const ICON = '<svg viewBox="0 0 32 32" class="ws-logo" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 11c-2.2-1.6-5-2-8-1.6v11c3-.4 5.8 0 8 1.6 2.2-1.6 5-2 8-1.6v-11c-3-.4-5.8 0-8 1.6zM16 11v11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+  /* The header: never a learner's name unless a grown-up types one for this print. */
+  function headHtml(s, name) {
+    return `<div class="ws-head"><div class="ws-brand">${ICON}<span>Islamic Studies</span><span class="ws-kind">${esc(s.kindName)}</span></div>
+      <h2 class="ws-title">${arIn(s.title)}</h2><p class="ws-sub">${esc(s.sub)} · ${esc(s.level)}</p>
+      <div class="ws-nd"><span>Name: <i class="ws-fill">${name ? esc(name) : ''}</i></span><span>Date: <i class="ws-fill"></i></span></div>
+      ${s.intro ? `<p class="ws-intro">${arIn(s.intro)}</p>` : ''}${s.respect ? `<p class="ws-respect">${RESPECT[s.respect]}</p>` : ''}</div>`;
+  }
+  const contHtml = (s, ans) => `<div class="ws-cont"><span>${esc(s.title)}</span><span>${ans ? 'Answers' : 'continued'}</span></div>`;
+  const ansHeadHtml = (s) => `<div class="ws-anshead"><h2>${esc(s.answerHead || 'Answers')}</h2><p class="ws-sub">${esc(s.title)} · for the grown-up marking</p></div>`;
+  /* A flat version (tests, and a fallback): every block in order, with the answer sheet starting a new page. */
+  function renderFlat(s, name) {
+    const blk = (b) => `<div class="ws-blk ${b.half ? 'half' : ''} ${b.brk ? 'brk' : ''}">${b.html}</div>`;
+    return `<div class="ws-flat ${s.big ? 'big' : ''}">${headHtml(s, name)}${s.blocks.map(blk).join('')}
+      ${s.answers.length ? `<div class="ws-brk"></div>${ansHeadHtml(s)}${s.answers.map(blk).join('')}` : ''}<p class="ws-foot-flat">Sheet code ${esc(s.code)}</p></div>`;
+  }
+
+  FMG.worksheets = { COUNTS, KINDS, KIND_NAME, BAND_OF, BAND_CODE, optsCode, parseOpts, defaults, newSeed, build, renderFlat, headHtml, contHtml, ansHeadHtml,
+    paperOK, SCREEN_ONLY_QT, SCREEN_ONLY_RE, canSheet, clusters, quranExamples, AR_RUN, HAS_AR };
+
+  /* ======================= Screens ======================= */
+  (FMG.appReady = FMG.appReady || []).push((A) => {
+    const W = FMG.worksheets, $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+    const { route, shell, C } = A;
+    const MM = 96 / 25.4, PAGE_W = 182, PAGE_H = 267, FOOT = 10, GAP = 0; // each block carries its own 5mm bottom margin, which is measured
+    const curBand = () => { const p = A.profile(); return (p && p.band) || 'explorer'; };
+    let libBand = null;
+    const setHash = (h) => { try { history.replaceState(null, '', h); } catch (e) { /* the frame may refuse */ } };
+    const toHash = (path) => '#' + path.replace(/^#?\/?/, '').split('/').filter(Boolean).join('--');
+    const wsHref = (kind, a, b) => `#/ws/${kind}/${a}/${b || 'x'}/new`;
+
+    /* ---------- Pagination: measure every block at print size, then pack A4 pages ---------- */
+    function paginate(s, host, name) {
+      const meas = document.createElement('div');
+      meas.className = 'ws-sheets ws-measure'; meas.setAttribute('aria-hidden', 'true');
+      (host.parentElement || document.body).appendChild(meas); // inside the printable area, so print styles never hide it
+      const pageCls = `ws-page ${s.big ? 'big' : ''} ${s.cards ? 'cards' : ''}`;
+      const h = (html, half) => { meas.innerHTML = `<div class="${pageCls}" style="height:auto"><div class="ws-body">${half ? `<div class="ws-row2"><div class="ws-cell">${html}</div><div class="ws-cell"></div></div>` : html}</div></div>`; return $('.ws-body', meas).getBoundingClientRect().height / MM; };
+      const headH = h(W.headHtml(s, name)), contH = h(W.contHtml(s)), ansH = h(W.ansHeadHtml(s));
+      const avail = PAGE_H - FOOT;
+      const pages = []; let cur = null;
+      const open = (head, hh) => { cur = { html: [head], y: hh }; pages.push(cur); };
+      const pack = (list, firstHead, firstH, contHead) => {
+        let started = false;
+        for (let i = 0; i < list.length; i++) {
+          const b = list[i];
+          let html, bh;
+          if (b.fill) {
+            // Practice rows: as many trace rows and empty guide-line rows as fit on what is left of this page.
+            if (!started) { open(firstHead, firstH); started = true; }
+            const fitRows = () => { for (let k = b.fill.maxT + b.fill.maxW; k >= 2; k--) { const w = Math.min(b.fill.maxW, Math.max(1, Math.floor(k / 2))), t = Math.min(b.fill.maxT, k - w); const x = b.fill.rows(t, w), xh = h(x); if (cur.y + xh <= avail) return [x, xh]; } return null; };
+            let got = fitRows(); if (!got) { open(contHead, contH); got = fitRows() || [b.html, h(b.html)]; }
+            cur.html.push(got[0]); cur.y += got[1]; continue;
+          }
+          if (b.half) {
+            const nb = list[i + 1] && list[i + 1].half && !list[i + 1].brk ? list[i + 1] : null;
+            html = `<div class="ws-row2"><div class="ws-cell">${b.html}</div><div class="ws-cell">${nb ? nb.html : ''}</div></div>`;
+            bh = Math.max(h(b.html, true), nb ? h(nb.html, true) : 0); if (nb) i++;
+          } else { html = b.html; bh = h(b.html); }
+          if (!started) { open(firstHead, firstH); started = true; }
+          else if ((b.brk && cur.html.length > 1) || cur.y + bh + GAP > avail) open(contHead, contH);
+          cur.html.push(html); cur.y += bh + GAP;
+        }
+        if (!started) open(firstHead, firstH);
+      };
+      pack(s.blocks, W.headHtml(s, name), headH, W.contHtml(s));
+      if (s.answers.length) pack(s.answers, W.ansHeadHtml(s), ansH, W.contHtml(s, true));
+      meas.remove();
+      host.innerHTML = pages.map((pg, i) => `<section class="${pageCls}" aria-label="Page ${i + 1} of ${pages.length}"><div class="ws-body">${pg.html.join('')}</div>
+        <footer class="ws-foot"><span>Islamic Studies · Sheet code ${esc(s.code)}</span><span>Page ${i + 1} of ${pages.length}</span></footer></section>`).join('');
+      fit(host);
+      return pages.length;
+    }
+    function fit(host) {
+      const w = host.parentElement ? host.parentElement.clientWidth : innerWidth;
+      const k = Math.min(1, (w - 4) / ((PAGE_W + 28) * MM));
+      host.style.zoom = k < 1 ? String(Math.max(0.3, k)) : '';
+    }
+
+    /* ---------- The sheet screen: options panel, A4 preview, print ---------- */
+    route(/^#\/ws\/([a-z]+)\/([\w-]+)\/([\w-]+)\/([\w-]+)$/, (kind, a, b, oc) => {
+      if (!W.KINDS.includes(kind)) { A.go('#/worksheets'); return; }
+      let o = W.parseOpts(oc);
+      if (!o) { o = W.defaults(curBand()); setHash(toHash(`/ws/${kind}/${a}/${b}/${W.optsCode(o)}`)); }
+      let name = '';
+      let s = W.build(kind, a, b, o);
+      const trail = [C.home(), { t: 'Worksheets', href: '#/worksheets' }, { t: s ? s.title : 'Worksheet' }];
+      if (!s) { shell(`<h1>🖨 Worksheet</h1><p class="empty">This worksheet cannot be made for this level. Try another level or another sheet.</p><p><a class="btn primary" href="#/worksheets">All worksheets</a></p>`, { trail, cls: 'focus' }); return; }
+      const isQ = !s.noStyle, isPaper = kind === 'paper', story = kind === 'unit' && s.unit && s.unit.levels;
+      const standalone = !!(navigator.standalone || (root.matchMedia && matchMedia('(display-mode: standalone)').matches));
+      document.documentElement.classList.add('ws-on');
+      A.setKeys(() => document.documentElement.classList.remove('ws-on'));
+      const seg = (id, val, opts) => `<div class="seg" role="radiogroup" aria-label="${id}">${opts.map(([v, t]) => `<button type="button" role="radio" aria-checked="${String(v) === String(val)}" aria-selected="${String(v) === String(val)}" data-${id}="${v}">${t}</button>`).join('')}</div>`;
+      const usesCount = isQ ? !isPaper : kind === 'join' || kind === 'haraka';
+      const usesBand = kind !== 'cards' || a === 'duas';
+      const panel = () => `
+        <div class="ws-opts-grid">
+          ${usesCount ? `<div class="fld"><span class="ws-ol">Questions</span>${seg('n', o.n, W.COUNTS.map((n) => [n, n]))}</div>` : isPaper ? `<div class="fld"><span class="ws-ol">Questions</span><span>${s.qs.length}: the paper’s own length</span></div>` : ''}
+          ${usesBand ? `<div class="fld"><span class="ws-ol">Level</span>${seg('b', o.b, D.BANDS.map((x) => [x.id, x.name]))}</div>` : ''}
+          ${story ? `<div class="fld"><span class="ws-ol">Story level</span>${seg('L', o.L || D.levelFor(o.b), D.STORY_LEVELS.map((x) => [x.n, `${x.n} · ${x.name}`]))}</div>` : ''}
+          ${isQ ? `<div class="fld"><span class="ws-ol">Answer style</span>${seg('y', o.y, [['w', 'Write-in'], ['t', 'A–D tick boxes']])}</div>` : ''}
+          ${s.answers.length || (!o.a && kind !== 'trace' && kind !== 'cards') ? `<label class="fld ws-chk"><input type="checkbox" id="ws-a" ${o.a ? 'checked' : ''}> Include an answer sheet</label>` : ''}
+          <label class="fld"><span class="ws-ol">Name on the sheet <span class="small muted">(optional)</span></span><input id="ws-name" class="type-in sm" maxlength="30" placeholder="Leave blank to write by hand" autocomplete="off"></label>
+        </div>`;
+      shell(`<div class="ws-panel">
+          <h1>🖨 ${esc(s.title)}</h1>
+          <p class="muted">${esc(s.kindName)} · ${esc(s.sub)}</p>
+          <div id="ws-ctrls">${panel()}</div>
+          <div class="row ws-acts">
+            <button class="btn primary big" id="ws-print" type="button">🖨 Print</button>
+            ${!s.cards && kind !== 'trace' && kind !== 'colour' ? '<button class="btn ghost" id="ws-new" type="button">🔀 New questions</button>' : ''}
+            <a class="btn ghost" href="#/worksheets">All worksheets</a>
+          </div>
+          <p class="small muted" id="ws-info"></p>
+          ${standalone ? `<div class="note ws-safari"><b>Printing from the home-screen app?</b> Some iPads and iPhones do not print from here. <a href="${esc(location.href)}" target="_blank" rel="noopener" id="ws-safari">Open this sheet in Safari to print</a>: it opens the same sheet.</div>` : ''}
+          <details class="more-box"><summary>Printing tips and Save as PDF</summary><ul class="small">
+            <li>Choose <b>A4</b> paper, <b>100%</b> scale and the normal margins. Headers and footers from the browser can be turned off.</li>
+            <li><b>Save as PDF:</b> on a Mac or PC, choose “Save as PDF” as the printer. On iPad or iPhone, tap Print, then Share (or pinch out on the preview) and choose Save to Files.</li>
+            <li>The sheet code at the bottom of each page reprints exactly the same sheet: type it into the Worksheets page.</li>
+            <li>Colours print best in colour, but every colour is also named, so black and white works too.</li></ul></details>
+        </div>
+        <div class="ws-wrap"><div class="ws-sheets" id="ws-sheets"></div></div>`, { trail, cls: 'wide ws-screen' });
+      const host = $('#ws-sheets');
+      const draw = () => {
+        const n = paginate(s, host, name);
+        $('#ws-info').textContent = `${n} page${n === 1 ? '' : 's'} on A4${s.answers.length ? ', with the answer sheet on its own page' : ''}. Sheet code ${s.code}.`;
+        const sf = $('#ws-safari'); if (sf) sf.href = location.href;
+      };
+      const rebuild = (changed) => {
+        const ns = W.build(kind, a, b, Object.assign({}, o, changed));
+        if (!ns) { $('#ws-info').textContent = 'That choice cannot make this sheet, so it was not changed.'; bind(); return; }
+        Object.assign(o, changed); s = ns;
+        setHash(toHash(`/ws/${kind}/${a}/${b}/${W.optsCode(o)}`));
+        $('#ws-ctrls').innerHTML = panel(); bind(); draw();
+      };
+      const bind = () => {
+        $$('[data-n]').forEach((x) => (x.onclick = () => rebuild({ n: +x.dataset.n })));
+        $$('[data-b]').forEach((x) => (x.onclick = () => rebuild({ b: x.dataset.b, L: 0 })));
+        $$('[data-L]').forEach((x) => (x.onclick = () => rebuild({ L: +x.dataset.L })));
+        $$('[data-y]').forEach((x) => (x.onclick = () => rebuild({ y: x.dataset.y })));
+        const ac = $('#ws-a'); if (ac) ac.onchange = () => rebuild({ a: ac.checked });
+        const nm = $('#ws-name'); if (nm) { nm.value = name; nm.oninput = () => { name = nm.value.trim(); draw(); }; }
+      };
+      bind();
+      const nb = $('#ws-new'); if (nb) nb.onclick = () => rebuild({ s: W.newSeed() });
+      $('#ws-print').onclick = () => { try { root.print(); } catch (e) { $('#ws-info').textContent = 'Printing is not available here. Open the sheet in Safari or Chrome to print.'; } };
+      draw();
+      if (document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(() => { if (document.body.contains(host)) draw(); });
+      const onResize = () => { if (document.body.contains(host)) fit(host); else removeEventListener('resize', onResize); };
+      addEventListener('resize', onResize);
+    });
+
+    /* ---------- The Worksheets library ---------- */
+    route(/^#\/worksheets$/, () => {
+      const band = libBand || curBand(), p = { id: 'ws', band, prefs: {} };
+      const link = (kind, a, b, t, cls = 'ghost') => `<a class="btn sm ${cls}" href="${wsHref(kind, a, b)}">${t}</a>`;
+      const secs = D.SECTIONS.map((sec) => {
+        const ss = E.stages(sec.id, p);
+        const rows = ss.map((st) => {
+          const units = st.all.filter((u) => W.canSheet(u));
+          return `<details class="ws-stage"><summary><span>${esc(st.name)}</span><span class="small muted">${units.length} lesson${units.length === 1 ? '' : 's'}</span></summary>
+            <div class="row">${st.open ? `${link('mixed', sec.id, st.id, '🔀 Mixed revision', 'primary')}${link('paper', sec.id, st.id, '📝 Practice paper')}` : '<span class="small muted">Mixed revision and papers open at an older level.</span>'}</div>
+            <ul class="ws-units">${units.map((u) => `<li><a href="${wsHref('unit', u.id)}">${u.emoji || '📘'} ${esc(u.title)}</a>${D.bandRank(u.band) > D.bandRank(band) ? ' <span class="small muted">(older)</span>' : ''}</li>`).join('')}</ul></details>`;
+        }).join('');
+        const open = ss.some((x) => x.open);
+        return `<section class="card ws-lib-sec"><h2 class="h2">${sec.emoji} ${esc(sec.name)}</h2>
+          ${open ? `<div class="row">${link('mixed', sec.id, 'all', `🔀 ${esc(sec.name)}: mixed`)}${link('paper', sec.id, 'all', '📝 Whole-section paper')}</div>` : ''}${rows}</section>`;
+      }).join('');
+      const letterUnits = R.LEVELS.filter((l) => l.gen === 'letters' || l.gen === 'forms');
+      const harakaUnits = R.LEVELS.filter((l) => l.gen === 'haraka');
+      const colourUnits = R.LEVELS.filter((l) => (l.examples || l.detective || []).some((c) => (D.ruleIndex[c] || []).length));
+      const nameUnits = D.UNITS.filter((u) => u.gen === 'names'), duaUnits = D.UNITS.filter((u) => u.section === 'duas');
+      shell(`<h1>🖨 Worksheets</h1>
+        <p class="muted">Printable sheets made from the lessons in the app: one lesson, mixed revision, practice papers, tracing and flashcards. Choose the options on the next page, then print on A4.</p>
+        <div class="fld"><span class="ws-ol">Level</span><div class="seg" role="radiogroup" aria-label="Level">${D.BANDS.map((x) => `<button type="button" role="radio" aria-checked="${x.id === band}" aria-selected="${x.id === band}" data-lb="${x.id}">${esc(x.name)} (${esc(x.ages)})</button>`).join('')}</div></div>
+        <section class="card ws-lib-sec"><h2 class="h2">✍️ Tracing and writing</h2>
+          <p class="small muted">Large letters to trace, with every shape, then rows to write. Stroke order is not in the app, so each sheet says: start where your teacher shows you.</p>
+          <div class="row">${link('trace', 'all', 'x', 'All the letters', 'primary')}${letterUnits.map((u) => link('trace', u.id, 'x', esc(u.title))).join('')}</div>
+          <h3 class="ws-h3">Joining letters into words</h3><div class="row">${Object.keys(R.WORDS).map((k) => { const lv = R.LEVELS.find((l) => l.list === k); return link('join', k, 'x', esc(lv ? lv.title : k)); }).join('')}</div>
+          <h3 class="ws-h3">Harakat: zabar, zer and pesh</h3><div class="row">${harakaUnits.map((u) => link('haraka', u.id, 'x', esc(u.title))).join('')}</div>
+          <h3 class="ws-h3">Tajweed colouring</h3><div class="row">${colourUnits.map((u) => link('colour', u.id, 'x', esc(u.title))).join('')}</div></section>
+        <section class="card ws-lib-sec"><h2 class="h2">✂️ Flashcards to cut out</h2>
+          <h3 class="ws-h3">Letters with their names</h3><div class="row">${link('cards', 'letters', 'all', 'All 29 letters', 'primary')}${R.LEVELS.filter((l) => l.gen === 'letters' && !l.mixed).map((u) => link('cards', 'letters', u.id, esc(u.title))).join('')}</div>
+          <h3 class="ws-h3">99 Names of Allah</h3><div class="row">${link('cards', 'names', 'all', 'All 99 names', 'primary')}${nameUnits.map((u) => link('cards', 'names', u.id, esc(u.title))).join('')}</div>
+          <h3 class="ws-h3">Duas</h3><div class="row">${link('cards', 'duas', 'all', 'All the duas', 'primary')}${duaUnits.map((u) => link('cards', 'duas', u.id, esc(u.title))).join('')}</div></section>
+        ${secs}
+        <form class="card type-row" id="ws-code"><input id="ws-code-in" class="type-in" placeholder="Sheet code, e.g. unit-R01-x-m10t10x123456" aria-label="Sheet code" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn primary">Reprint</button></form>
+        <p class="small muted" id="ws-code-msg">The sheet code is printed at the bottom of every page. Typing it here makes exactly the same sheet again.</p>`, { trail: [C.home(), { t: 'Worksheets' }], cls: 'wide' });
+      $$('[data-lb]').forEach((x) => (x.onclick = () => { libBand = x.dataset.lb; A.render(); }));
+      $('#ws-code').onsubmit = (e) => {
+        e.preventDefault();
+        const code = $('#ws-code-in').value.trim().replace(/\s+/g, '');
+        const m = /^([a-z]+)-([\w-]+)-([lms]\d{1,2}[wt][01][0-4]x\d{1,9})$/.exec(code);
+        if (!m || !W.KINDS.includes(m[1])) { $('#ws-code-msg').textContent = 'That is not a sheet code. It looks like unit-R01-x-m10t10x123456.'; return; }
+        // A target can contain hyphens (stage ids): try each split until a sheet builds.
+        const rest = m[2].split('-'); m[4] = m[3];
+        for (let k = 1; k < rest.length; k++) { const a = rest.slice(0, k).join('-'), b = rest.slice(k).join('-'); if (W.build(m[1], a, b, W.parseOpts(m[4]))) { location.hash = toHash(`/ws/${m[1]}/${a}/${b}/${m[4]}`).slice(1); return; } }
+        $('#ws-code-msg').textContent = 'That sheet code does not match a sheet in this version of the app.';
+      };
+    });
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
 /* Family Deen — app shell and screens. Built on the Family Maths / Family Flags foundation
    (profiles, themes, buddy + voice, Ask sidebar, local saving, parent area, A–D options with "Type it"). */
 (function (root) {
@@ -4593,7 +5329,7 @@ body.reduce-motion .cel-layer { display: none; }`;
     let h = curRoute();
     if (h === '#/start') h = '#/';
     FMG.app.ctx = { screen: 'browse' };
-    if (!profile() && !/^#\/(parent(\/[\w-]+)*|check\/[\w-]+)?$/.test(h) && h !== '#/') { go('#/'); return; }
+    if (!profile() && !/^#\/(parent(\/[\w-]+)*|check\/[\w-]+|worksheets|ws(\/[\w-]+)+)?$/.test(h) && h !== '#/') { go('#/'); return; }
     for (const [re, fn] of routes) { const m = h.match(re); if (m) { fn(...m.slice(1).map((x) => (x == null ? x : decodeURIComponent(x)))); window.scrollTo(0, 0); focusMain(); return; } }
     go('#/');
   }
@@ -4840,7 +5576,8 @@ body.reduce-motion .cel-layer { display: none; }`;
       { href: '#/sec/names', e: '✨', n: '99 Names of Allah', d: 'What each name means', id: 'names' },
       { href: '#/mushaf', e: '🎧', n: 'Read the Qur’an', d: 'All 114 surahs', id: 'mushaf' },
       { href: '#/qirat', e: '🎙️', n: 'Qirat', d: 'The great reciters', id: 'qirat' },
-      { href: '#/exams', e: '📝', n: 'Exams', d: 'Stage tests and ladders', id: 'exams' }];
+      { href: '#/exams', e: '📝', n: 'Exams', d: 'Stage tests and ladders', id: 'exams' },
+      { href: '#/worksheets', e: '🖨', n: 'Worksheets', d: 'Print and practise on paper', id: 'worksheets' }];
     shell(`
       <section class="today-hero">
         <h1>${greet}</h1>
@@ -4891,7 +5628,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         const open = target ? g === target : here, slug = stageSlug(g.name);
         // Inside a stage, the first lesson without a star is marked "Next".
         const gn = g.units.find((u) => !D.unitProgress(u, states, p.band, seen).star);
-        return `<details class="reg journey ${here ? 'here' : got === g.units.length ? 'complete' : ''} ${g === target ? 'target' : ''}" id="stage-${slug}" data-stage="${slug}" ${open ? 'open' : ''}><summary class="reg-h"><span>${got === g.units.length && got ? '✅ ' : here ? '📍 ' : ''}${esc(g.name)}</span><span class="reg-n">${got}/${g.units.length} ⭐</span></summary><div class="col-grid">${g.units.map((u) => unitCard(u, p, states, seen, u === gn)).join('')}</div></details>`; }).join('')}
+        return `<details class="reg journey ${here ? 'here' : got === g.units.length ? 'complete' : ''} ${g === target ? 'target' : ''}" id="stage-${slug}" data-stage="${slug}" ${open ? 'open' : ''}><summary class="reg-h"><span>${got === g.units.length && got ? '✅ ' : here ? '📍 ' : ''}${esc(g.name)}</span><span class="reg-n">${got}/${g.units.length} ⭐</span></summary><div class="col-grid">${g.units.map((u) => unitCard(u, p, states, seen, u === gn)).join('')}</div>${(() => { const XE = FMG.deenExams, xs = XE && FMG.worksheets ? XE.stageOf(sid, XE.slug(g.name), p) : null; return xs && xs.open ? `<div class="row ws-stage-row"><a class="btn sm ghost" href="#/ws/mixed/${sid}/${xs.id}/new">🖨 Worksheet: ${esc(g.name.replace(/^\d+\s*·\s*/, ''))} mixed</a><a class="btn sm ghost" href="#/ws/paper/${sid}/${xs.id}/new">📝 Practice paper</a></div>` : ''; })()}</details>`; }).join('')}
       ${sid === 'reading' ? `<p class="note soft">🎧 Only a person can hear whether a sound is right, so each reading level ends with “Ready for a grown-up to listen”: read it aloud to Mum, Dad or your Qur’an teacher.</p>` : ''}
       <div class="row"><a class="btn ghost" href="#/play/endless/sec-${sid}">🎯 Mixed questions from what I’ve learnt</a></div>`, { trail: target ? [C.home(), C.sec(sid), { t: target.name, stage: true }] : [C.home(), { t: sec.name }], cls: 'wide' });
     // Opening a stage folds the others away and keeps its link in the address, so Back and bookmarks work.
@@ -4942,7 +5679,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         <div class="lv-top"><span class="lv-n">Level ${L} · ${esc(lv.name)}</span>${L === mine ? '<span class="lv-tag">Your level</span>' : ''}${read ? '<span class="lv-tag ok">Story read ✓</span>' : ''}${pr.star ? '<span class="lv-tag ok">Understood ⭐</span>' : ''}</div>
         <p class="muted small">${esc(lv.desc)} · ${cards} cards</p>
         <div class="row">${at ? `<a class="btn primary big" href="#/learn/${u.id}-L${L}">📖 Carry on reading <span class="small">(card ${at + 1} of ${cards})</span></a>` : `<a class="btn primary big" href="#/learn/${u.id}-L${L}" data-fresh="1">📖 ${read ? 'Read the story again' : 'Read story'}</a>`}
-          ${sc.n ? `<a class="btn ${read && !at ? 'primary' : 'ghost'}" href="#/play/practice/${u.id}-L${L}">🎯 Answer ${qn} questions${sc.s ? ` (${sc.s}/${sc.n} learnt)` : ''}</a>` : ''}</div>
+          ${sc.n ? `<a class="btn ${read && !at ? 'primary' : 'ghost'}" href="#/play/practice/${u.id}-L${L}">🎯 Answer ${qn} questions${sc.s ? ` (${sc.s}/${sc.n} learnt)` : ''}</a>` : ''}${FMG.worksheets && FMG.worksheets.canSheet(u) ? `<a class="btn ghost" href="#/ws/unit/${u.id}/x/${FMG.worksheets.optsCode(Object.assign(FMG.worksheets.defaults(p.band), { L }))}">🖨 Worksheet</a>` : ''}</div>
       </div>
       <details class="more-box"><summary>Change level</summary>
         <div class="levels">${D.STORY_LEVELS.map((x) => { const n = x.n, c = ((u.levels[n] || {}).cards || []).length, done = seen[`${u.id}-L${n}`];
@@ -4979,6 +5716,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         const second = primary && primary.href !== learnHref && canLearn ? { href: learnHref, t: isSurah ? '📖 Read the surah' : '📖 Go through the lesson again' } : null;
         return `<div class="unit-go">${primary ? `<a class="btn primary big" href="${primary.href}">${primary.t}</a>${primary.s ? `<span class="small muted">${esc(primary.s)}</span>` : ''}` : ''}
           ${second ? `<a class="btn ghost" href="${second.href}">${second.t}</a>` : ''}</div>
+        ${FMG.worksheets && FMG.worksheets.canSheet(u) ? `<div class="row ws-tools"><a class="btn ghost" href="#/ws/unit/${u.id}/x/new">🖨 Worksheet</a>${u.gen === 'letters' || u.gen === 'forms' ? `<a class="btn ghost" href="#/ws/trace/${u.id}/x/new">✍️ Tracing sheet</a>` : ''}${u.gen === 'haraka' ? `<a class="btn ghost" href="#/ws/haraka/${u.id}/x/new">✍️ Read and write sheet</a>` : ''}${u.list && R.WORDS[u.list] ? `<a class="btn ghost" href="#/ws/join/${u.list}/x/new">✍️ Joining sheet</a>` : ''}${(u.examples || u.detective || []).some((c) => (D.ruleIndex[c] || []).length) ? `<a class="btn ghost" href="#/ws/colour/${u.id}/x/new">🖍 Colouring sheet</a>` : ''}${u.gen === 'names' ? `<a class="btn ghost" href="#/ws/cards/names/${u.id}/new">✂️ Name cards</a>` : ''}${u.section === 'duas' ? `<a class="btn ghost" href="#/ws/cards/duas/${u.id}/new">✂️ Dua cards</a>` : ''}</div>` : ''}
         ${items.length ? `<details class="more-box"><summary>More options</summary><div class="row">
           <a class="btn ghost" href="#/play/check/${u.id}">✅ Show what I know <span class="small muted">(no hints)</span></a>
           <a class="btn ghost" href="#/play/endless/${u.id}">🔁 Keep practising <span class="small muted">(no score)</span></a></div></details>` : ''}`;
@@ -5680,7 +6418,7 @@ body.reduce-motion .cel-layer { display: none; }`;
     const db = store.get();
     const kinds = SND.kinds();
     shell(`<h1>Parent area</h1>
-      <div class="row"><a class="btn ghost" href="#/parent/learners">👥 Learners</a><a class="btn ghost" href="#/parent/backup">💾 Backup</a><a class="btn ghost" href="#/parent/about">ℹ️ About the content</a></div>
+      <div class="row"><a class="btn ghost" href="#/parent/learners">👥 Learners</a><a class="btn ghost" href="#/parent/backup">💾 Backup</a><a class="btn ghost" href="#/parent/about">ℹ️ About the content</a><a class="btn ghost" href="#/worksheets">🖨 Worksheets</a></div>
       <div class="card soft"><b>Sound:</b> ${kinds.ayah ? 'Al-Fatihah and Juz ’Amma are recited by Qari Abdul Basit or Sheikh Budair (each child can choose in the surah reader).' : 'No recitation is available in this copy.'} Single-letter sounds are not recorded, so please model each letter yourself or with the teacher. The buddy’s voice only ever reads English.</div>
       ${db.profiles.map((p) => { const st = statesOf(p), atts = attemptsOf(p.id), seen = seenOf(p.id), signs = signsOf(p.id);
         const week = atts.filter((a) => FMG.daysBetween(a.day, FMG.today()) < 7);

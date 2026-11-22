@@ -1909,6 +1909,153 @@ body.reduce-motion .bd-side, body.reduce-motion .bd-side * { animation: none !im
 [id$="-ro"] > .say-btn { float: right; }
 
 </style>
+<style>
+/* Printable worksheets (js/worksheets.js): the on-screen preview and the A4 print layout.
+   The sheet always uses light, black-on-white colours (whatever the app theme), so the preview is what prints. */
+.cta-card.worksheets { --tint: var(--t-data); }
+
+/* ---------- options panel and library (screen only) ---------- */
+.ws-page { max-width: 920px; }
+.ws-controls .ws-ctl-top { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+.ws-controls .ws-ctl-top h1 { margin: 0; }
+.ws-controls .ws-ctl-top .row { margin: 0; }
+.ws-ctl { display: flex; align-items: center; gap: .3rem .8rem; flex-wrap: wrap; margin: .55rem 0; }
+.ws-ctl-l { min-width: 7.5rem; font-weight: 700; font-size: .9rem; }
+.ws-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ws-chips .chip { text-decoration: none; display: inline-flex; align-items: center; }
+.ws-name-in { flex: 1 1 14rem; min-height: 44px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); padding: .4rem .8rem; font: inherit; }
+.ws-tips { margin-top: .6rem; font-size: .9rem; }
+.ws-tips summary { cursor: pointer; font-weight: 650; }
+.ws-safari a { font-weight: 700; }
+.ws-lib-head h1 { margin-bottom: .2rem; }
+.ws-lib-th { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+.ws-lib-th h2 { margin: 0; }
+.ws-lib-topic { border-top: 1px solid var(--line); padding: .7rem 0 .4rem; }
+.ws-lib-skills { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .45rem; }
+.ws-lib-skill { text-decoration: none; color: var(--ink); background: var(--surface-2); border-radius: 10px; padding: .45rem .75rem; font-size: .9rem; font-weight: 600; min-height: 40px; display: inline-flex; align-items: center; }
+.ws-lib-skill:hover { box-shadow: inset 0 0 0 1.5px var(--primary); }
+.ws-lib-acts { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .7rem; }
+.ws-lib-act { display: flex; flex-direction: column; gap: .3rem; text-decoration: none; color: var(--ink); border: var(--border); border-radius: 14px; padding: .8rem .9rem; }
+.ws-lib-act:hover { border-color: var(--primary); }
+
+/* ---------- the sheet ---------- */
+.ws-doc {
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f2f2f2; --ink: #111111; --muted: #555555; --line: #cfcfd6;
+  --primary: #5847eb; --primary-2: #4a39dc; --on-primary: #fff; --primary-soft: #efedff;
+  --good: #0e9a66; --good-bg: #e5f6ee; --warn: #b97800; --warn-bg: #fff4dc; --bad: #d23f3f; --bad-bg: #fdeaea; --info-bg: #edf2ff;
+  --c1: #5847eb; --c2: #ff8a5b; --c2-line: #c4532a;
+  --t-number: #5847eb; --t-fdp: #0f9d76; --t-shape: #e0702f; --t-algebra: #2e7ce0; --t-data: #c63f8f;
+  color-scheme: light;
+  color: #111; font-family: var(--font); font-size: 12pt; line-height: 1.4;
+}
+.ws-doc *, .ws-doc .viz * { animation: none !important; transition: none !important; }
+.ws-sheet { background: #fff; color: #111; width: 210mm; max-width: 100%; margin: 0 auto 1.4rem; padding: 14mm; box-shadow: 0 2px 14px rgba(0, 0, 0, .14); border-radius: 4px; }
+@media (max-width: 700px) { .ws-sheet { padding: 6mm 4mm; } }
+.ws-head { border-bottom: 2px solid #111; padding-bottom: 3mm; margin-bottom: 4mm; }
+.ws-brand { display: flex; align-items: center; gap: 2mm; font-weight: 750; font-size: 10pt; font-family: var(--font-round); }
+.ws-logo { width: 7mm; height: 7mm; flex: none; }
+.ws-logo rect { fill: #0b8a8a; }
+.ws-logo path { stroke: #fff; stroke-width: 3; fill: none; stroke-linecap: round; }
+.ws-kind { margin-left: auto; text-transform: uppercase; font-size: 8pt; letter-spacing: .08em; border: 1px solid #111; padding: .4mm 2mm; border-radius: 2mm; }
+.ws-doc h1.ws-title { font-size: 18pt; margin: 2mm 0 1mm; font-weight: 800; letter-spacing: -.01em; color: #111; }
+.ws-sub { font-size: 10pt; color: #333; }
+.ws-name { display: flex; gap: 3mm 8mm; margin-top: 3.5mm; font-size: 11.5pt; flex-wrap: wrap; align-items: flex-end; }
+.ws-line { display: inline-block; min-width: 45mm; border-bottom: 1.2px solid #111; min-height: 1.25em; vertical-align: bottom; }
+.ws-line.short { min-width: 16mm; }
+.ws-name-val { font-weight: 600; padding: 0 1mm; }
+.ws-intro { font-size: 10.5pt; margin: 0 0 4mm; color: #222; }
+.ws-qs { }
+.ws-row { display: flex; gap: 7mm; margin: 0 0 5.5mm; break-inside: avoid; page-break-inside: avoid; }
+.ws-row > * { flex: 1 1 0; min-width: 0; }
+.ws-q, .ws-act { display: flex; gap: 3mm; break-inside: avoid; page-break-inside: avoid; }
+.ws-qn { flex: none; width: 7.5mm; height: 7.5mm; border-radius: 50%; border: 1.5px solid #111; display: flex; align-items: center; justify-content: center; font-weight: 750; font-size: 10pt; }
+.ws-qb { flex: 1; min-width: 0; }
+.ws-doc .ws-prompt { margin: .6mm 0 2mm; line-height: 1.45; }
+.ws-doc .ws-prompt.center, .ws-doc .center { text-align: center; }
+.ws-doc .ws-prompt .who-said { background: none; padding: 0; margin-top: 1.5mm; font-size: 1em; }
+.ws-doc table.ftab th, .ws-doc table.ftab td { border-color: #777; }
+.ws-vis { margin: 2mm 0; max-width: 125mm; break-inside: avoid; }
+.ws-vis svg { width: 100%; height: auto; max-height: 62mm; display: block; }
+.ws-vis .objrow, .ws-vis .objgrid, .ws-vis .pattern { margin: 0; }
+.ws-vis.wide { max-width: 170mm; }
+.ws-vis.wide svg { max-height: 40mm; }
+.ws-vis.clock { width: 44mm; margin: 0 auto 1mm; }
+.ws-vis.shape { width: 34mm; margin: 0 auto; }
+.ws-vis.grid { max-width: 120mm; }
+.ws-vis.grid svg { max-height: 105mm; }
+.ws-vis.sm { max-width: 80mm; }
+.ws-vis.clock.sm { width: 30mm; }
+.ws-vis.grid.sm { max-width: 70mm; }
+.ws-vis.grid.sm svg { max-height: 62mm; }
+.ws-opts { list-style: none; padding: 0; margin: 2mm 0 1mm; display: flex; flex-direction: column; gap: 2mm; }
+.ws-opts.row { flex-direction: row; flex-wrap: wrap; gap: 2.5mm 9mm; }
+.ws-opts li { display: flex; align-items: center; gap: 2mm; }
+.ws-tick { width: 5.5mm; height: 5.5mm; border: 1.5px solid #111; border-radius: 1.2mm; flex: none; }
+.ws-l { font-weight: 800; }
+.ws-work { border: 1px solid #888; border-radius: 2mm; position: relative; margin: 2mm 0 0; }
+.ws-work.h1 { height: 15mm; } .ws-work.h2 { height: 27mm; } .ws-work.h3 { height: 40mm; }
+.ws-work-l { position: absolute; top: .8mm; left: 2mm; font-size: 7.5pt; color: #777; }
+.ws-ansline { display: flex; align-items: flex-end; justify-content: flex-end; gap: 2mm; margin-top: 2.5mm; }
+.ws-ans-l, .ws-var { font-size: 10.5pt; font-weight: 650; }
+.ws-ansline .ws-line { min-width: 38mm; }
+.ws-bigbox { display: inline-block; width: 15mm; height: 13mm; border: 2px solid #111; border-radius: 2mm; vertical-align: middle; }
+.ws-fill { margin: 2mm 0 0; }
+.ws-shape-l { font-weight: 800; }
+.ws-row.act.c3 { gap: 5mm; }
+.ws-row.act.c3 .ws-act { border: 1px solid #bbb; border-radius: 3mm; padding: 2mm; justify-content: center; }
+.ws-qtop { display: flex; justify-content: space-between; gap: 3mm; font-size: 9pt; color: #444; margin-top: .8mm; }
+.ws-qm { font-weight: 700; color: #111; }
+.ws-part { margin: 2mm 0 3.5mm; break-inside: avoid; page-break-inside: avoid; }
+.ws-pq { line-height: 1.45; }
+.ws-pm { float: right; margin-left: 3mm; font-size: 9pt; color: #333; white-space: nowrap; }
+.ws-qtop { break-after: avoid; page-break-after: avoid; }
+.ws-foot { margin-top: 6mm; padding-top: 2mm; border-top: 1px solid #aaa; font-size: 8pt; color: #555; }
+
+/* answer sheet: always a new page */
+.ws-answers { break-before: page; page-break-before: always; }
+.ws-alist { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 8mm; }
+.ws-alist.one { columns: 1; }
+.ws-alist.act.c3 { columns: 3; }
+.ws-a { break-inside: avoid; page-break-inside: avoid; display: flex; gap: 2.5mm; margin: 0 0 3.2mm; font-size: 10.5pt; }
+.ws-an { font-weight: 800; min-width: 6mm; }
+.ws-ab { flex: 1; min-width: 0; }
+.ws-aa { line-height: 1.4; }
+.ws-am { color: #444; font-size: 9pt; white-space: nowrap; }
+.ws-alt { color: #444; font-size: 9pt; }
+.ws-askill { font-size: 8.5pt; color: #555; }
+.ws-steps, .ws-scheme { margin: 1mm 0 0; padding-left: 5mm; font-size: 9.5pt; color: #333; }
+.ws-scheme { list-style: square; }
+.ws-apart { margin-bottom: 2mm; break-inside: avoid; }
+.ws-note { font-size: 9pt; color: #444; margin-top: 4mm; }
+
+/* young learners: bigger print (16pt and up) */
+.ws-doc.young { font-size: 16pt; }
+.ws-doc.young h1.ws-title { font-size: 24pt; }
+.ws-doc.young .ws-qn { width: 10mm; height: 10mm; font-size: 13pt; }
+.ws-doc.young .ws-tick { width: 7mm; height: 7mm; }
+.ws-doc.young .ws-a { font-size: 13pt; }
+.ws-doc.young .ws-steps { font-size: 11pt; }
+.ws-doc.young .ws-bigbox { width: 18mm; height: 16mm; }
+
+/* black and white printers: preview the pictures in grey */
+.ws-doc.bw .ws-vis, .ws-doc.bw .ws-logo { filter: grayscale(1); }
+
+/* ---------- print ---------- */
+@media print {
+  @page { size: A4 portrait; margin: 14mm 14mm 16mm; }
+  body.ws-on { background: #fff !important; color: #111 !important; }
+  body.ws-on > *:not(#app) { display: none !important; }
+  body.ws-on #app > *:not(main) { display: none !important; }
+  body.ws-on main.ws-page { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  body.ws-on main.ws-page > *:not(.ws-doc) { display: none !important; }
+  .ws-doc { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .ws-sheet { width: auto; max-width: none; padding: 0; margin: 0; box-shadow: none; border-radius: 0; }
+  .ws-sheet + .ws-sheet { break-before: page; page-break-before: always; }
+}
+/* colouring sheets: shapes print as outlines, ready to colour */
+.ws-act .ws-vis.shape .shape { fill: #fff !important; }
+
+</style>
 </head>
 <body>
   <a class="skip" href="#app">Skip to content</a>
@@ -33617,6 +33764,870 @@ const XY4A = [
 
 </script>
   <script>
+/* A–D options, shared by the question screens (app.js) and the printable worksheets (worksheets.js), so a
+   tick-box worksheet offers exactly the same four choices as the app. Moved out of app.js unchanged.
+   Every typed number answer can also be answered by choosing A, B, C or D: the right answer plus three plausible
+   wrong ones (the skill's known misconceptions first, then near-misses). */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG;
+  const { Q } = FMG;
+  const decOf = (v) => (v.d === 1 ? String(v.n) : (FMG.skillLib && FMG.skillLib.decStr(v)) || null);
+  // asFrac: show every option as a fraction (when the question is about fractions), otherwise as decimals.
+  const qTxt = (v, asFrac) => String(v.d === 1 ? String(v.n) : asFrac ? `${v.n}/${v.d}` : decOf(v) || `${v.n}/${v.d}`).replace('−', '-');
+  const qHtml = (v, pi, asFrac) => { const dec = v.d === 1 ? String(v.n) : asFrac ? null : decOf(v); const core = dec ? String(dec).replace('-', '−') : FMG.fracHTML(v); return pi ? (v.eq(Q.of(1)) ? 'π' : v.eq(Q.of(-1)) ? '−π' : core + 'π') : core; };
+  function abcdOptions(spec, seed, prompt) {
+    if (!spec || (spec.type !== 'number' && spec.type !== 'solutions')) return null;
+    const r = FMG.rng((seed || 1) * 31 + 7);
+    const key = (vals) => vals.map((v) => v.n + '/' + v.d).sort().join('|');
+    if (spec.type === 'number') {
+      let v; try { v = Q.of(spec.answer); } catch (e) { return null; }
+      const cands = [];
+      for (const m of spec.misconceptions || []) { try { cands.push(Q.of(m.value)); } catch (e) { /* skip */ } }
+      const isInt = v.d === 1, pr = String(prompt || '');
+      const promptFrac = /class="(fr|frac)|\d\s*\/\s*\d|[½⅓⅔¼¾⅕⅙⅛]/.test(pr) && !/\d\.\d/.test(pr);
+      const asFrac = !isInt && (spec.requireForm === 'fraction' || (spec.requireForm !== 'decimal' && (promptFrac || !decOf(v))));
+      const decimalish = !isInt && !asFrac;
+      const near = isInt
+        ? [v.add(Q.of(1)), v.sub(Q.of(1)), v.add(Q.of(10)), v.sub(Q.of(10)), v.mul(Q.of(2)), v.mul(Q.of(10)), v.add(Q.of(2)), v.mul(Q.of(-1))]
+        : decimalish ? [v.mul(Q.of(10)), v.div(Q.of(10)), v.add(new Q(1, 10)), v.sub(new Q(1, 10)), v.add(Q.of(1)), v.mul(Q.of(2)), v.add(new Q(1, 100)), v.sub(new Q(1, 100)), v.add(Q.of(2))]
+          : [new Q(v.d, v.n), new Q(v.n + 1, v.d), new Q(v.n, v.d + 1), new Q(Math.max(1, v.n - 1), v.d), v.mul(Q.of(2)), v.add(Q.of(1)), new Q(v.n + 2, v.d), new Q(v.n, v.d + 2), v.div(Q.of(2)), new Q(v.n * 2 + 1, v.d * 2)];
+      for (let i = near.length - 1; i > 0; i--) { const j = r.int(0, i); [near[i], near[j]] = [near[j], near[i]]; }
+      const seen = new Set([key([v])]), wrong = [];
+      for (const c of cands.concat(near)) {
+        if (wrong.length >= 3 || !c || !isFinite(c.valueOf())) continue;
+        if (v.valueOf() >= 0 && c.valueOf() < 0 && !cands.includes(c)) continue;
+        if (decimalish && c.d !== 1 && !decOf(c)) continue;              // keep every option a tidy decimal
+        if (isInt && c.d !== 1 && !cands.includes(c)) continue;          // whole-number answers get whole-number options
+        if (asFrac && c.d === 1 && !cands.includes(c) && wrong.length < 2) continue;
+        const k = key([c]); if (seen.has(k)) continue; seen.add(k); wrong.push(c);
+      }
+      if (wrong.length < 3) return null;
+      const opts = [{ v, correct: true }].concat(wrong.map((w) => ({ v: w, correct: false })));
+      for (let i = opts.length - 1; i > 0; i--) { const j = r.int(0, i); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+      return opts.map((o) => ({ html: qHtml(o.v, spec.pi, asFrac), typed: qTxt(o.v, asFrac) + (spec.pi ? 'π' : ''), correct: o.correct }));
+    }
+    // solutions: x = a or x = b
+    let vals; try { vals = (Array.isArray(spec.answer) ? spec.answer : [spec.answer]).map((x) => Q.of(x)); } catch (e) { return null; }
+    const variants = [vals.map((x) => x.mul(Q.of(-1))), vals.map((x, i) => (i === 0 ? x : x.mul(Q.of(-1)))), vals.map((x, i) => (i === 0 ? x.mul(Q.of(-1)) : x)), vals.map((x) => x.add(Q.of(1))), vals.map((x) => x.mul(Q.of(2)))];
+    const seen = new Set([key(vals)]), wrong = [];
+    for (const w of variants) { const k = key(w); if (wrong.length < 3 && !seen.has(k)) { seen.add(k); wrong.push(w); } }
+    if (wrong.length < 3) return null;
+    const lab = (arr) => arr.map((x) => `x = ${qHtml(x)}`).join(' or ');
+    const typ = (arr) => arr.map((x) => `x = ${qTxt(x)}`).join(' or ');
+    const opts = [{ a: vals, correct: true }].concat(wrong.map((w) => ({ a: w, correct: false })));
+    for (let i = opts.length - 1; i > 0; i--) { const j = r.int(0, i); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+    return opts.map((o) => ({ html: lab(o.a), typed: typ(o.a), correct: o.correct }));
+  }
+  FMG.abcd = { options: abcdOptions, decOf, qTxt, qHtml };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Printable worksheets (shared spec: Family App/docs/worksheets-spec.md).
+   Every sheet is built from the app's own question generators, exam papers and diagrams; nothing new is invented.
+   Routes (registered through FMG.extRoutes, run by app.js):
+     #/worksheets[/<stage>]                       the library, by stage
+     #/ws/skill/<skillId>/<opts>                  one skill at a ladder step
+     #/ws/mixed/stage/<stageId>/<opts>            mixed revision for a stage
+     #/ws/mixed/topic/<topicId>/<opts>            mixed revision for a topic (optionally one stage)
+     #/ws/exam/<skillId>/<opts>                   exam-style questions on one skill (from its exam ladder)
+     #/ws/paper/<paperId>/<opts>                  a practice paper (fixed papers, numbered papers, full mocks)
+     #/ws/act/<activityId>/<opts>                 colouring and drawing sheets
+   <opts> is a short code: s<step> n<count> w|t (write-in or tick boxes) a1|a0 (answer sheet) b (black and white)
+   g<stage or exam group> k<seed>. The whole route tail is the "sheet code": the same code always prints the same sheet.
+   No learner nickname is ever printed: the name line is blank unless a grown-up types a name (kept in memory only). */
+(function (root) {
+  'use strict';
+  const FMG = root.FMG;
+  if (!FMG || !FMG.gen || !FMG.curriculum) return;
+  const { esc, Q } = FMG;
+  const CUR = FMG.curriculum, GEN = FMG.gen;
+  const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const YOUNG_STAGES = ['eyfs', 'ks1'];
+
+  /* ============================== small helpers ============================== */
+  const plain = (h) => String(h == null ? '' : h).replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+  const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; };
+  const stageName = (id) => (CUR.STAGES[CUR.stageIndex(id)] || {}).name || id;
+  const released = () => CUR.allSkills().filter((k) => k.status === 'released');
+  const topicOrder = (k) => (CUR.topicOfSkill(k.id) || {}).num || 99;
+  const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+  /* ============================== paper suitability ==============================
+     The same rules the exam banks use (exams-from-skills.js): tap-to-build questions, GCSE multi-part challenges and
+     practice-only re-asks (formats) are left out. "Tap the hour" questions become "Write the hour" (the answer is a
+     number either way). Anything else that mentions tapping or dragging is left out at draw time. */
+  const SKIP = new Set(['m5.frame', 'm5.toys', 'eq.gcse', 'h-alg-fractions:m5']);
+  const BAD = /\b([Tt]ap|[Tt]apping|[Dd]rag|[Cc]lick on|press the tick|on the screen)\b|\bNaN\b|\bundefined\b|\bnull\b|\[object/;
+  const PAPER_WORDS = [[/\bTap the hour\b/g, 'Write the hour']];
+  const toPaper = (s) => PAPER_WORDS.reduce((t, [re, w]) => t.replace(re, w), String(s || ''));
+  function templateOK(tid) {
+    const t = GEN.TEMPLATES[tid];
+    return !!t && !t.gcse && !t.format && t.responseType !== 'tap-fill' && !SKIP.has(tid);
+  }
+  // Questions whose picture is a bag of coloured counters need colour to read (red, blue and green print as the same
+  // grey). In black and white they are left out unless the question text itself gives the numbers.
+  const COLOUR_WORDS = /\b(red|blue|green|yellow)\b/i;
+  function needsColour(q) {
+    if (!q.visual || q.visual.type !== 'bag') return false;
+    const t = plain(q.prompt);
+    return COLOUR_WORDS.test(t) && !/\d+\s+(red|blue|green|yellow)\b/i.test(t);
+  }
+  function instanceOK(q, bw) {
+    if (!q || !q.prompt || q.parts || !q.answer) return false;
+    const a = q.answer;
+    if (a.type === 'choice') {
+      const cs = q.choices || [];
+      if (cs.length < 2 || cs.length > 6 || !cs.some((c) => c.id === a.correct) || new Set(cs.map((c) => String(c.label))).size !== cs.length) return false;
+    } else if (a.type !== 'number' && a.type !== 'solutions') return false;
+    const txt = [plain(q.prompt), ...(q.choices || []).map((c) => String(c.label)), ...(q.solution || []).map(plain)].join(' ');
+    if (BAD.test(txt)) return false;
+    if (bw && needsColour(q)) return false;
+    return true;
+  }
+
+  /* ============================== sheet specs and codes ============================== */
+  const KINDS = ['skill', 'mixed', 'exam', 'paper', 'act'];
+  function parseOpts(str) {
+    const o = {};
+    for (const tok of String(str || '').split('-')) {
+      if (!tok) continue;
+      if (tok === 'w' || tok === 't') o.style = tok === 't' ? 'tick' : 'write';
+      else if (tok === 'b') o.bw = true;
+      else if (tok[0] === 's' && /^\d$/.test(tok.slice(1))) o.step = +tok.slice(1);
+      else if (tok[0] === 'n' && /^\d+$/.test(tok.slice(1))) o.count = +tok.slice(1);
+      else if (tok[0] === 'a') o.answers = tok.slice(1) !== '0';
+      else if (tok[0] === 'g') o.g = tok.slice(1);
+      else if (tok[0] === 'k' && /^[0-9a-z]+$/.test(tok.slice(1))) o.seed = parseInt(tok.slice(1), 36) >>> 0;
+    }
+    return o;
+  }
+  function optsString(sp) {
+    const t = [];
+    if (sp.kind !== 'paper') t.push('s' + (sp.step | 0));
+    if (sp.kind === 'skill' || sp.kind === 'mixed' || sp.kind === 'exam') t.push('n' + sp.count);
+    if (sp.kind === 'skill' || sp.kind === 'mixed') t.push(sp.style === 'tick' ? 't' : 'w');
+    t.push(sp.answers === false ? 'a0' : 'a1');
+    if (sp.bw) t.push('b');
+    if (sp.g) t.push('g' + sp.g);
+    t.push('k' + (sp.seed >>> 0).toString(36));
+    return t.join('-');
+  }
+  /* The route tail, e.g. "skill/round-nearest/s2-n20-w-a1-k3f9q". This is the sheet code printed on every sheet. */
+  function codeOf(sp) {
+    const mid = sp.kind === 'mixed' ? `mixed/${sp.scope}/${sp.id}` : `${sp.kind}/${sp.id}`;
+    return `${mid}/${optsString(sp)}`;
+  }
+  const hrefOf = (sp) => '#/ws/' + codeOf(sp);
+
+  /* A spec from route pieces, with defaults filled in. Returns null for an unknown sheet. */
+  function makeSpec(kind, id, scope, optStr, prof) {
+    const o = parseOpts(optStr);
+    const sp = { kind, id, scope, step: o.step, count: o.count, style: o.style || 'write', answers: o.answers !== false, bw: !!o.bw, g: o.g, seed: o.seed };
+    const p = prof || null;
+    const route = p ? p.route : null;
+    if (kind === 'skill' || kind === 'exam') {
+      const k = CUR.skill(id);
+      if (!k || k.status !== 'released') return null;
+      if (sp.step == null) sp.step = learnerStep(p, id);
+      if (kind === 'exam') {
+        const steps = examSteps(id);
+        if (!steps.length) return null;
+        if (!sp.g || !steps.some((s) => s.g === sp.g)) sp.g = defaultRung(steps, route);
+      } else sp.g = undefined;
+      if (!sp.count) sp.count = k.stages.every((s) => YOUNG_STAGES.includes(s)) ? 10 : (kind === 'exam' ? 10 : 20);
+    } else if (kind === 'mixed') {
+      if (scope === 'stage') { if (CUR.stageIndex(id) < 0) return null; sp.g = undefined; }
+      else if (scope === 'topic') {
+        const t = CUR.topic(id);
+        if (!t) return null;
+        const sts = topicStages(t);
+        if (!o.g) sp.g = route && sts.includes(route) ? route : 'all';
+        else if (o.g !== 'all' && !sts.includes(o.g)) sp.g = 'all';
+      } else return null;
+      const st = scope === 'stage' ? id : (sp.g !== 'all' ? sp.g : null);
+      if (sp.step == null) sp.step = mixedStep(p, mixedSkills(sp));
+      if (!sp.count) sp.count = st && YOUNG_STAGES.includes(st) ? 10 : 20;
+    } else if (kind === 'paper') {
+      if (!paperMeta(id)) return null;
+      sp.step = undefined; sp.count = undefined; sp.style = 'write'; sp.g = undefined;
+    } else if (kind === 'act') {
+      if (!ACTS[id]) return null;
+      sp.count = undefined; sp.style = 'write'; sp.g = undefined;
+      if (sp.step == null) sp.step = 0;
+    } else return null;
+    if (sp.step != null) sp.step = Math.max(0, Math.min(5, sp.step | 0));
+    if (sp.count != null) sp.count = [10, 20, 30].includes(sp.count) ? sp.count : (sp.count < 15 ? 10 : sp.count < 25 ? 20 : 30);
+    if (sp.kind === 'exam') sp.style = 'write';
+    if (sp.seed == null) sp.seed = (Math.random() * 2 ** 31) >>> 0;
+    return sp;
+  }
+  function learnerStep(p, skillId) {
+    if (!p || !p.prefs) return 0;
+    const st = (p.prefs.steps || {})[skillId];
+    return st != null ? st : GEN.stepOfLevel((p.prefs.levels || {})[skillId] || 'routine');
+  }
+  function mixedStep(p, skills) {
+    if (!p || !p.prefs || !skills.length) return 0;
+    const n = [0, 0, 0, 0, 0, 0];
+    for (const k of skills) { const s = (p.prefs.steps || {})[k.id]; if (s != null) n[s]++; }
+    const best = n.indexOf(Math.max(...n));
+    return n[best] ? best : 0;
+  }
+  const topicStages = (t) => CUR.STAGES.map((s) => s.id).filter((s) => t.skills.some((k) => k.status === 'released' && k.stages.includes(s)));
+  function mixedSkills(sp) {
+    if (sp.scope === 'stage') return released().filter((k) => k.stages.includes(sp.id)).sort((a, b) => topicOrder(a) - topicOrder(b));
+    const t = CUR.topic(sp.id);
+    return t ? t.skills.filter((k) => k.status === 'released' && (!sp.g || sp.g === 'all' || k.stages.includes(sp.g))) : [];
+  }
+
+  /* ============================== answers ============================== */
+  const sl = () => FMG.skillLib;
+  const MARK = () => FMG.marking;
+  const fracLike = (prompt) => /class="(fr|frac)|\d\s*\/\s*\d|[½⅓⅔¼¾⅕⅙⅛]/.test(String(prompt || '')) && !/\d\.\d/.test(String(prompt || ''));
+  /* The answer to a number question in the form a child would write it, plus every other form the app's marker accepts
+     (fraction, mixed number, decimal; a rounded decimal for π answers). Every form listed is checked with the marker. */
+  function numberForms(spec, prompt) {
+    const v = Q.of(spec.answer), pi = !!spec.pi;
+    const dec = v.d === 1 ? String(v.n) : sl().decStr(v);
+    const forms = [];
+    const sign = v.n < 0 ? '−' : '';
+    if (v.d !== 1) {
+      forms.push({ key: 'frac', txt: `${v.n}/${v.d}`, html: FMG.fracHTML(v) });
+      if (Math.abs(v.n) > v.d) {
+        const w = Math.trunc(Math.abs(v.n) / v.d), r = Math.abs(v.n) % v.d;
+        forms.push({ key: 'mixed', txt: `${v.n < 0 ? '-' : ''}${w} ${r}/${v.d}`, html: `${sign}${w}${FMG.fracTxt(r, v.d)}` });
+      }
+    }
+    let dtxt = dec != null ? String(dec).replace('−', '-') : null;
+    if (dtxt && /£/.test(plain(prompt)) && /^-?\d+\.\d$/.test(dtxt) && !pi) dtxt += '0';      // money: £2.70, not £2.7
+    const grouped = (t) => (/\d,\d{3}/.test(plain(prompt)) ? t.replace(/^(-?)(\d+)/, (m0, sg, d) => sg + d.replace(/\B(?=(\d{3})+(?!\d))/g, ',')) : t);
+    if (dtxt != null) forms.push({ key: 'dec', txt: dtxt, html: grouped(dtxt).replace('-', '−') });
+    const preferFrac = v.d !== 1 && (spec.requireForm === 'fraction' || spec.requireSimplest || dec == null || (spec.requireForm !== 'decimal' && fracLike(prompt)));
+    forms.sort((a, b) => (preferFrac ? (a.key === 'dec') - (b.key === 'dec') : (b.key === 'dec') - (a.key === 'dec')));
+    const ok = [];
+    for (const f of forms) {
+      const txt = f.txt + (pi ? 'π' : '');
+      let st = 'incorrect';
+      try { st = MARK().mark(txt, spec).status; } catch (e) { /* skip */ }
+      if (st === 'correct') ok.push({ txt, html: pi ? (v.eq(Q.of(1)) ? 'π' : v.eq(Q.of(-1)) ? '−π' : f.html + 'π') : f.html });
+    }
+    if (pi) {
+      const approx = (v.valueOf() * Math.PI).toFixed(2);
+      try { if (MARK().mark(approx, spec).status === 'correct') ok.push({ txt: approx, html: approx.replace('-', '−') + ' (2 d.p.)' }); } catch (e) { /* skip */ }
+    }
+    // a decimal answer to a question with no fractions in it: don't offer 27/10 as well
+    const fr = preferFrac || fracLike(prompt);
+    return ok.filter((f, i) => i === 0 || fr || !/class="fr/.test(f.html));
+  }
+  /* Answer for a generated lesson question: { html, txt, alts: [html], ok } (ok: the main form marks correct). */
+  function answerOfQ(q) {
+    const a = q.answer;
+    if (a.type === 'choice') {
+      const c = (q.choices || []).find((x) => x.id === a.correct);
+      return { html: esc(c ? c.label : ''), txt: c ? String(c.label) : '', alts: [], ok: !!c };
+    }
+    if (a.type === 'solutions') {
+      const vals = (Array.isArray(a.answer) ? a.answer : [a.answer]).map((x) => Q.of(x)), vr = a.variable || 'x';
+      const txt = vals.map((v) => `${vr} = ${sl().show(v).replace('−', '-')}`).join(' or ');
+      let ok = false;
+      try { ok = MARK().mark(txt, a).status === 'correct'; } catch (e) { ok = false; }
+      return { html: vals.map((v) => `${vr} = ${sl().showH(v)}`).join(' or '), txt, alts: [], ok };
+    }
+    const forms = numberForms(a, q.prompt);
+    if (!forms.length) return { html: sl().showH(a.answer), txt: sl().show(a.answer), alts: [], ok: false };
+    return { html: forms[0].html, txt: forms[0].txt, alts: forms.slice(1).map((f) => f.html), ok: true };
+  }
+  /* Exam parts (number, quantity, solutions, choice), the way the app's results screen shows them. */
+  function answerOfPart(pt) {
+    const a = pt.answer, X = FMG.exams;
+    if (a.type === 'choice') { const c = a.choices.find((x) => x.id === a.correct); return { html: c ? c.label : '', alts: [] }; }
+    if (a.type === 'solutions') return { html: a.answer.map((v) => `${a.variable || 'x'} = ${sl().showH(v)}`).join(' or '), alts: [] };
+    if (a.type === 'quantity') {
+      if (a.answer.unit === '£' && X) return { html: X.fmt.money(a.answer.q), alts: [] };
+      return { html: `${sl().showH(a.answer.q)} ${esc(a.answer.unit)}`, alts: [] };
+    }
+    const forms = numberForms(a, (pt.prompt || '') + ' ' + (pt.solution || []).join(' '));
+    if (!forms.length) return { html: sl().showH(a.answer) + (a.pi ? 'π' : ''), alts: [] };
+    return { html: forms[0].html, alts: forms.slice(1).map((f) => f.html) };
+  }
+  function stepsOf(q) {
+    const s = (q.solution || []).filter((x) => plain(x));
+    if (s.length) return s.map(String);
+    const w = (q._raw && q._raw.walk) || [];
+    return w.map((x) => x.math).filter((x) => plain(x));
+  }
+  function marksOf(tid, level) {
+    const mk = (FMG.EXAM_MARKS || {})[tid];
+    return Array.isArray(mk) ? mk[GEN.LEVELS.indexOf(level)] || 1 : mk || 1;
+  }
+
+  /* ============================== practice items (skill and mixed sheets) ============================== */
+  function drawFrom(tids, info, r, recent, bw, tries = 3) {
+    for (let t = 0; t < tries * tids.length && t < 40; t++) {
+      const tid = tids[t % tids.length];
+      let q = null;
+      try { q = GEN.draw(tid, info.level, recent, () => r.int(1, 2147483646), { gentle: info.gentle, plus: info.plus }); } catch (e) { q = null; }
+      if (!q) continue;
+      q = Object.assign({}, q, { prompt: toPaper(q.prompt) });
+      if (!instanceOK(q, bw)) continue;
+      return q;
+    }
+    return null;
+  }
+  /* One worksheet item from a generated question. style: 'write' or 'tick'. */
+  function itemOf(q, n, style, young, extra) {
+    const a = q.answer;
+    const it = { n, tid: q.templateId, skillId: q.skillId, level: q.level, prompt: q.prompt, visual: q.visual || null, young, steps: stepsOf(q), fingerprint: q.fingerprint };
+    const ans = answerOfQ(q);
+    it.answer = ans;
+    it.spec = a;
+    it.marks = marksOf(q.templateId, q.level);
+    if (a.type === 'choice') {
+      it.mode = 'choice';
+      it.options = q.choices.map((c) => ({ html: esc(c.label), typed: String(c.label), correct: c.id === a.correct }));
+    } else if (style === 'tick') {
+      const opts = FMG.abcd ? FMG.abcd.options(a, (q.seed || 0) + n * 7, q.prompt) : null;
+      if (opts) { it.mode = 'tick'; it.options = opts.map((o) => ({ html: o.html, typed: o.typed, correct: o.correct })); it.marks = 1; }
+      else it.mode = a.type === 'solutions' ? 'solutions' : 'write';
+    } else it.mode = a.type === 'solutions' ? 'solutions' : 'write';
+    if (it.options) it.letter = LETTERS[it.options.findIndex((o) => o.correct)];
+    it.variable = a.variable || 'x';
+    Object.assign(it, extra || {});
+    return it;
+  }
+  function buildSkillItems(sp) {
+    const k = CUR.skill(sp.id);
+    const info = GEN.stepInfo(k.id, sp.step);
+    let tids = GEN.templatesFor(k.id, info.bands).filter(templateOK);
+    if (!tids.length) tids = GEN.templatesFor(k.id, [0]).filter(templateOK);
+    const r = FMG.rng((sp.seed ^ hash(codeOf(Object.assign({}, sp, { answers: true, style: 'write' })) + '|items')) >>> 0);
+    const order = r.shuffle(tids), young = k.stages.every((s) => YOUNG_STAGES.includes(s));
+    const items = [], recent = [], prompts = new Set();
+    let i = 0;
+    for (let guard = 0; items.length < sp.count && guard < sp.count * 6; guard++, i++) {
+      const rot = order.slice(i % order.length).concat(order.slice(0, i % order.length));
+      const q = drawFrom(rot, info, r, recent, sp.bw);
+      if (!q) continue;
+      const pk = plain(q.prompt) + '|' + JSON.stringify(q.visual || '');
+      if (prompts.has(pk) && guard < sp.count * 4) continue;      // the same question twice only if the skill runs out
+      prompts.add(pk); recent.unshift(q.fingerprint);
+      items.push(itemOf(q, items.length + 1, sp.style, young));
+    }
+    return { items, young, info };
+  }
+  /* A skill that runs across several stages is pitched at the part of its ladder that belongs to the sheet's stage
+     (e.g. place value on a Years 1–2 sheet stays with hundreds, on a Years 5–6 sheet it uses its Stretch steps).
+     The chosen level still moves the questions up or down inside that band. */
+  function stageStep(k, stage, step) {
+    const n = k.stages.length, idx = k.stages.indexOf(stage);
+    if (!stage || stage === 'all' || n < 2 || idx < 0) return step;
+    const lo = Math.round((idx / (n - 1)) * 4), hi = idx === n - 1 ? 5 : lo + (n === 2 ? 3 : 1);
+    return Math.max(lo, Math.min(hi, step));
+  }
+  function buildMixedItems(sp) {
+    const skills = mixedSkills(sp);
+    const r = FMG.rng((sp.seed ^ hash(codeOf(Object.assign({}, sp, { answers: true, style: 'write' })) + '|items')) >>> 0);
+    const st = sp.scope === 'stage' ? sp.id : sp.g;
+    const young = !!st && st !== 'all' && YOUNG_STAGES.includes(st);
+    const order = r.shuffle(skills.filter((k) => GEN.templatesFor(k.id, [0]).some(templateOK)));
+    const items = [], recent = [], prompts = new Set();
+    for (let i = 0, guard = 0; items.length < sp.count && guard < sp.count * 6 && order.length; i++, guard++) {
+      const k = order[i % order.length];
+      const info = GEN.stepInfo(k.id, stageStep(k, st, sp.step));
+      let tids = GEN.templatesFor(k.id, info.bands).filter(templateOK);
+      if (!tids.length) tids = GEN.templatesFor(k.id, [0]).filter(templateOK);
+      const q = drawFrom(r.shuffle(tids), info, r, recent, sp.bw);
+      if (!q) continue;
+      const pk = plain(q.prompt) + '|' + JSON.stringify(q.visual || '');
+      if (prompts.has(pk) && guard < sp.count * 4) continue;
+      prompts.add(pk); recent.unshift(q.fingerprint);
+      items.push(itemOf(q, items.length + 1, sp.style, young, { skillName: k.name }));
+    }
+    // keep the sheet in curriculum order (topic by topic), so it reads like a revision sheet
+    items.sort((a, b) => topicOrder({ id: a.skillId }) - topicOrder({ id: b.skillId }));
+    items.forEach((it, j) => { it.n = j + 1; });
+    return { items, young };
+  }
+
+  /* ============================== exam questions and papers ============================== */
+  const examSteps = (skillId) => (FMG.examLadder && FMG.exams ? FMG.examLadder.steps(skillId) : []);
+  const RUNG_FOR_ROUTE = { eyfs: 'y2', ks1: 'y2', lks2: 'y4', uks2: 'y6', ks3: 'ks3', gcsef: 'gcsef', gcseh: 'gcseh' };
+  function defaultRung(steps, route) {
+    const order = ((FMG.examLadder && FMG.examLadder.RUNGS) || []).map((x) => x.g), want = order.indexOf(RUNG_FOR_ROUTE[route] || 'y6');
+    let g = steps[0].g;
+    steps.forEach((s) => { if (order.indexOf(s.g) <= want) g = s.g; });
+    return g;
+  }
+  const examTextOK = (q) => !BAD.test([plain(q.prompt), ...q.parts.map((pt) => plain(pt.prompt) + ' ' + (pt.solution || []).map(plain).join(' '))].join(' '));
+  function buildExamQuestions(sp) {
+    const X = FMG.exams, step = examSteps(sp.id).find((s) => s.g === sp.g);
+    const entries = X.pool(sp.g).filter((e) => step.topics.includes(e.topic));
+    const r = FMG.rng((sp.seed ^ hash(codeOf(Object.assign({}, sp, { answers: true })) + '|exam')) >>> 0);
+    // easiest first within the ladder step's level: shuffle, then cycle so every question type is used before repeats
+    const order = r.shuffle(entries).sort((a, b) => a.level - b.level);
+    const out = [], seen = new Set(), picked = [];
+    for (let i = 0, guard = 0; out.length < sp.count && guard < sp.count * 5 && order.length; i++, guard++) {
+      const e = order[i % order.length];
+      let q = null;
+      try { q = X.makeQuestion(e, r.int(1, 2147483646), out.length + 1); } catch (er) { q = null; }
+      if (!q || !q.parts || !q.parts.length || !examTextOK(q)) continue;
+      const key = plain(q.prompt) + q.parts.map((p) => plain(p.prompt)).join('|');
+      if (seen.has(key) && guard < sp.count * 3) continue;
+      seen.add(key);
+      q.n = out.length + 1;
+      out.push(q); picked.push(e);
+    }
+    out.calc = picked.some((e) => e.calc);
+    return out;
+  }
+  function paperMeta(id) {
+    const X = FMG.exams;
+    if (!X) return null;
+    try { return X.getPaper(id); } catch (e) { return null; }
+  }
+  function buildPaper(sp) {
+    const X = FMG.exams;
+    const b = X.build(sp.id, sp.seed);
+    return b ? { paper: b.paper, questions: b.questions } : null;
+  }
+
+  /* ============================== colouring and drawing activities ==============================
+     Only where the app already has the picture: fraction bars, clock faces, number lines, polygons, coordinate grids.
+     Each has exact answers on the answer sheet. */
+  const VIZ = () => FMG.viz;
+  const clockBlank = () => `<svg class="viz clock" viewBox="0 0 220 220" role="img" aria-label="A clock face with no hands">${VIZ().clockFace(110, 110, 96)}<circle cx="110" cy="110" r="6.5" class="hub"/></svg>`;
+  const NUMW = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+  const MINW = { 5: 'five', 10: 'ten', 15: 'quarter', 20: 'twenty', 25: 'twenty-five', 30: 'half' };
+  function timeWords(h, m) {
+    const nx = h % 12 + 1;
+    if (m === 0) return `${NUMW[h]} o’clock`;
+    if (m <= 30) return `${MINW[m]} past ${NUMW[h]}`;
+    return `${MINW[60 - m]} to ${NUMW[nx]}`;
+  }
+  const SHAPE_NAME = { 3: 'triangle', 4: 'square', 5: 'pentagon', 6: 'hexagon', 7: 'heptagon', 8: 'octagon', 9: 'nonagon', 10: 'decagon', 11: 'hendecagon', 12: 'dodecagon', 20: 'icosagon' };
+  const ACTS = {
+    'colour-fractions': {
+      title: 'Colour the fractions', stages: ['ks1', 'lks2', 'uks2'],
+      blurb: 'Fraction bars from the app’s fraction wall: colour the fraction shown, then compare.',
+      build(lv, r) {
+        const dens = lv === 0 ? [2, 3, 4] : lv === 1 ? [2, 3, 4, 5, 6, 8] : [3, 5, 6, 8, 10, 12];
+        const items = [], used = new Set();
+        while (items.length < 6) {
+          const d = r.pick(dens), n = r.int(1, d - 1), key = `${n}/${d}`;
+          if (used.has(key) && used.size < 12) continue;
+          used.add(key);
+          items.push({
+            html: `<p class="ws-prompt">Colour ${FMG.fracTxt(n, d)} of the bar.</p><div class="ws-vis wide">${VIZ().render({ type: 'x-fracwall', rows: [{ n: 0, d, label: ' ' }], desc: `A bar split into ${d} equal parts, none coloured` })}</div>`,
+            answer: `${plural(n, 'part')} of ${d} coloured <span class="ws-alt">(any ${n === 1 ? 'one' : n}; they do not have to be next to each other)</span><div class="ws-vis wide sm">${VIZ().render({ type: 'x-fracwall', rows: [{ n, d, label: `${n}/${d}` }] })}</div>`,
+          });
+        }
+        if (lv >= 1) {
+          for (let k = 0; k < 2; k++) {
+            let a, b;
+            do { const d1 = r.pick(dens), d2 = r.pick(dens); a = { n: r.int(1, d1 - 1), d: d1 }; b = { n: r.int(1, d2 - 1), d: d2 }; } while (a.d === b.d);
+            const cmp = new Q(a.n, a.d).cmp(new Q(b.n, b.d)), right = cmp > 0 ? 0 : cmp < 0 ? 1 : 2;
+            const fa = FMG.fracTxt(a.n, a.d), fb = FMG.fracTxt(b.n, b.d);
+            const choices = [`${fa} is bigger`, `${fb} is bigger`, 'They are the same'];
+            items.push({
+              html: `<p class="ws-prompt">Colour ${fa} of the top bar and ${fb} of the bottom bar. Then tick the right answer.</p><div class="ws-vis wide">${VIZ().render({ type: 'x-fracwall', rows: [{ n: 0, d: a.d, label: ' ' }, { n: 0, d: b.d, label: ' ' }], desc: `Two bars of the same length, split into ${a.d} and ${b.d} equal parts` }).replace(/<line[^>]*class="dash"[^>]*\/>/g, '')}</div>${optsHtml(choices.map((c) => ({ html: c })))}`,
+              answer: `<b>${LETTERS[right]}</b> ${choices[right]} <div class="ws-vis wide sm">${VIZ().render({ type: 'x-fracwall', rows: [{ n: a.n, d: a.d, label: `${a.n}/${a.d}` }, { n: b.n, d: b.d, label: `${b.n}/${b.d}` }] })}</div>`,
+            });
+          }
+        }
+        return { intro: 'Use any colour. Count the equal parts first.', items, cols: 1 };
+      },
+    },
+    'draw-clocks': {
+      title: 'Draw the hands on the clocks', stages: ['ks1', 'lks2'],
+      blurb: 'Blank clock faces: draw the hour hand (short) and the minute hand (long).',
+      build(lv, r) {
+        const mins = lv === 0 ? [0, 30] : lv === 1 ? [0, 15, 30, 45] : [5, 10, 20, 25, 35, 40, 50, 55, 15, 45];
+        const items = [], used = new Set();
+        while (items.length < 6) {
+          const h = r.int(1, 12), m = r.pick(mins), key = `${h}:${m}`;
+          if (used.has(key)) continue;
+          used.add(key);
+          const digital = lv === 2 && items.length % 2 === 1;
+          const label = digital ? `${h}:${String(m).padStart(2, '0')}` : timeWords(h, m);
+          items.push({
+            html: `<div class="ws-vis clock">${clockBlank()}</div><p class="ws-prompt center">${esc(label)}</p>`,
+            answer: `<div class="ws-vis clock sm">${VIZ().render({ type: 'clock', h, m })}</div><div class="center">${esc(label)}: hour hand ${m ? `between ${h} and ${h % 12 + 1}` : `on ${h}`}, minute hand on ${m ? m / 5 : 12}</div>`,
+          });
+        }
+        return { intro: 'The hour hand is short. The minute hand is long. Draw them with a ruler or a steady hand.', items, cols: 3 };
+      },
+    },
+    'number-lines': {
+      title: 'Fill in the number lines', stages: ['eyfs', 'ks1', 'lks2', 'uks2'],
+      blurb: 'Number lines with some numbers missing: write them in.',
+      build(lv, r) {
+        const kinds = lv === 0 ? [[1, 0, 10]] : lv === 1 ? [[2, 0, 20], [5, 0, 50], [10, 0, 100], [3, 0, 30]] : [[100, 0, 1000], [25, 0, 250], [2, -10, 10], [50, 0, 500], [4, -20, 20]];
+        const items = [];
+        for (let k = 0; k < 4; k++) {
+          const [step, a, b] = r.pick(kinds);
+          const off = lv === 0 ? 0 : step * r.int(0, 5) * (a < 0 ? 0 : 1);
+          const from = a + off, to = b + off, n = Math.round((to - from) / step);
+          const inner = Array.from({ length: n - 1 }, (_, i) => from + (i + 1) * step);
+          const miss = r.shuffle(inner).slice(0, Math.min(lv === 0 ? 3 : 4, inner.length)).sort((x, y) => x - y);
+          const line = (skip) => VIZ().render({ type: 'q-nl', from, to, step, labels: true, skip, desc: `A number line from ${from} to ${to} in steps of ${step}${skip.length ? `, with ${skip.length} numbers missing` : ''}` });
+          items.push({
+            html: `<p class="ws-prompt">Count in ${step}s. Write the missing numbers.</p><div class="ws-vis wide">${line(miss)}</div><p class="ws-fill">Missing numbers: ${miss.map(() => '<span class="ws-line short"></span>').join(' ')}</p>`,
+            answer: `${miss.map((x) => String(x).replace('-', '−')).join(', ')}<div class="ws-vis wide sm">${line([])}</div>`,
+          });
+        }
+        return { intro: 'Look at the gap between the numbers you can see. Then count on.', items, cols: 1 };
+      },
+    },
+    'shape-count': {
+      title: 'Shape hunt: count, write and colour', stages: ['eyfs', 'ks1', 'lks2'],
+      blurb: 'Count the sides of each shape, write the number, then colour the shapes with 4 sides.',
+      build(lv, r) {
+        const pool = lv === 0 ? [3, 4, 5, 6, 'rect', 'iso'] : lv === 1 ? [3, 4, 5, 6, 7, 8, 'rect', 'kite', 'para', 'iso'] : [5, 6, 7, 8, 9, 10, 11, 12, 20, 'kite', 'para', 'rect'];
+        const shapes = [];
+        const four = (s) => s === 4 || s === 'rect' || s === 'kite' || s === 'para';
+        while (shapes.length < 9) {
+          const s = r.pick(pool);
+          if (shapes.filter((x) => x === s).length >= 2) continue;
+          shapes.push(s);
+        }
+        if (!shapes.some(four)) shapes[r.int(0, 8)] = r.pick([4, 'rect', 'kite', 'para'].filter((x) => pool.includes(x)));
+        const info = (s) => (typeof s === 'number' ? { n: s, name: s === 4 ? 'square' : SHAPE_NAME[s], v: { type: 'polygon', n: s } }
+          : { n: s === 'iso' ? 3 : 4, name: { rect: 'rectangle', kite: 'kite', para: 'parallelogram', iso: 'triangle' }[s], v: { type: 'polygon', kind: s } });
+        const items = shapes.map((s, i) => {
+          const I = info(s);
+          return {
+            html: `<div class="ws-shape-l">${'ABCDEFGHI'[i]}</div><div class="ws-vis shape">${VIZ().render(I.v)}</div><p class="ws-fill center">Sides: <span class="ws-bigbox"></span></p>`,
+            answer: `<b>${'ABCDEFGHI'[i]}</b>: ${I.n} sides (${I.name})${I.n === 4 ? ' <b>colour it</b>' : ''}`,
+          };
+        });
+        return { intro: 'Count the sides of each shape and write the number in its box. Then colour every shape that has 4 sides.', items, cols: 3, answerCols: 3 };
+      },
+    },
+    'plot-shapes': {
+      title: 'Plot the points and name the shape', stages: ['lks2', 'uks2', 'ks3'],
+      blurb: 'Coordinate grids: plot the points, join them in order, then name the shape.',
+      build(lv, r) {
+        const four = lv === 2;
+        const lo = four ? -6 : 0, hi = four ? 6 : 10;
+        const kinds = ['square', 'rectangle', 'right-angled triangle', 'isosceles triangle', 'parallelogram', 'kite', 'trapezium'];
+        const items = [], used = new Set();
+        let guard = 0;
+        while (items.length < 2 && guard++ < 500) {
+          const kind = r.pick(kinds);
+          if (used.has(kind)) continue;
+          let rel;
+          const a = r.int(2, 5), b = r.int(2, 5);
+          if (kind === 'square') rel = [[0, 0], [a, 0], [a, a], [0, a]];
+          else if (kind === 'rectangle') { if (a + 1 === b) continue; rel = [[0, 0], [a + 1, 0], [a + 1, b], [0, b]]; }
+          else if (kind === 'right-angled triangle') { if (a === b) continue; rel = [[0, 0], [a, 0], [0, b]]; }
+          else if (kind === 'isosceles triangle') { if (b === a) continue; rel = [[0, 0], [2 * a, 0], [a, b]]; }  // b ≠ a, so it is not also right-angled
+          else if (kind === 'parallelogram') { const k = r.int(1, 2); if (a * a === k * k + b * b) continue; rel = [[0, 0], [a, 0], [a + k, b], [k, b]]; }
+          else if (kind === 'kite') { const c = r.int(1, 3); if (c === b) continue; rel = [[a, 0], [2 * a, c], [a, c + b], [0, c]]; }   // two different pairs of equal sides
+          else { const k1 = r.int(1, 2), k2 = r.int(1, 2); if (a + 2 - k1 - k2 < 1) continue; rel = [[0, 0], [a + 2, 0], [a + 2 - k1, b], [k2, b]]; }
+          const w = Math.max(...rel.map((p) => p[0])), h = Math.max(...rel.map((p) => p[1]));
+          if (w > hi - lo - 1 || h > hi - lo - 1) continue;
+          const ox = r.int(lo + (four ? 0 : 1), hi - w - (four ? 0 : 1)), oy = r.int(lo + (four ? 0 : 1), hi - h - (four ? 0 : 1));
+          const pts = rel.map(([x, y]) => [x + ox, y + oy]);
+          if (four && !(pts.some((p) => p[0] < 0) && pts.some((p) => p[0] > 0))) continue;   // four-quadrant grids should use negative numbers
+          used.add(kind);
+          const names = 'ABCD';
+          const range = [lo, hi, lo, hi];
+          const blank = VIZ().render({ type: 'x-coord', pts: [], range, desc: `A coordinate grid from ${lo} to ${hi}` });
+          const done = VIZ().render({ type: 'x-coord', range, pts: pts.map((p, i) => ({ x: p[0], y: p[1], l: names[i] })), segs: pts.map((_, i) => [i, (i + 1) % pts.length]), desc: `${kind} drawn on a grid` });
+          const fmtP = (p) => `(${String(p[0]).replace('-', '−')}, ${String(p[1]).replace('-', '−')})`;
+          items.push({
+            html: `<p class="ws-prompt">Plot these points: ${pts.map((p, i) => `<b>${names[i]}</b> ${fmtP(p)}`).join(', ')}. Join them in order, then join the last point back to A.</p><div class="ws-vis grid">${blank}</div><p class="ws-fill">The shape is a <span class="ws-line"></span></p>`,
+            answer: `<b>${kind}</b>${kind === 'square' ? ' <span class="ws-alt">(a square is also a special rectangle)</span>' : ''}<div class="ws-vis grid sm">${done}</div>`,
+          });
+        }
+        return { intro: 'Go across first (x), then up or down (y).', items, cols: 1 };
+      },
+    },
+  };
+
+  /* ============================== HTML ============================== */
+  const logo = '<svg viewBox="0 0 32 32" class="ws-logo" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9"/><path d="M10 16h12M16 10v12"/></svg>';
+  function optsHtml(opts) {
+    return `<ol class="ws-opts${opts.length > 2 && opts.every((o) => plain(o.html).length <= 14) ? ' row' : ''}">${opts.map((o, i) => `<li><span class="ws-tick" aria-hidden="true"></span><b class="ws-l">${LETTERS[i]}</b> <span class="ws-ov">${o.html}</span></li>`).join('')}</ol>`;
+  }
+  function workBox(size) { return `<div class="ws-work h${size}"><span class="ws-work-l">Working</span></div>`; }
+  /* Pictures print at about the size the app draws them (not stretched to the full width), so a compass or a
+     clock stays a sensible size on paper. */
+  function visHtml(v, young) {
+    if (!v) return '';
+    let h = '';
+    try { h = VIZ().render(v, {}); } catch (e) { h = ''; }
+    if (!h) return '';
+    const m = /^\s*<svg[^>]*viewBox="[\d.\-]+ [\d.\-]+ ([\d.]+) ([\d.]+)"/.exec(h);
+    const w = m ? Math.round(+m[1] * (young ? 0.85 : 0.75)) : 0;
+    return `<div class="ws-vis"${w ? ` style="max-width:${Math.max(150, w)}px"` : ''}>${h}</div>`;
+  }
+  function itemHtml(it) {
+    const vis = visHtml(it.visual, it.young);
+    let resp = '';
+    if (it.options) resp = optsHtml(it.options);
+    if (it.mode === 'write' || it.mode === 'solutions') {
+      const size = it.young ? 0 : it.marks >= 3 ? 3 : it.marks === 2 ? 2 : 1;
+      const line = it.mode === 'solutions' ? `<span class="ws-var">${esc(it.variable)} =</span> <span class="ws-line"></span>` : (it.young ? '<span class="ws-bigbox"></span>' : '<span class="ws-line"></span>');
+      resp = (size ? workBox(size) : '') + `<div class="ws-ansline"><span class="ws-ans-l">Answer</span> ${line}</div>`;
+    } else if (it.mode === 'choice' && !it.young && /work|explain|check/i.test(plain(it.prompt))) resp += workBox(1);
+    return `<div class="ws-q" data-n="${it.n}"><div class="ws-qn">${it.n}</div><div class="ws-qb"><div class="ws-prompt">${it.prompt}</div>${vis}${resp}</div></div>`;
+  }
+  const compact = (it) => !it.visual && plain(it.prompt).length <= 110 && !/<table|<svg|class="who-said"/.test(it.prompt) && (it.mode === 'tick' || it.mode === 'choice' || it.marks <= 1);
+  function rowsHtml(items) {
+    const out = [];
+    for (let i = 0; i < items.length; i++) {
+      const a = items[i], b = items[i + 1];
+      if (compact(a) && b && compact(b)) { out.push(`<div class="ws-row two">${itemHtml(a)}${itemHtml(b)}</div>`); i++; }
+      else out.push(`<div class="ws-row">${itemHtml(a)}</div>`);
+    }
+    return out.join('');
+  }
+  function answerHtml(it) {
+    const head = it.letter ? `<b class="ws-l">${it.letter}</b> ${it.options[LETTERS.indexOf(it.letter)].html}` : it.answer.html;
+    const alts = !it.letter && it.answer.alts.length ? ` <span class="ws-alt">(also accept ${it.answer.alts.join(', ')})</span>` : '';
+    const steps = it.steps.length ? `<ol class="ws-steps">${it.steps.slice(0, 5).map((s) => `<li>${s}</li>`).join('')}</ol>` : '';
+    return `<li class="ws-a"><span class="ws-an">${it.n}</span><div class="ws-ab"><div class="ws-aa">${head}${alts} <span class="ws-am">[${plural(it.marks, 'mark')}]</span></div>${it.skillName ? `<div class="ws-askill">${esc(it.skillName)}</div>` : ''}${steps}</div></li>`;
+  }
+  function headerHtml(o) {
+    return `<header class="ws-head">
+      <div class="ws-brand">${logo}<span>Family Maths</span><span class="ws-kind">${esc(o.kindLabel)}</span></div>
+      <h1 class="ws-title">${esc(o.title)}</h1>
+      <div class="ws-sub">${o.sub.map(esc).join(' · ')}</div>
+      ${o.answers ? '' : `<div class="ws-name"><span>Name: <span class="ws-line ws-name-val">${esc(o.name || '')}</span></span><span>Date: <span class="ws-line"></span></span>${o.score ? `<span>Score: <span class="ws-line short"></span> / ${o.score}</span>` : ''}</div>`}
+    </header>`;
+  }
+  const footHtml = (code) => `<footer class="ws-foot">Sheet code: <b>${esc(code)}</b> · Original questions from the Family Maths app</footer>`;
+
+  /* Paper layout for exam questions: marks per part, working boxes for 2+ mark parts, tick boxes for choices. */
+  function paperQHtml(q) {
+    const W = FMG.working;
+    const tot = q.parts.reduce((s, p) => s + p.marks, 0);
+    const one = q.parts.length === 1 && !q.parts[0].label;
+    const parts = q.parts.map((pt) => {
+      const a = pt.answer;
+      let resp;
+      if (a.type === 'choice') resp = optsHtml(a.choices.map((c) => ({ html: c.label })));
+      else {
+        const wk = W && W.wants(pt) ? workBox(pt.marks >= 3 ? 3 : 2) : '';
+        const line = a.type === 'solutions' ? `<span class="ws-var">${esc(a.variable || 'x')} =</span> <span class="ws-line"></span>` : '<span class="ws-line"></span>';
+        resp = `${wk}<div class="ws-ansline"><span class="ws-ans-l">Answer</span> ${line}</div>`;
+      }
+      return `<div class="ws-part"><div class="ws-pq">${pt.label ? `<b>${esc(pt.label)}</b> ` : ''}${pt.prompt}${one ? '' : `<span class="ws-pm">(${plural(pt.marks, 'mark')})</span>`}</div>${resp}</div>`;
+    }).join('');
+    return `<div class="ws-row"><div class="ws-q paper" data-n="${q.n}"><div class="ws-qn">${q.n}</div><div class="ws-qb"><div class="ws-qtop"><span class="ws-topic">${esc(q.topic || '')}</span><span class="ws-qm">[${plural(tot, 'mark')}]</span></div>${q.prompt ? `<div class="ws-prompt">${q.prompt}</div>` : ''}${visHtml(q.visual, false)}${parts}</div></div></div>`;
+  }
+  function paperAnsHtml(q) {
+    return `<li class="ws-a paper"><span class="ws-an">${q.n}</span><div class="ws-ab">${q.parts.map((pt) => {
+      const ans = answerOfPart(pt);
+      return `<div class="ws-apart"><div class="ws-aa">${pt.label ? `<b>${esc(pt.label)}</b> ` : ''}${ans.html}${ans.alts.length ? ` <span class="ws-alt">(also accept ${ans.alts.join(', ')})</span>` : ''} <span class="ws-am">[${plural(pt.marks, 'mark')}]</span></div>
+        ${(pt.scheme || []).length ? `<ul class="ws-scheme">${pt.scheme.map((m) => `<li>${m}</li>`).join('')}</ul>` : ''}
+        ${(pt.solution || []).length ? `<ol class="ws-steps">${pt.solution.map((m) => `<li>${m}</li>`).join('')}</ol>` : ''}</div>`;
+    }).join('')}</div></li>`;
+  }
+
+  /* ============================== build a whole sheet ============================== */
+  const STYLE_LABEL = { write: 'Write-in answers', tick: 'A–D tick boxes' };
+  function build(sp, opts) {
+    opts = opts || {};
+    const code = codeOf(sp);
+    const out = { spec: sp, code, kind: sp.kind, items: [], questions: [], acts: [] };
+    let head, body, ans, intro = '', young = false, total = 0;
+    if (sp.kind === 'skill' || sp.kind === 'mixed') {
+      const B = sp.kind === 'skill' ? buildSkillItems(sp) : buildMixedItems(sp);
+      out.items = B.items; young = B.young;
+      total = B.items.reduce((s, it) => s + it.marks, 0);
+      let title, sub;
+      if (sp.kind === 'skill') {
+        const k = CUR.skill(sp.id);
+        title = k.name;
+        sub = [k.stages.map(stageName).join(', '), `Step ${sp.step + 1}: ${B.info.name}`];
+      } else if (sp.scope === 'stage') {
+        title = `${stageName(sp.id)}: mixed revision`;
+        sub = [`Step ${sp.step + 1}: ${GEN.STEP_NAMES[sp.step]} (pitched at ${stageName(sp.id)} for each skill)`];
+      } else {
+        const t = CUR.topic(sp.id);
+        title = `${t.name}: mixed revision`;
+        sub = [sp.g && sp.g !== 'all' ? stageName(sp.g) : 'All stages', `Step ${sp.step + 1}: ${GEN.STEP_NAMES[sp.step]}${sp.g && sp.g !== 'all' ? ' (pitched at that stage for each skill)' : ''}`];
+      }
+      sub.push(plural(out.items.length, 'question'), STYLE_LABEL[sp.style]);
+      out.title = title;
+      intro = sp.style === 'tick'
+        ? 'Work out each answer, then tick one box: A, B, C or D.'
+        : (young ? 'Write your answer in the box.' : 'Show your working in the box, then write your answer on the line.');
+      head = headerHtml({ kindLabel: sp.kind === 'skill' ? 'Worksheet' : 'Mixed revision', title, sub, name: opts.name, score: total });
+      body = rowsHtml(out.items);
+      ans = `<ol class="ws-alist">${out.items.map(answerHtml).join('')}</ol>`;
+    } else if (sp.kind === 'exam' || sp.kind === 'paper') {
+      let paper, questions;
+      if (sp.kind === 'exam') {
+        const k = CUR.skill(sp.id), step = examSteps(sp.id).find((s) => s.g === sp.g);
+        questions = buildExamQuestions(sp);
+        const marks = questions.reduce((s, q) => s + q.parts.reduce((t, p) => t + p.marks, 0), 0);
+        paper = { title: `${k.name}: exam questions`, group: sp.g, marks, minutes: null, calculator: !!questions.calc, intro: `Exam-style questions on ${step.topics.join(' and ')} at ${step.long} level, from the app’s exam ladder.` };
+        young = sp.g === 'y2';
+      } else {
+        const B = buildPaper(sp);
+        paper = B.paper; questions = B.questions;
+        young = paper.group === 'y2';
+      }
+      out.questions = questions; out.paper = paper;
+      total = paper.marks || questions.reduce((s, q) => s + q.parts.reduce((t, p) => t + p.marks, 0), 0);
+      const X = FMG.exams, gname = ((X && X.GROUPS.find((g) => g.id === paper.group)) || {}).name || '';
+      out.title = paper.title;
+      const sub = [gname, plural(total, 'mark')];
+      if (paper.minutes) sub.push(`${paper.minutes} minutes`);
+      sub.push(paper.calculator ? 'Calculator allowed' : 'No calculator');
+      head = headerHtml({ kindLabel: sp.kind === 'paper' ? 'Practice paper' : 'Exam questions', title: paper.title, sub, name: opts.name, score: total });
+      intro = `${esc(paper.intro || '')}<br><b>Answer every question.</b> Write your answers in the spaces. Show your working: you can get marks for a correct method even if the answer is wrong.${!paper.calculator ? ' You must not use a calculator.' : ''}`;
+      body = questions.map(paperQHtml).join('');
+      ans = `<ol class="ws-alist one">${questions.map(paperAnsHtml).join('')}</ol>${paper.grades ? `<p class="ws-note">Rough grade guide (percentage of ${total} marks): ${paper.grades.map(([p, g]) => `grade ${esc(g)} from ${p}%`).join(', ')}. ${esc(paper.gradesNote || '')}</p>` : ''}`;
+    } else {
+      const A = ACTS[sp.id], lv = Math.floor(sp.step / 2);
+      const r = FMG.rng((sp.seed ^ hash(code.replace(/-a[01]/, '') + '|act')) >>> 0);
+      const B = A.build(lv, r);
+      out.acts = B.items; out.title = A.title;
+      young = lv === 0 && sp.id !== 'plot-shapes';
+      head = headerHtml({ kindLabel: 'Colouring and drawing', title: A.title, sub: [A.stages.map(stageName).join(', '), ['Routine', 'Application', 'Stretch'][lv]], name: opts.name });
+      intro = esc(B.intro);
+      const cols = B.cols || 1;
+      const rows = [];
+      for (let i = 0; i < B.items.length; i += cols) rows.push(`<div class="ws-row act c${cols}">${B.items.slice(i, i + cols).map((x, j) => `<div class="ws-act">${cols === 1 ? `<div class="ws-qn">${i + j + 1}</div>` : ''}<div class="ws-qb">${x.html}</div></div>`).join('')}</div>`);
+      body = rows.join('');
+      ans = `<ol class="ws-alist act c${B.answerCols || (cols === 3 ? 3 : 1)}">${B.items.map((x, i) => `<li class="ws-a"><span class="ws-an">${i + 1}</span><div class="ws-ab">${x.answer}</div></li>`).join('')}</ol>`;
+    }
+    out.young = young;
+    out.total = total;
+    const cls = `ws-doc${young ? ' young' : ''}${sp.bw ? ' bw' : ''} k-${sp.kind}`;
+    const sheet = `<section class="ws-sheet">${head}<p class="ws-intro">${intro}</p><div class="ws-qs">${body}</div>${footHtml(code)}</section>`;
+    const answers = sp.answers ? `<section class="ws-sheet ws-answers">${headerHtml({ kindLabel: 'Answer sheet', title: out.title, sub: [total ? `Total: ${plural(total, 'mark')}` : 'Answers', 'For grown-ups'], answers: true })}${ans}${footHtml(code)}</section>` : '';
+    out.html = `<div class="${cls}" data-code="${esc(code)}">${sheet}${answers}</div>`;
+    out.answersHtml = ans;
+    return out;
+  }
+
+  /* ============================== screens (browser only) ============================== */
+  const A = () => FMG.app;
+  let typedName = '';                 // the optional name line: memory only, never saved, never in the address
+  const standalone = () => { try { return !!(root.navigator && root.navigator.standalone) || (root.matchMedia && root.matchMedia('(display-mode: standalone)').matches); } catch (e) { return false; } };
+  function setPageStyle(code) {
+    const d = root.document; if (!d) return;
+    let st = d.getElementById('ws-page-style');
+    if (!st) { st = d.createElement('style'); st.id = 'ws-page-style'; d.head.appendChild(st); }
+    st.textContent = `@page { size: A4 portrait; margin: 14mm 14mm 16mm; @bottom-left { content: "Family Maths · Sheet code ${String(code).replace(/[^\w/-]/g, '')}"; font: 8pt sans-serif; color: #555; } @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8pt sans-serif; color: #555; } }`;
+  }
+  function onWs(on) { const b = root.document && root.document.body; if (b) b.classList.toggle('ws-on', !!on); }
+  if (root.addEventListener) root.addEventListener('hashchange', () => { if (!/^#(ws|worksheets)/.test(root.location.hash)) onWs(false); });
+
+  function chipLinks(list, cur, make) {
+    return list.map(([v, label]) => `<a class="chip" aria-pressed="${v === cur}" href="${make(v)}">${esc(label)}</a>`).join('');
+  }
+  function controlsHtml(sp, built) {
+    const link = (ch) => hrefOf(Object.assign({}, sp, ch));
+    const rows = [];
+    const row = (label, inner) => rows.push(`<div class="ws-ctl"><span class="ws-ctl-l">${label}</span><div class="ws-chips">${inner}</div></div>`);
+    if (sp.kind === 'skill' || sp.kind === 'exam') {
+      const k = CUR.skill(sp.id), ex = examSteps(sp.id);
+      if (ex.length) row('Sheet', chipLinks([['skill', 'Practice questions'], ['exam', 'Exam questions (paper layout)']], sp.kind, (v) => link(v === 'exam' ? { kind: 'exam', g: sp.g || defaultRung(ex, (A().profile() || {}).route), count: 10 } : { kind: 'skill', g: undefined })));
+      if (sp.kind === 'exam') row('Exam stage', chipLinks(ex.map((s) => [s.g, s.long]), sp.g, (v) => link({ g: v })));
+      if (sp.kind === 'skill') row('Level', chipLinks([0, 1, 2, 3, 4, 5].map((i) => [i, `${i + 1} · ${GEN.stepInfo(k.id, i).name}`]), sp.step, (v) => link({ step: v })));
+    } else if (sp.kind === 'mixed') {
+      if (sp.scope === 'topic') { const t = CUR.topic(sp.id); row('Stage', chipLinks([['all', 'All stages']].concat(topicStages(t).map((s) => [s, stageName(s)])), sp.g || 'all', (v) => link({ g: v }))); }
+      row('Level', chipLinks([0, 1, 2, 3, 4, 5].map((i) => [i, `${i + 1} · ${GEN.STEP_NAMES[i]}`]), sp.step, (v) => link({ step: v })));
+    } else if (sp.kind === 'act') {
+      row('Level', chipLinks([[0, 'Routine'], [2, 'Application'], [4, 'Stretch']], Math.floor(sp.step / 2) * 2, (v) => link({ step: v })));
+    }
+    if (sp.kind === 'skill' || sp.kind === 'mixed' || sp.kind === 'exam') row('Questions', chipLinks([[10, '10'], [20, '20'], [30, '30']], sp.count, (v) => link({ count: v })));
+    if (sp.kind === 'skill' || sp.kind === 'mixed') row('Answers', chipLinks([['write', 'Write-in (working boxes)'], ['tick', 'A–D tick boxes']], sp.style, (v) => link({ style: v })));
+    row('Answer sheet', chipLinks([[true, 'Include'], [false, 'Leave out']], sp.answers, (v) => link({ answers: v })));
+    row('Printer', chipLinks([[false, 'Colour'], [true, 'Black and white']], sp.bw, (v) => link({ bw: v })));
+    const fallback = standalone() ? `<div class="note ws-safari"><b>Printing from the home-screen app?</b> iPad and iPhone home-screen apps sometimes ignore the Print button. <a href="${esc(root.location.href)}" target="_blank" rel="noopener">Open this sheet in Safari</a> (the same sheet opens there), then use Share → Print.</div>` : '';
+    return `<section class="card ws-controls no-print">
+      <div class="ws-ctl-top"><h1 class="h2">${esc(built.title)}</h1><div class="row"><button class="btn primary" id="wsprint">🖨 Print</button><a class="btn ghost" href="${link({ seed: (Math.random() * 2 ** 31) >>> 0 })}">↻ New questions</a></div></div>
+      ${rows.join('')}
+      <div class="ws-ctl"><label class="ws-ctl-l" for="wsname">Name line</label><input id="wsname" class="ws-name-in" maxlength="30" placeholder="Leave blank to write by hand" value="${esc(typedName)}" autocomplete="off"></div>
+      ${fallback}
+      <details class="ws-tips"><summary>Printing and saving as PDF</summary><ul>
+        <li><b>Mac or PC:</b> press Print, then choose your printer, or “Save as PDF”. Paper size A4.</li>
+        <li><b>iPad or iPhone:</b> press Print (or Share → Print). To save a PDF, pinch outwards on the print preview, then Share → Save to Files.</li>
+        <li>The <b>sheet code</b> at the bottom of each page reprints exactly the same sheet: type it into the Worksheets library.</li>
+        <li>Answer sheets always start on a new page, so you can keep them back.</li></ul></details>
+    </section>`;
+  }
+  function sheetPage(kind, a, b, c) {
+    const app = A();
+    const prof = app.profile ? app.profile() : null;
+    const scope = kind === 'mixed' ? a : undefined, id = kind === 'mixed' ? b : a, optStr = kind === 'mixed' ? c : b;
+    const sp = makeSpec(kind, id, scope, optStr, prof);
+    if (!sp) return app.go('#/worksheets');
+    const code = codeOf(sp);
+    if (code !== [kind === 'mixed' ? `mixed/${a}/${b}` : `${kind}/${a}`, optStr].join('/')) { root.location.replace(app.toHash('#/ws/' + code)); return; }
+    let built;
+    try { built = build(sp, { name: typedName }); } catch (e) { if (root.console) console.error(e); return app.go('#/worksheets'); }
+    const back = sp.kind === 'skill' || sp.kind === 'exam' ? (prof ? `#/skill/${sp.id}` : '#/worksheets') : sp.kind === 'mixed' && sp.scope === 'topic' && prof ? `#/topic/${sp.id}` : '#/worksheets';
+    app.shell(`${controlsHtml(sp, built)}${built.html}`, { back, title: 'Worksheet', cls: 'ws-page' });
+    onWs(true);
+    setPageStyle(code);
+    const $ = (s) => root.document.querySelector(s);
+    const pr = $('#wsprint'); if (pr) pr.onclick = () => { try { root.print(); } catch (e) { /* ignore */ } };
+    const nm = $('#wsname');
+    if (nm) nm.oninput = () => { typedName = nm.value; root.document.querySelectorAll('.ws-name-val').forEach((el) => { el.textContent = typedName; }); };
+  }
+
+  /* The library: by stage, then topic, like the home screen; plus papers and activities. */
+  function libraryPage(stageArg) {
+    const app = A(), prof = app.profile ? app.profile() : null;
+    const stage = CUR.stageIndex(stageArg) >= 0 ? stageArg : (prof && prof.route) || 'ks1';
+    const skills = released().filter((k) => k.stages.includes(stage));
+    const topics = CUR.TOPICS.filter((t) => t.skills.some((x) => x.status === 'released' && x.stages.includes(stage)));
+    const L = (sp) => `#/ws/${sp.kind === 'mixed' ? `mixed/${sp.scope}/${sp.id}` : `${sp.kind}/${sp.id}`}/${sp.opts || (sp.kind === 'mixed' && sp.scope === 'topic' ? 'g' + stage : '')}`;
+    const topicHtml = topics.map((t) => {
+      const ks = t.skills.filter((k) => k.status === 'released' && k.stages.includes(stage));
+      return `<div class="ws-lib-topic"><div class="ws-lib-th"><b>${esc(t.name)}</b> <a class="btn ghost sm" href="${L({ kind: 'mixed', scope: 'topic', id: t.id })}">🖨 Topic mixed</a></div>
+        <div class="ws-lib-skills">${ks.map((k) => `<a class="ws-lib-skill" href="${L({ kind: 'skill', id: k.id })}">${esc(k.name)}</a>`).join('')}</div></div>`;
+    }).join('');
+    const X = FMG.exams;
+    const paperHtml = X ? X.GROUPS.map((g) => {
+      const fixed = X.PAPERS.filter((p) => p.group === g.id && !p.virtual);
+      const mocks = X.MOCKS[g.id] ? Object.entries(X.MOCKS[g.id]).map(([sec, m]) => [X.mockId(g.id, sec, 1 + Math.floor(Math.random() * 99999)), `${m[0]} (full mock, ${m[1]} marks)`]) : [];
+      const numbered = [1, 2, 3, 4].map((n) => [`${g.id}-n${n}`, `Practice paper ${String(n).padStart(3, '0')}`]);
+      const links = fixed.map((p) => [p.id, `${p.title} (${p.marks} marks)`]).concat(mocks, numbered);
+      return `<div class="ws-lib-topic"><div class="ws-lib-th"><b>${esc(g.name)}</b> <span class="small muted">${esc(g.sub || '')}</span></div><div class="ws-lib-skills">${links.map(([id, n]) => `<a class="ws-lib-skill" href="${L({ kind: 'paper', id })}">${esc(n)}</a>`).join('')}</div></div>`;
+    }).join('') : '';
+    const actHtml = Object.entries(ACTS).map(([id, a]) => `<a class="ws-lib-act" href="${L({ kind: 'act', id, opts: 's0' })}"><b>${esc(a.title)}</b><span class="small muted">${esc(a.blurb)}</span><span class="small">${a.stages.map(stageName).join(' · ')}</span></a>`).join('');
+    app.shell(`
+      <section class="ws-lib-head"><h1>Worksheets</h1><p class="muted">Print any skill at any level, mixed revision for a stage, practice papers and colouring sheets. Every sheet comes with an answer sheet on a separate page. Questions come from the same question bank as the app.</p></section>
+      <div class="chips" role="group" aria-label="Choose a stage">${CUR.STAGES.map((s) => `<a class="chip" aria-pressed="${s.id === stage}" href="#/worksheets/${s.id}">${esc(s.name)}</a>`).join('')}</div>
+      <section class="card"><div class="ws-lib-th"><h2 class="h3">${esc(stageName(stage))}</h2><a class="btn primary sm" href="${L({ kind: 'mixed', scope: 'stage', id: stage })}">🖨 ${esc(stageName(stage))} mixed revision</a></div>
+        <p class="small muted">${plural(skills.length, 'skill')} in ${plural(topics.length, 'topic')}. Choose a skill for a one-skill sheet, or a topic for a mixed topic sheet.</p>${topicHtml}</section>
+      <section class="card"><h2 class="h3">Practice papers</h2><p class="small muted">The same papers as the Exams section, printed in exam layout with marks, working spaces and a mark scheme. ${X ? esc(X.ORIGINAL) : ''}</p>${paperHtml}</section>
+      <section class="card"><h2 class="h3">Colouring and drawing</h2><p class="small muted">A few activity sheets built from the app’s own pictures. Each has an answer sheet.</p><div class="ws-lib-acts">${actHtml}</div></section>
+      <section class="card soft"><h2 class="h3">Reprint a sheet</h2><p class="small muted">Type the sheet code from the bottom of a printed sheet to print exactly the same questions again.</p>
+        <div class="row"><input id="wscode" class="ws-name-in" placeholder="e.g. skill/round-nearest/s2-n20-w-a1-k3f9q" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Sheet code"><button class="btn ghost" id="wsgo">Open</button></div><div id="wscodemsg" class="small"></div></section>`,
+    { back: prof ? '#/home' : '#/', title: 'Worksheets', cls: 'ws-lib' });
+    onWs(false);
+    const $ = (s) => root.document.querySelector(s);
+    const goCode = () => {
+      const v = ($('#wscode').value || '').trim().replace(/^.*?#\/?(ws\/|ws--)?/, '').replace(/--/g, '/').replace(/^ws\//, '');
+      const m = /^(skill|exam|paper|act)\/([\w-]+)\/([\w-]+)$/.exec(v) || /^(mixed)\/(stage|topic)\/([\w-]+)\/([\w-]+)$/.exec(v);
+      if (!m) { $('#wscodemsg').textContent = 'That code does not look right. It looks like skill/round-nearest/s2-n20-w-a1-k3f9q.'; return; }
+      app.go('#/ws/' + v);
+    };
+    $('#wsgo').onclick = goCode;
+    $('#wscode').addEventListener('keydown', (e) => { if (e.key === 'Enter') goCode(); });
+  }
+
+  FMG.worksheets = { stageStep, build, makeSpec, codeOf, hrefOf, parseOpts, templateOK, instanceOK, numberForms, ACTS, KINDS, examSteps, mixedSkills, topicStages, BAD, needsColour };
+  FMG.extRoutes = FMG.extRoutes || [];
+  FMG.extRoutes.push([/^#\/worksheets(?:\/(\w+))?$/, libraryPage]);
+  FMG.extRoutes.push([/^#\/ws\/(skill|exam|paper|act)\/([\w-]+)(?:\/([\w-]*))?$/, (kind, id, opts) => sheetPage(kind, id, opts || '')]);
+  FMG.extRoutes.push([/^#\/ws\/mixed\/(stage|topic)\/([\w-]+)(?:\/([\w-]*))?$/, (scope, id, opts) => sheetPage('mixed', scope, id, opts || '')]);
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
 /* buddy-art (Update 5) — original blocky "maths buddy" characters as inline SVG.
    FMG.buddyArt = { list, states, svg(id, opts), head(id, size, opts) }
    All motion is CSS keyframes on `ba-` classed groups (injected once as <style id="buddy-art-css">),
@@ -34964,7 +35975,7 @@ body.reduce-motion .cel-layer { display: none; }`;
     let h = curRoute();
     if (h === '#/start') h = '#/';
     if (FMG.app) FMG.app.ctx = { screen: 'browse' };
-    if (!profile() && !/^#\/(parent(\/\w+)?)?$/.test(h) && h !== '#/') { go('#/'); return; }
+    if (!profile() && !/^#\/(parent(\/\w+)?|worksheets(\/\w+)?|ws\/.*)?$/.test(h) && h !== '#/') { go('#/'); return; }
     for (const [re, fn] of routes) { const m = h.match(re); if (m) { const y = window.scrollY; fn(...m.slice(1).map(decodeURIComponent)); if (stay) window.scrollTo(0, y); else { window.scrollTo(0, 0); focusMain(); } return; } }
     go('#/');
   }
@@ -35045,7 +36056,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         <h1>Hi ${esc(p.nickname)}!</h1>
         <p class="muted">${p.prefs.ui === 'playful' ? 'What shall we play today?' : 'Pick a topic, or carry on where you left off.'}</p>
       </section>
-      <div class="cta-row">${continueCard}${dueCard}<a class="cta-card exam" href="#/exams"><div><div class="eyebrow">Exams</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Real test questions' : 'KS1 to GCSE exam practice'}</div><div class="muted small">Mock exams, papers and exam questions on every topic</div></div><span class="cta-go" aria-hidden="true">${svgArrow()}</span></a>${FMG.tools ? `<a class="cta-card tools" href="#/tools"><div><div class="eyebrow">Maths toolbox</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Play with numbers' : 'Number lines, graphs & more'}</div><div class="muted small">Hands-on tools to see the maths</div></div><span class="cta-go" aria-hidden="true">${svgTools()}</span></a>` : ''}</div>
+      <div class="cta-row">${continueCard}${dueCard}<a class="cta-card exam" href="#/exams"><div><div class="eyebrow">Exams</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Real test questions' : 'KS1 to GCSE exam practice'}</div><div class="muted small">Mock exams, papers and exam questions on every topic</div></div><span class="cta-go" aria-hidden="true">${svgArrow()}</span></a>${FMG.tools ? `<a class="cta-card tools" href="#/tools"><div><div class="eyebrow">Maths toolbox</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Play with numbers' : 'Number lines, graphs & more'}</div><div class="muted small">Hands-on tools to see the maths</div></div><span class="cta-go" aria-hidden="true">${svgTools()}</span></a>` : ''}${FMG.worksheets ? `<a class="cta-card worksheets" href="#/worksheets"><div><div class="eyebrow">Worksheets</div><div class="cta-title">${p.prefs.ui === 'playful' ? 'Print and do on paper' : 'Printable worksheets'}</div><div class="muted small">Every skill, mixed revision, papers and colouring</div></div><span class="cta-go" aria-hidden="true">🖨</span></a>` : ''}</div>
       <div class="dir-tools">
         <div class="seg" role="tablist" aria-label="Topic view">
           <button role="tab" aria-selected="${tab === 'recommended'}" data-tab="recommended">Recommended</button>
@@ -35128,7 +36139,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         <span class="tc-icon lg">${VIZ.icon(t.icon)}</span>
         <div><h1>${esc(t.name)}</h1><p class="muted">${esc(t.desc)}</p>
         <div class="chips static">${t.stages.map((s) => `<span class="chip">${esc(CUR.STAGES[CUR.stageIndex(s)].name)}</span>`).join('')}</div>
-        ${(() => { const xt = FMG.examHub && FMG.examHub.forTopic(t.id, p.route); return xt ? `<a class="btn primary sm" style="margin-top:.6rem" href="${xt.href}">📝 Exam questions on this topic</a>` : ''; })()}</div>
+        ${(() => { const xt = FMG.examHub && FMG.examHub.forTopic(t.id, p.route); return xt ? `<a class="btn primary sm" style="margin-top:.6rem" href="${xt.href}">📝 Exam questions on this topic</a>` : ''; })()}${FMG.worksheets ? ` <a class="btn ghost sm" style="margin-top:.6rem" href="#/ws/mixed/topic/${t.id}">🖨 Worksheet</a>` : ''}</div>
       </section>
       <div class="two-col">
         <div><h2 class="h2">Skills</h2><div class="skill-list">${skills.join('')}</div></div>
@@ -35176,6 +36187,7 @@ body.reduce-motion .cel-layer { display: none; }`;
         <a class="btn ghost" href="#/play/check/${k.id}">✓ Check <span class="muted small">5 fresh questions</span></a>
         <a class="btn ghost ${st.pendingReview ? 'due' : ''}" href="#/play/review/${k.id}">↻ Review ${st.reviewDue ? `<span class="muted small">${st.pendingReview ? 'due now' : 'due ' + FMG.prettyDate(st.reviewDue)}</span>` : ''}</a>
         ${isEq ? `<a class="btn ghost" href="#/play/gcse/${k.id}">GCSE Challenge <span class="muted small">exam-style</span></a>` : ''}
+        ${FMG.worksheets ? `<a class="btn ghost" href="#/ws/skill/${k.id}">🖨 Worksheet <span class="muted small">print on paper</span></a>` : ''}
       </div>
       <section class="card progress-card">
         <div class="pc-top"><h2 class="h3">My progress · ${GEN.LEVEL_NAMES[level]}</h2><span class="pill status-${lst.status}">${EV.STATUS_LABEL[lst.status]}</span></div>
@@ -35758,53 +36770,7 @@ body.reduce-motion .cel-layer { display: none; }`;
      recorded as responseType 'choice', so they never award Secure on their own (spec §8). */
   const LETTERS = ['A', 'B', 'C', 'D'];
   let abcdKeys = null;
-  const decOf = (v) => (v.d === 1 ? String(v.n) : (FMG.skillLib && FMG.skillLib.decStr(v)) || null);
-  // asFrac: show every option as a fraction (when the question is about fractions), otherwise as decimals.
-  const qTxt = (v, asFrac) => String(v.d === 1 ? String(v.n) : asFrac ? `${v.n}/${v.d}` : decOf(v) || `${v.n}/${v.d}`).replace('−', '-');
-  const qHtml = (v, pi, asFrac) => { const dec = v.d === 1 ? String(v.n) : asFrac ? null : decOf(v); const core = dec ? String(dec).replace('-', '−') : FMG.fracHTML(v); return pi ? (v.eq(Q.of(1)) ? 'π' : v.eq(Q.of(-1)) ? '−π' : core + 'π') : core; };
-  function abcdOptions(spec, seed, prompt) {
-    if (!spec || (spec.type !== 'number' && spec.type !== 'solutions')) return null;
-    const r = FMG.rng((seed || 1) * 31 + 7);
-    const key = (vals) => vals.map((v) => v.n + '/' + v.d).sort().join('|');
-    if (spec.type === 'number') {
-      let v; try { v = Q.of(spec.answer); } catch (e) { return null; }
-      const cands = [];
-      for (const m of spec.misconceptions || []) { try { cands.push(Q.of(m.value)); } catch (e) { /* skip */ } }
-      const isInt = v.d === 1, pr = String(prompt || '');
-      const promptFrac = /class="(fr|frac)|\d\s*\/\s*\d|[½⅓⅔¼¾⅕⅙⅛]/.test(pr) && !/\d\.\d/.test(pr);
-      const asFrac = !isInt && (spec.requireForm === 'fraction' || (spec.requireForm !== 'decimal' && (promptFrac || !decOf(v))));
-      const decimalish = !isInt && !asFrac;
-      const near = isInt
-        ? [v.add(Q.of(1)), v.sub(Q.of(1)), v.add(Q.of(10)), v.sub(Q.of(10)), v.mul(Q.of(2)), v.mul(Q.of(10)), v.add(Q.of(2)), v.mul(Q.of(-1))]
-        : decimalish ? [v.mul(Q.of(10)), v.div(Q.of(10)), v.add(new Q(1, 10)), v.sub(new Q(1, 10)), v.add(Q.of(1)), v.mul(Q.of(2)), v.add(new Q(1, 100)), v.sub(new Q(1, 100)), v.add(Q.of(2))]
-          : [new Q(v.d, v.n), new Q(v.n + 1, v.d), new Q(v.n, v.d + 1), new Q(Math.max(1, v.n - 1), v.d), v.mul(Q.of(2)), v.add(Q.of(1)), new Q(v.n + 2, v.d), new Q(v.n, v.d + 2), v.div(Q.of(2)), new Q(v.n * 2 + 1, v.d * 2)];
-      for (let i = near.length - 1; i > 0; i--) { const j = r.int(0, i); [near[i], near[j]] = [near[j], near[i]]; }
-      const seen = new Set([key([v])]), wrong = [];
-      for (const c of cands.concat(near)) {
-        if (wrong.length >= 3 || !c || !isFinite(c.valueOf())) continue;
-        if (v.valueOf() >= 0 && c.valueOf() < 0 && !cands.includes(c)) continue;
-        if (decimalish && c.d !== 1 && !decOf(c)) continue;              // keep every option a tidy decimal
-        if (isInt && c.d !== 1 && !cands.includes(c)) continue;          // whole-number answers get whole-number options
-        if (asFrac && c.d === 1 && !cands.includes(c) && wrong.length < 2) continue;
-        const k = key([c]); if (seen.has(k)) continue; seen.add(k); wrong.push(c);
-      }
-      if (wrong.length < 3) return null;
-      const opts = [{ v, correct: true }].concat(wrong.map((w) => ({ v: w, correct: false })));
-      for (let i = opts.length - 1; i > 0; i--) { const j = r.int(0, i); [opts[i], opts[j]] = [opts[j], opts[i]]; }
-      return opts.map((o) => ({ html: qHtml(o.v, spec.pi, asFrac), typed: qTxt(o.v, asFrac) + (spec.pi ? 'π' : ''), correct: o.correct }));
-    }
-    // solutions: x = a or x = b
-    let vals; try { vals = (Array.isArray(spec.answer) ? spec.answer : [spec.answer]).map((x) => Q.of(x)); } catch (e) { return null; }
-    const variants = [vals.map((x) => x.mul(Q.of(-1))), vals.map((x, i) => (i === 0 ? x : x.mul(Q.of(-1)))), vals.map((x, i) => (i === 0 ? x.mul(Q.of(-1)) : x)), vals.map((x) => x.add(Q.of(1))), vals.map((x) => x.mul(Q.of(2)))];
-    const seen = new Set([key(vals)]), wrong = [];
-    for (const w of variants) { const k = key(w); if (wrong.length < 3 && !seen.has(k)) { seen.add(k); wrong.push(w); } }
-    if (wrong.length < 3) return null;
-    const lab = (arr) => arr.map((x) => `x = ${qHtml(x)}`).join(' or ');
-    const typ = (arr) => arr.map((x) => `x = ${qTxt(x)}`).join(' or ');
-    const opts = [{ a: vals, correct: true }].concat(wrong.map((w) => ({ a: w, correct: false })));
-    for (let i = opts.length - 1; i > 0; i--) { const j = r.int(0, i); [opts[i], opts[j]] = [opts[j], opts[i]]; }
-    return opts.map((o) => ({ html: lab(o.a), typed: typ(o.a), correct: o.correct }));
-  }
+  const { options: abcdOptions, qTxt } = FMG.abcd;   // js/abcd.js (shared with the worksheets)
   const abcdHtml = (opts) => `<div class="abcd" role="group" aria-label="Choose A, B, C or D">${opts.map((o, i) => `<button type="button" class="abcd-opt" data-abcd="${i}" aria-label="${LETTERS[i]}: ${esc(o.typed)}"><span class="abcd-l" aria-hidden="true">${LETTERS[i]}</span><span class="abcd-v">${o.html}</span></button>`).join('')}</div>`;
   /* Letter keys A–D press the matching option while it's on screen (not while typing in a box). */
   function bindLetterKeys(box, sel) {
@@ -36326,6 +37292,7 @@ body.reduce-motion .cel-layer { display: none; }`;
       <section class="parent-head"><h1>Parent dashboard</h1>
         ${db.profiles.length ? `<div class="seg" role="tablist" aria-label="Choose child">${db.profiles.map((p) => `<button role="tab" aria-selected="${p.id === parentChild}" data-child="${p.id}">${esc(p.nickname)}</button>`).join('')}</div>` : ''}
       </section>
+      ${FMG.worksheets ? '<p><a class="btn ghost sm" href="#/worksheets">🖨 Printable worksheets</a> <span class="small muted">Every skill and stage, mixed revision, practice papers and colouring sheets, with answer sheets.</span></p>' : ''}
       <nav class="tabs" aria-label="Parent sections">${tabs.map(([id, n]) => `<a href="#/parent/${id}" class="${tab === id ? 'on' : ''}" ${tab === id ? 'aria-current="page"' : ''}>${n}</a>`).join('')}</nav>
       <div class="parent-body">${body}</div>`, { back: profile() ? '#/home' : '#/', title: 'Parent area', cls: 'wide' });
     $$('[data-child]').forEach((b) => (b.onclick = () => { parentChild = b.dataset.child; parentDashboard(tab); }));
